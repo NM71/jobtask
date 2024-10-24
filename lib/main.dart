@@ -2,6 +2,7 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:jobtask/screens/auth/email_input_screen.dart';
+import 'package:jobtask/screens/auth/registration_form_screen.dart';
 import 'package:jobtask/screens/auth/sign_in_screen.dart';
 import 'package:jobtask/screens/auth/signin_conformation_screen.dart';
 import 'package:jobtask/screens/splash_screen.dart';

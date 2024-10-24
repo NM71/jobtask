@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jobtask/screens/auth/sign_in_screen.dart';
+import 'package:jobtask/startup_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   final String token;
@@ -16,10 +18,20 @@ class DashboardScreen extends StatelessWidget {
         backgroundColor: Color(0xffffffff),
         actions: [
           GestureDetector(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SignInScreen()));
+            // onTap: () {
+            //   Navigator.pop(context);
+            //   Navigator.push(context,
+            //       MaterialPageRoute(builder: (context) => StartupScreen()));
+            // },
+            onTap: () async {
+              final storage = FlutterSecureStorage();
+              await storage.delete(key: 'auth_token'); // Clear the stored token
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => StartupScreen()),
+                    (route) => false,
+              );
             },
+
             child: const Padding(
               padding: EdgeInsets.only(right: 8.0),
               child: Icon(

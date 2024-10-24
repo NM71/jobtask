@@ -4,6 +4,7 @@ import 'package:jobtask/screens/dashboard_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jobtask/startup_screen.dart';
+import 'package:jobtask/utils/transitions/custom_slide_transition.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -17,8 +18,32 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkToken();
   }
 
+  // Future<void> _checkToken() async {
+  //   final storage = FlutterSecureStorage();
+  //   final token = await storage.read(key: 'auth_token');
+  //   await Future.delayed(const Duration(seconds: 3));
+  //
+  //   if (token != null) {
+  //     try {
+  //       final isValid = await ApiService.validateToken(token);
+  //       if (isValid) {
+  //         Navigator.of(context).pushReplacement(
+  //           MaterialPageRoute(builder: (context) => DashboardScreen(token: token)),
+  //         );
+  //         return;
+  //       }
+  //     } catch (e) {
+  //       print('Error validating token: $e');
+  //     }
+  //   }
+  //
+  //   Navigator.of(context).pushReplacement(
+  //     MaterialPageRoute(builder: (context) => StartupScreen()),
+  //   );
+  // }
+
   Future<void> _checkToken() async {
-    final storage = FlutterSecureStorage();
+    final storage = const FlutterSecureStorage();
     final token = await storage.read(key: 'auth_token');
     await Future.delayed(const Duration(seconds: 3));
 
@@ -26,9 +51,11 @@ class _SplashScreenState extends State<SplashScreen> {
       try {
         final isValid = await ApiService.validateToken(token);
         if (isValid) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => DashboardScreen(token: token)),
-          );
+          navigateWithSlideTransition(context, DashboardScreen(token: token));
+
+          // Navigator.of(context).pushReplacement(
+          //   _createSlideTransition(DashboardScreen(token: token)),
+          // );
           return;
         }
       } catch (e) {
@@ -36,15 +63,17 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     }
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => StartupScreen()),
-    );
+    navigateWithSlideTransition(context, const StartupScreen());
+    // Navigator.of(context).pushReplacement(
+    //   _createSlideTransition(StartupScreen()),
+    // );
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff000000),
+      backgroundColor: const Color(0xff000000),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -54,10 +83,10 @@ class _SplashScreenState extends State<SplashScreen> {
               height: 100,
               width: 100,
             ),
-            SizedBox(height: 20),
-            Text('WELCOME', style: TextStyle(fontSize: 30,color: Color(0xffffffff), fontWeight: FontWeight.bold),),
-            SizedBox(height: 30),
-            CircularProgressIndicator(
+            const SizedBox(height: 20),
+            const Text('WELCOME', style: TextStyle(fontSize: 30,color: Color(0xffffffff), fontWeight: FontWeight.bold),),
+            const SizedBox(height: 30),
+            const CircularProgressIndicator(
               color: Color(0xff3c76ad),
             ),
           ],
