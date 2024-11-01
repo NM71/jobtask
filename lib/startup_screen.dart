@@ -15,7 +15,7 @@ class StartupScreen extends StatelessWidget {
         color: Colors.black,
         child: Stack(
           children: [
-            // Background image
+            // Background imagezz
             const Positioned.fill(
               child: DecoratedBox(
                 decoration: BoxDecoration(
@@ -43,7 +43,7 @@ class StartupScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Delivering top-notch shoe\nrepair, cleaning, and\ninspiration for footwear\nlovers',
+                          'Delivering top-notch shoe repair, cleaning, and inspiration for footwear lovers',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 35,
@@ -78,11 +78,11 @@ class StartupScreen extends StatelessWidget {
                                         backgroundColor: const Color(0xffc2c2c2),
                                         content: SingleChildScrollView(
                                           child: Column(
-                                            mainAxisSize: MainAxisSize.min,
+                                            // mainAxisSize: MainAxisSize.min,
                                             children: [
                                               const Text(
                                                 "\"RFK\" Wants to Use",
-                                                style: TextStyle(fontSize: 24),
+                                                style: TextStyle(fontSize: 22),
                                                 textAlign: TextAlign.center,
                                               ),
                                               Row(
@@ -100,24 +100,32 @@ class StartupScreen extends StatelessWidget {
                                                         throw 'Could not launch $url';
                                                       }
                                                     },
-                                                    child: const Text(
-                                                      "\"Rfkicks.com\"",
-                                                      style: TextStyle(
-                                                          fontSize: 24,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline),
+                                                    child: Row(
+                                                      children: [
+                                                        Text('\"', style: TextStyle(
+                                                      fontSize: 22,)),
+                                                        const Text(
+                                                          "Rfkicks.com",
+                                                          style: TextStyle(
+                                                              fontSize: 22,
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .underline),
+                                                        ),
+                                                        Text('\"', style: TextStyle(
+                                                          fontSize: 22,)),
+                                                      ],
                                                     ),
                                                   ),
                                                   const Text(
                                                     " to Sign In",
                                                     style:
-                                                        TextStyle(fontSize: 24),
+                                                        TextStyle(fontSize: 22),
                                                     textAlign: TextAlign.center,
                                                   ),
                                                 ],
                                               ),
-                                              const SizedBox(height: 10),
+                                              const SizedBox(height: 20),
                                               const Text(
                                                 "This allows the app and website to share information about you",
                                                 textAlign: TextAlign.center,
@@ -137,7 +145,7 @@ class StartupScreen extends StatelessWidget {
                                                 child: const Text(
                                                   "Cancel",
                                                   style: TextStyle(
-                                                      fontSize: 24,
+                                                      fontSize: 22,
                                                       color: Color(0xff007aff)),
                                                 ),
                                               ),
@@ -161,7 +169,7 @@ class StartupScreen extends StatelessWidget {
                                                 child: const Text(
                                                   "Continue",
                                                   style: TextStyle(
-                                                      fontSize: 24,
+                                                      fontSize: 22,
                                                       color: Color(0xff007aff)),
                                                 ),
                                               ),
