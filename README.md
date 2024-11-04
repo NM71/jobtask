@@ -1,6 +1,5 @@
-# jobtask
+# ReFreshKicks Mobile App
 
-A task for Interview
 
 ## Getting Started
 
