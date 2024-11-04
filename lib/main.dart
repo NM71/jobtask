@@ -1,4 +1,5 @@
 // lib/main.dart
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jobtask/screens/account%20setup/onboarding.dart';
@@ -20,6 +21,8 @@ import 'package:provider/provider.dart';
 // }
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  CachedNetworkImage.logLevel = CacheManagerLogLevel.verbose;
   runApp(
     MultiProvider(
       providers: [

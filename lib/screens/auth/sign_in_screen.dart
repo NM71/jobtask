@@ -5,6 +5,7 @@ import 'package:jobtask/screens/auth/email_input_screen.dart';
 import 'package:jobtask/screens/dashboard_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jobtask/utils/custom_snackbar.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -67,9 +68,13 @@ class _SignInScreenState extends State<SignInScreen> {
           MaterialPageRoute(builder: (context) => DashboardScreen(token: token)),
         );
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
-        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Error: ${e.toString()}')),
+        // );
+        CustomSnackbar.show(
+                      context: context,
+                      message: 'Error: ${e.toString()}',
+                    );
       } finally {
         setState(() {
           _isLoading = false; // Stop loading
@@ -139,22 +144,47 @@ class _SignInScreenState extends State<SignInScreen> {
                 },
               ),
               const SizedBox(height: 25),
-              _isLoading // Show loading indicator if loading
-                  ? Center(child: CircularProgressIndicator())
-                  : ElevatedButton(
-                onPressed: _signIn,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(26),
-                  minimumSize: const Size(double.infinity, 50),
-                  backgroundColor: const Color(0xff3c76ad),
-                  foregroundColor: const Color(0xffffffff),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ), // Call _signIn function
-                child: const Text('Sign In'),
+
+              // Sign In button
+              // _isLoading // Show loading indicator if loading
+              //     ? Center(child: CircularProgressIndicator())
+              //     : ElevatedButton(
+              //   onPressed: _signIn,
+              //   style: ElevatedButton.styleFrom(
+              //     padding: const EdgeInsets.all(26),
+              //     minimumSize: const Size(double.infinity, 50),
+              //     backgroundColor: const Color(0xff3c76ad),
+              //     foregroundColor: const Color(0xffffffff),
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(10),
+              //     ),
+              //   ), // Call _signIn function
+              //   child: const Text('Sign In'),
+              // ),
+            ElevatedButton(
+              onPressed: _isLoading ? null : _signIn, // Disable button while loading
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.all(26),
+                minimumSize: const Size(double.infinity, 50),
+                backgroundColor: const Color(0xff3c76ad),
+                foregroundColor: const Color(0xffffffff),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-              const SizedBox(height: 40),
+              child: _isLoading
+                  ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+                  : const Text('Sign In'),
+            ),
+
+            const SizedBox(height: 40),
               Center(
                 child: RichText(
                   text: TextSpan(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jobtask/screens/auth/sign_in_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jobtask/utils/custom_snackbar.dart';
 
 class RegistrationFormScreen extends StatefulWidget {
   final String email;
@@ -76,8 +77,12 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
           MaterialPageRoute(builder: (context) => SignInScreen()),
         );
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Error: ${e.toString()}')),
+        // );
+        CustomSnackbar.show(
+          context: context,
+          message: 'Error: ${e.toString()}',
         );
       } finally {
         setState(() {
@@ -95,19 +100,31 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
           setState(() {
             _isCodeVerified = true;
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Verification successful!')),
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(content: Text('Verification successful!')),
+          // );
+          CustomSnackbar.show(
+            context: context,
+            message: 'Verification successful!',
           );
           // Proceed to register user
           _register();
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Verification failed: Email mismatch')),
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(content: Text('Verification failed: Email mismatch')),
+          // );
+          CustomSnackbar.show(
+            context: context,
+            message: 'Verification failed: Email mismatch',
           );
         }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Error: ${e.toString()}')),
+        // );
+        CustomSnackbar.show(
+          context: context,
+          message: 'Error: ${e.toString()}',
         );
       }
     }
@@ -117,13 +134,21 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
     if (_isResendAvailable) {
       try {
         await ApiService.submitEmail(widget.email); // Resend using the same method
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Verification code resent!')),
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text('Verification code resent!')),
+        // );
+        CustomSnackbar.show(
+          context: context,
+          message: 'Verification code resent!',
         );
         _startTimer();
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error resending code: ${e.toString()}')),
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Error resending code: ${e.toString()}')),
+        // );
+        CustomSnackbar.show(
+          context: context,
+          message: 'Error resending code: ${e.toString()}',
         );
       }
     }
@@ -143,6 +168,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(40.0),
         child: Form(

@@ -187,6 +187,14 @@ class _SearchScreenState extends State<SearchScreen> {
       'Restore your shoes to their former glory',
       ['Vintage', 'Designer', 'Limited Edition'],
     ),
+    Service(
+      'ReStore',
+      50,
+      'assets/images/services_images/restore_service.jpg',
+      'Restoration',
+      'Restore your shoes like they are new',
+      ['Vintage', 'Designer', 'Limited Edition'],
+    ),
     // Add the rest of your services with additional details...
   ];
 

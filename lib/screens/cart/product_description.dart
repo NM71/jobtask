@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jobtask/screens/shop/shop_now.dart';
+import 'package:jobtask/utils/custom_buttons/my_button.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../shop/shop_screen.dart';
@@ -53,21 +54,28 @@ class ProductDescription extends StatelessWidget {
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    PageTransition(
-                        child: ShopNow(shoeSize: 0, service: service,),
-                        type: PageTransitionType.rightToLeft));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xff3c76ad),
-                foregroundColor: Colors.white,
-                side: const BorderSide(color: Colors.white24),
-              ),
-              child: const Text('Shop Now'),
-            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     Navigator.push(
+            //         context,
+            //         PageTransition(
+            //             child: ShopNow(shoeSize: 0, service: service,),
+            //             type: PageTransitionType.rightToLeft));
+            //   },
+            //   style: ElevatedButton.styleFrom(
+            //     backgroundColor: Color(0xff3c76ad),
+            //     foregroundColor: Colors.white,
+            //     side: const BorderSide(color: Colors.white24),
+            //   ),
+            //   child: const Text('Shop Now'),
+            // ),
+            MyButton(text: "Shop Now", onTap: () {
+              Navigator.push(
+                  context,
+                  PageTransition(
+                      child: ShopNow(shoeSize: 0, service: service,),
+                      type: PageTransitionType.rightToLeft));
+            })
           ],
         ),
       ),

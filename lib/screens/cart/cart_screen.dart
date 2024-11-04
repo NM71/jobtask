@@ -139,64 +139,6 @@
 //   }
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // import 'package:flutter/material.dart';
 // import 'package:jobtask/screens/cart/cart_provider.dart';
 // import 'package:provider/provider.dart';
@@ -303,8 +245,310 @@
 //   }
 // }
 
+// import 'package:flutter/material.dart';
+// import 'package:jobtask/sample_check.dart';
+// import 'package:jobtask/screens/cart/cart_provider.dart';
+// import 'package:jobtask/utils/custom_buttons/my_button.dart';
+// import 'package:provider/provider.dart';
+//
+// class CartScreen extends StatelessWidget {
+//   const CartScreen({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       body: Consumer<CartProvider>(
+//         builder: (context, cartProvider, child) {
+//           return Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text("Cart", style: TextStyle(fontSize: 28)),
+//
+//                 // Check if the cart is empty
+//                 if (cartProvider.cartItems.isEmpty) ...[
+//                   Expanded(
+//                     child: Center(
+//                       child: Column(
+//                         mainAxisAlignment: MainAxisAlignment.center,
+//                         children: [
+//                           Image.asset(
+//                             'assets/images/cart_image.png',
+//                             height: 100,
+//                           ),
+//                           SizedBox(height: 16),
+//                           Text(
+//                             'Your Cart is empty.',
+//                             style: TextStyle(fontSize: 18),
+//                           ),
+//                           SizedBox(height: 8),
+//                           Text(
+//                             'When you add products, they\'ll appear here.',
+//                             style: TextStyle(color: Colors.grey),
+//                           ),
+//                           SizedBox(height: 24),
+//                           // ElevatedButton(
+//                           //   style: ElevatedButton.styleFrom(
+//                           //     backgroundColor: Color(0xff3c76ad),
+//                           //     foregroundColor: Colors.white,
+//                           //   ),
+//                           //   onPressed: () {
+//                           //     // Navigate to the shop screen
+//                           //     // Navigator.pushNamed(context, '/shop');
+//                           //   },
+//                           //   child: Text('Shop Now'),
+//                           // ),
+//                           MyButton(
+//                               text: "Shop Now",
+//                               onTap: () {
+//                                 Navigator.push(
+//                                     context,
+//                                     MaterialPageRoute(
+//                                         builder: (context) => WebViewScreen()));
+//                               }),
+//                         ],
+//                       ),
+//                     ),
+//                   ),
+//                 ] else ...[
+//                   // Existing cart items list and total/checkout section
+//                   Expanded(
+//                     child: ListView.builder(
+//                       itemCount: cartProvider.cartItems.length,
+//                       itemBuilder: (context, index) {
+//                         final cartItem = cartProvider.cartItems[index];
+//                         return CartItemWidget(
+//                           cartItem: cartItem,
+//                           onQuantityChanged: (newQuantity) {
+//                             cartProvider.updateQuantity(
+//                                 cartItem.service, newQuantity);
+//                           },
+//                           onRemove: () {
+//                             cartProvider.removeFromCart(cartItem.service);
+//                           },
+//                         );
+//                       },
+//                     ),
+//                   ),
+//                   SizedBox(height: 20),
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Text(
+//                         "Subtotal",
+//                         style: TextStyle(color: Colors.grey),
+//                       ),
+//                       Text(
+//                         "US\$${cartProvider.getTotalPrice().toStringAsFixed(2)}",
+//                         style: TextStyle(color: Colors.grey),
+//                       ),
+//                     ],
+//                   ),
+//                   SizedBox(height: 8),
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Text(
+//                         "Delivery",
+//                         style: TextStyle(color: Colors.grey),
+//                       ),
+//                       Text(
+//                         "Standard-Free",
+//                         style: TextStyle(color: Colors.grey),
+//                       ),
+//                     ],
+//                   ),
+//                   SizedBox(height: 8),
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Text(
+//                         "Estimated Total",
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                       Text(
+//                         "US\$${cartProvider.getTotalPrice().toStringAsFixed(2)} + Tax",
+//                         style: TextStyle(fontWeight: FontWeight.bold),
+//                       ),
+//                     ],
+//                   ),
+//                   SizedBox(height: 20),
+//                   // ElevatedButton(
+//                   //   style: ElevatedButton.styleFrom(
+//                   //     backgroundColor: Color(0xff3c76ad),
+//                   //     foregroundColor: Colors.white,
+//                   //   ),
+//                   //   onPressed: () {
+//                   //     // Implement checkout logic
+//                   //   },
+//                   //   child: Text("Checkout"),
+//                   // ),
+//                   MyButton(text: "Checkout", onTap: () {}),
+//                 ],
+//               ],
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+//
+// // New widget to handle individual cart item display and quantity
+// class CartItemWidget extends StatelessWidget {
+//   final CartItem cartItem;
+//   final Function(int) onQuantityChanged;
+//   final VoidCallback onRemove;
+//
+//   const CartItemWidget({
+//     Key? key,
+//     required this.cartItem,
+//     required this.onQuantityChanged,
+//     required this.onRemove,
+//   }) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Card(
+//       color: Colors.white,
+//       shadowColor: Colors.blue,
+//       elevation: 0,
+//       margin: EdgeInsets.symmetric(vertical: 8),
+//       child: Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Row(
+//               children: [
+//                 Image.asset(
+//                   cartItem.service.imagePath,
+//                   height: 130,
+//                   width: 130,
+//                   fit: BoxFit.cover,
+//                 ),
+//                 SizedBox(width: 10),
+//                 Expanded(
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Text(
+//                         cartItem.service.name,
+//                         style: TextStyle(
+//                           fontSize: 12,
+//                         ),
+//                       ),
+//                       SizedBox(
+//                         height: 5,
+//                       ),
+//                       Text(
+//                         cartItem.service.description,
+//                         style:
+//                             TextStyle(fontSize: 12, color: Color(0xff989898)),
+//                       ),
+//                       SizedBox(
+//                         height: 10,
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//
+//             // Column Items
+//             Row(
+//               children: [
+//                 IconButton(
+//                   icon: Icon(Icons.remove_circle_outline),
+//                   onPressed: () {
+//                     if (cartItem.quantity > 1) {
+//                       onQuantityChanged(cartItem.quantity - 1);
+//                     }
+//                   },
+//                 ),
+//                 Text('${cartItem.quantity}'),
+//                 IconButton(
+//                   icon: Icon(Icons.add_circle_outline),
+//                   onPressed: () {
+//                     onQuantityChanged(cartItem.quantity + 1);
+//                   },
+//                 ),
+//                 Spacer(),
+//                 Text(
+//                   "\$${cartItem.service.price.toStringAsFixed(2)}",
+//                   style: TextStyle(color: Color(0xff3c76ad)),
+//                 ),
+//                 IconButton(
+//                   icon: Icon(Icons.delete, color: Color(0xff3c76ad)),
+//                   onPressed: onRemove,
+//                 ),
+//               ],
+//             ),
+//
+//             // Delivery Details
+//             Text("Delivery"),
+//             Text("Arrives Wed, 11 May"),
+//             Text("to Fri, 13 May"),
+//             Divider(
+//               indent: MediaQuery.of(context).size.width*0.05,
+//               endIndent: MediaQuery.of(context).size.width*0.05,
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 import 'package:flutter/material.dart';
+import 'package:jobtask/sample_check.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
 import 'package:jobtask/utils/custom_buttons/my_button.dart';
 import 'package:provider/provider.dart';
@@ -318,12 +562,14 @@ class CartScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Consumer<CartProvider>(
         builder: (context, cartProvider, child) {
+          final screenWidth = MediaQuery.of(context).size.width;
+
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Cart", style: TextStyle(fontSize: 28)),
+                Text("Cart", style: TextStyle(fontSize: screenWidth * 0.08)),
 
                 // Check if the cart is empty
                 if (cartProvider.cartItems.isEmpty) ...[
@@ -334,12 +580,12 @@ class CartScreen extends StatelessWidget {
                         children: [
                           Image.asset(
                             'assets/images/cart_image.png',
-                            height: 100,
+                            height: screenWidth * 0.25, // Responsive height
                           ),
                           SizedBox(height: 16),
                           Text(
                             'Your Cart is empty.',
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(fontSize: screenWidth * 0.05),
                           ),
                           SizedBox(height: 8),
                           Text(
@@ -347,18 +593,17 @@ class CartScreen extends StatelessWidget {
                             style: TextStyle(color: Colors.grey),
                           ),
                           SizedBox(height: 24),
-                          // ElevatedButton(
-                          //   style: ElevatedButton.styleFrom(
-                          //     backgroundColor: Color(0xff3c76ad),
-                          //     foregroundColor: Colors.white,
-                          //   ),
-                          //   onPressed: () {
-                          //     // Navigate to the shop screen
-                          //     // Navigator.pushNamed(context, '/shop');
-                          //   },
-                          //   child: Text('Shop Now'),
-                          // ),
-                          MyButton(text: "Shop Now", onTap: (){}),
+                          MyButton(
+                            text: "Shop Now",
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WebViewScreen(),
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -383,64 +628,67 @@ class CartScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Subtotal",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      Text(
-                        "US\$${cartProvider.getTotalPrice().toStringAsFixed(2)}",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
+                  _buildSubtotalRow(screenWidth, cartProvider),
                   SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Delivery",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      Text(
-                        "Standard-Free",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
+                  _buildDeliveryRow(screenWidth),
                   SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Estimated Total",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "US\$${cartProvider.getTotalPrice().toStringAsFixed(2)} + Tax",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+                  _buildEstimatedTotalRow(screenWidth, cartProvider),
                   SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff3c76ad),
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: () {
-                      // Implement checkout logic
-                    },
-                    child: Text("Checkout"),
-                  ),
+                  MyButton(text: "Checkout", onTap: () {}),
                 ],
               ],
             ),
           );
         },
       ),
+    );
+  }
+
+  Widget _buildSubtotalRow(double screenWidth, CartProvider cartProvider) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "Subtotal",
+          style: TextStyle(color: Colors.grey, fontSize: screenWidth * 0.04),
+        ),
+        Text(
+          "US\$${cartProvider.getTotalPrice().toStringAsFixed(2)}",
+          style: TextStyle(color: Colors.grey, fontSize: screenWidth * 0.04),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDeliveryRow(double screenWidth) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "Delivery",
+          style: TextStyle(color: Colors.grey, fontSize: screenWidth * 0.04),
+        ),
+        Text(
+          "Standard-Free",
+          style: TextStyle(color: Colors.grey, fontSize: screenWidth * 0.04),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEstimatedTotalRow(double screenWidth, CartProvider cartProvider) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "Estimated Total",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.045),
+        ),
+        Text(
+          "US\$${cartProvider.getTotalPrice().toStringAsFixed(2)} + Tax",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.045),
+        ),
+      ],
     );
   }
 }
@@ -460,66 +708,80 @@ class CartItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Card(
       color: Colors.white,
       shadowColor: Colors.blue,
-      elevation: 5,
+      elevation: 0,
       margin: EdgeInsets.symmetric(vertical: 8),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset(
-              cartItem.service.imagePath,
-              height: 100,
-              width: 100,
-              fit: BoxFit.cover,
-            ),
-            SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    cartItem.service.name,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  // SizedBox(height: 5,),
-                  Text(
-                    cartItem.service.description,
-                    style: TextStyle(),
-                  ),
-                  SizedBox(height: 10,),
-                  Text(
-                    "\$${cartItem.service.price.toStringAsFixed(2)}",
-                    style: TextStyle(color: Color(0xff3c76ad)),
-                  ),
-                  Row(
+            Row(
+              children: [
+                Image.asset(
+                  cartItem.service.imagePath,
+                  height: screenWidth * 0.3, // Responsive image height
+                  width: screenWidth * 0.3, // Responsive image width
+                  fit: BoxFit.cover,
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      IconButton(
-                        icon: Icon(Icons.remove_circle_outline),
-                        onPressed: () {
-                          if (cartItem.quantity > 1) {
-                            onQuantityChanged(cartItem.quantity - 1);
-                          }
-                        },
+                      Text(
+                        cartItem.service.name,
+                        style: TextStyle(fontSize: screenWidth * 0.035),
                       ),
-                      Text('${cartItem.quantity}'),
-                      IconButton(
-                        icon: Icon(Icons.add_circle_outline),
-                        onPressed: () {
-                          onQuantityChanged(cartItem.quantity + 1);
-                        },
+                      SizedBox(height: 5),
+                      Text(
+                        cartItem.service.description,
+                        style: TextStyle(fontSize: screenWidth * 0.035, color: Color(0xff989898)),
                       ),
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.blue),
-                        onPressed: onRemove,
-                      ),
+                      SizedBox(height: 10),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.remove_circle_outline),
+                  onPressed: () {
+                    if (cartItem.quantity > 1) {
+                      onQuantityChanged(cartItem.quantity - 1);
+                    }
+                  },
+                ),
+                Text('${cartItem.quantity}', style: TextStyle(fontSize: screenWidth * 0.035)),
+                IconButton(
+                  icon: Icon(Icons.add_circle_outline),
+                  onPressed: () {
+                    onQuantityChanged(cartItem.quantity + 1);
+                  },
+                ),
+                Spacer(),
+                Text(
+                  "\$${cartItem.service.price.toStringAsFixed(2)}",
+                  style: TextStyle(color: Color(0xff3c76ad), fontSize: screenWidth * 0.035),
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete, color: Color(0xff3c76ad)),
+                  onPressed: onRemove,
+                ),
+              ],
+            ),
+            Text("Delivery", style: TextStyle(fontSize: screenWidth * 0.035)),
+            Text("Arrives Wed, 11 May", style: TextStyle(fontSize: screenWidth * 0.035)),
+            Text("to Fri, 13 May", style: TextStyle(fontSize: screenWidth * 0.035)),
+            Divider(
+              indent: screenWidth * 0.05,
+              endIndent: screenWidth * 0.05,
             ),
           ],
         ),

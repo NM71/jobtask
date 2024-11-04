@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jobtask/screens/auth/registration_form_screen.dart';
 import 'package:jobtask/services/api_service.dart';
+import 'package:jobtask/utils/custom_snackbar.dart';
 
 class EmailInputScreen extends StatefulWidget {
   @override
@@ -127,8 +128,12 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
                         );
                       }
                     } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: ${e.toString()}')),
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   SnackBar(content: Text('Error: ${e.toString()}')),
+                      // );
+                      CustomSnackbar.show(
+                        context: context,
+                        message: 'Error: ${e.toString()}',
                       );
                     } finally {
                       setState(() {
