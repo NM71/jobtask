@@ -67,43 +67,14 @@
 //   }
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:jobtask/screens/about/beforevsafter.dart';
 
 class FloatingActionAnimation extends StatefulWidget {
   @override
-  _FloatingActionAnimationState createState() => _FloatingActionAnimationState();
+  _FloatingActionAnimationState createState() =>
+      _FloatingActionAnimationState();
 }
 
 class _FloatingActionAnimationState extends State<FloatingActionAnimation>
@@ -150,6 +121,10 @@ class _FloatingActionAnimationState extends State<FloatingActionAnimation>
               //   MaterialPageRoute(builder: (context) => BeforeAfterComparison()),
               // );
               showModalBottomSheet(
+                  useSafeArea: true,
+                  sheetAnimationStyle:
+                      AnimationStyle(duration: Duration(seconds: 1)),
+                  showDragHandle: true,
                   context: context,
                   isScrollControlled: true,
                   builder: (BuildContext context) {

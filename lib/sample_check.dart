@@ -327,12 +327,6 @@
 
 
 
-
-
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -358,8 +352,12 @@ class _WebViewScreenState extends State<WebViewScreen> {
         centerTitle: true,
         title: const Text("TextConstants.appBarTitle"),
       ),
-      body: WebViewWidget(
-        controller: controller,
+      body: Column(
+        children: [
+          WebViewWidget(
+            controller: controller,
+          ),
+        ],
       ),
     );
   }

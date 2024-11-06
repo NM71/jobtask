@@ -437,7 +437,7 @@ class ServiceGrid extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
-        childAspectRatio: 0.75, // Aspect ratio adjusted for responsiveness
+        childAspectRatio: 0.70, // Aspect ratio adjusted for responsiveness
       ),
       itemCount: services.length,
       itemBuilder: (context, index) {
@@ -490,13 +490,13 @@ class ServiceCard extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         service.name,
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 15),
                       ),
                     ),
                     Text(
                       '\$${service.price}',
                       style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 15,
                           color: Color(0xff3c76ad),
                           fontWeight: FontWeight.bold),
                     ),
@@ -548,4 +548,6 @@ class SectionTitle extends StatelessWidget {
     );
   }
 }
+
+
 

@@ -224,29 +224,6 @@
 //   }
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // import 'package:flutter/material.dart';
 // import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // import 'package:jobtask/startup_screen.dart';
@@ -492,44 +469,13 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jobtask/screens/about/FAQS.dart';
+import 'package:jobtask/screens/about/order_refund_policy.dart';
+import 'package:jobtask/screens/about/privacy_policy_screen.dart';
 import 'package:jobtask/startup_screen.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -546,32 +492,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _logout() async {
     bool confirmLogout = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirm Logout'),
-          backgroundColor: const Color(0xffc2c2c2),
-          content: const Text('Are you sure you want to log out?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel', style: TextStyle(color: Colors.black, fontSize: 16)),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Logout', style: TextStyle(color: Color(0xff3c76ad), fontSize: 16)),
-            ),
-          ],
-        );
-      },
-    ) ?? false;
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Confirm Logout'),
+              backgroundColor: const Color(0xffc2c2c2),
+              content: const Text('Are you sure you want to log out?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Cancel',
+                      style: TextStyle(color: Colors.black, fontSize: 16)),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text('Logout',
+                      style: TextStyle(color: Color(0xff3c76ad), fontSize: 16)),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
 
     if (confirmLogout) {
       await storage.delete(key: 'auth_token');
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const StartupScreen()),
-              (route) => false,
+          (route) => false,
         );
       }
     }
@@ -592,11 +541,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title,
             style: TextStyle(
               color: isLogout ? Colors.red : Colors.black,
-              fontSize: 16 * MediaQuery.of(context).textScaleFactor, // Responsive text size
+              fontSize: 16 *
+                  MediaQuery.of(context)
+                      .textScaleFactor, // Responsive text size
             ),
           ),
           subtitle: subtitle != null ? Text(subtitle) : null,
-          trailing: isDetails ? null : const Icon(Icons.chevron_right, color: Colors.grey),
+          trailing: isDetails
+              ? null
+              : const Icon(Icons.chevron_right, color: Colors.grey),
           onTap: onTap,
         ),
         if (showDivider)
@@ -620,7 +573,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         centerTitle: true,
       ),
       body: ListView(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16), // Responsive padding
+        // padding: EdgeInsets.symmetric(
+        //     vertical: 10, horizontal: 16), // Responsive padding
         children: [
           _buildSettingsItem(
             isDetails: true,
@@ -651,14 +605,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           _buildSettingsItem(
-            title: 'Refund Order Policy',
-            onTap: () async {
-              const url = 'https://rfkicks.com/refund-order-policy/';
-              if (await canLaunch(url)) {
-                await launch(url);
-              } else {
-                throw 'Could not launch $url';
-              }
+            title: 'Refund Order Policy ✔️',
+            onTap: ()  {
+              Navigator.push(
+                  context,
+                  PageTransition(
+                      child: OrderRefundPolicy(),
+                      type: PageTransitionType.rightToLeft));
             },
           ),
           _buildSettingsItem(
@@ -668,13 +621,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           _buildSettingsItem(
-            title: 'Shopping Settings',
+            title: 'FAQ\'S  ✔️',
             onTap: () {
-              // Navigate to shopping settings
+              // Navigate to Frequently Asked Questions
+              Navigator.push(context, PageTransition(child: FAQS(), type: PageTransitionType.rightToLeft));
             },
           ),
           _buildSettingsItem(
-            title: 'Explore Our Website',
+            title: 'Explore Our Website  ✔️',
             onTap: () async {
               const url = 'https://rfkicks.com/';
               if (await canLaunch(url)) {
@@ -685,7 +639,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           _buildSettingsItem(
-            title: 'Terms of Use',
+            title: 'Terms of Use  ✔️',
             onTap: () async {
               const url = 'https://rfkicks.com/terms-conditions/';
               if (await canLaunch(url)) {
@@ -696,9 +650,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           _buildSettingsItem(
-            title: 'Privacy Policy',
+            title: 'Privacy Policy  ✔️',
             onTap: () {
               // Navigate to privacy policy
+              Navigator.push(
+                  context,
+                  PageTransition(
+                      child: PrivacyPolicyScreen(),
+                      type: PageTransitionType.rightToLeft));
             },
           ),
           _buildSettingsItem(
@@ -708,7 +667,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           _buildSettingsItem(
-            title: 'Log Out',
+            title: 'Log Out  ✔️',
             isLogout: true,
             showDivider: false,
             onTap: _logout,

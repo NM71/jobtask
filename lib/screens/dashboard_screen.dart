@@ -585,11 +585,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: GestureDetector(
                 onTap: navigateToSearchScreen,
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
+                  padding: const EdgeInsets.only(right: 10.0),
                   child: Image.asset(
                     'assets/icons/search_icon.png',
-                    height: 30,
-                    width: 30,
+                    height: 25,
+                    width: 25,
                   ),
                 ),
               ),
@@ -667,7 +667,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             BottomNavigationBarItem(
               backgroundColor: Colors.white,
-              icon: _buildIcon('assets/icons/profile_icon.png', 3),
+              icon: _buildIcon('assets/icons/profile_icon1.png', 3),
               label: 'Profile',
             ),
           ],

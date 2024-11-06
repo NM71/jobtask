@@ -3,6 +3,8 @@ import 'package:jobtask/screens/auth/registration_form_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:jobtask/utils/custom_snackbar.dart';
 
+import '../../utils/custom_border.dart';
+
 class EmailInputScreen extends StatefulWidget {
   @override
   _EmailInputScreenState createState() => _EmailInputScreenState();
@@ -55,10 +57,14 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
               const SizedBox(height: 30),
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(
+                decoration:  InputDecoration(
                   contentPadding: EdgeInsets.only(left: 10, top: 20, bottom: 20),
                   labelText: 'Email',
-                  border: OutlineInputBorder(),
+                  labelStyle: TextStyle(color: Color(0xff767676)),
+                  border: customBorder(),
+                  enabledBorder: customBorder(),
+                  focusedBorder: customBorder(),
+                  // border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) => validateEmail(value ?? ''),
@@ -155,7 +161,7 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
                     strokeWidth: 2.0,
                   ),
                 )
-                    : const Text('Submit'),
+                    : const Text('Next', style: TextStyle(fontSize: 16),),
               ),
             ],
           ),

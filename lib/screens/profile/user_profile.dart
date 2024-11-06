@@ -1525,6 +1525,7 @@ import 'package:jobtask/screens/profile/profile_update_handler.dart';
 import 'package:jobtask/screens/profile/settings_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:jobtask/startup_screen.dart';
+import 'package:jobtask/utils/custom_border.dart';
 import 'package:jobtask/utils/custom_buttons/icon_text_button.dart';
 import 'dart:io';
 
@@ -1639,6 +1640,9 @@ class _UserProfileState extends State<UserProfile> {
           SizedBox(height: 10,),
           // Edit Profile Button
           OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: Colors.grey)
+            ),
             onPressed: () => _showEditProfileModal(context),
             child: const Padding(
               padding: EdgeInsets.all(15.0),
@@ -1743,7 +1747,7 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                   const Text(
                     "Edit Profile",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 18),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(context, true),
@@ -1917,7 +1921,8 @@ class _UserProfileState extends State<UserProfile> {
             label,
             style: const TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.bold,
+              // fontWeight: FontWeight.bold,
+              color: Colors.grey
             ),
           ),
           const SizedBox(height: 8),
@@ -1925,11 +1930,15 @@ class _UserProfileState extends State<UserProfile> {
             controller: controller,
             decoration: InputDecoration(
               hintText: hintText,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              filled: true,
-              fillColor: Colors.grey[50],
+              labelStyle: TextStyle(color: Color(0xff767676)),
+              border: customBorder(),
+              enabledBorder: customBorder(),
+              focusedBorder: customBorder(),
+              // border: OutlineInputBorder(
+              //   // borderRadius: BorderRadius.circular(2),
+              // ),
+              // filled: true,
+              // fillColor: Colors.grey[50],
             ),
           ),
         ],

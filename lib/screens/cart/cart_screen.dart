@@ -502,52 +502,10 @@
 //   }
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// -----------------------------------------------------------------------------
 
 import 'package:flutter/material.dart';
+import 'package:jobtask/animations/rfkicks_animation.dart';
 import 'package:jobtask/sample_check.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
 import 'package:jobtask/utils/custom_buttons/my_button.dart';
@@ -596,12 +554,12 @@ class CartScreen extends StatelessWidget {
                           MyButton(
                             text: "Shop Now",
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => WebViewScreen(),
-                                ),
-                              );
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => RfkicksAnimation(targetScreen: CartScreen(),),
+                              //   ),
+                              // );
                             },
                           ),
                         ],

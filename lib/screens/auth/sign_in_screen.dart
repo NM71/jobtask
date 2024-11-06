@@ -1,11 +1,13 @@
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:jobtask/animations/rfkicks_animation.dart';
 import 'package:jobtask/screens/auth/email_input_screen.dart';
 import 'package:jobtask/screens/dashboard_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jobtask/utils/custom_border.dart';
 import 'package:jobtask/utils/custom_snackbar.dart';
+import 'package:page_transition/page_transition.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -64,17 +66,25 @@ class _SignInScreenState extends State<SignInScreen> {
         final storage = FlutterSecureStorage();
         await storage.write(key: 'auth_token', value: token);
 
+
+        // use of Rfkicks Animation Screen
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => DashboardScreen(token: token)),
+          // MaterialPageRoute(builder: (context) => DashboardScreen(token: token)),
+          // PageTransition(child: DashboardScreen(token: token), type: PageTransitionType.rightToLeft),
+          PageTransition(
+              child:
+                  RfkicksAnimation(targetScreen: DashboardScreen(token: token)),
+              type: PageTransitionType.rightToLeft),
         );
+
       } catch (e) {
         // ScaffoldMessenger.of(context).showSnackBar(
         //   SnackBar(content: Text('Error: ${e.toString()}')),
         // );
         CustomSnackbar.show(
-                      context: context,
-                      message: 'Error: ${e.toString()}',
-                    );
+          context: context,
+          message: 'Error: ${e.toString()}',
+        );
       } finally {
         setState(() {
           _isLoading = false; // Stop loading
@@ -82,7 +92,6 @@ class _SignInScreenState extends State<SignInScreen> {
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -107,9 +116,13 @@ class _SignInScreenState extends State<SignInScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Email',
-                  border: OutlineInputBorder(),
+                  labelStyle: TextStyle(color: Color(0xff767676)),
+                  border: customBorder(),
+                  enabledBorder: customBorder(),
+                  focusedBorder: customBorder(),
+                  // border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -124,11 +137,15 @@ class _SignInScreenState extends State<SignInScreen> {
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  border: const OutlineInputBorder(),
+                  labelStyle: TextStyle(color: Color(0xff767676)),
+                  border: customBorder(),
+                  enabledBorder: customBorder(),
+                  focusedBorder: customBorder(),
+                  // border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
                     icon: Icon(_obscurePassword
-                        ? Icons.visibility
-                        : Icons.visibility_off),
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined),
                     onPressed: () {
                       setState(() {
                         _obscurePassword = !_obscurePassword;
@@ -161,49 +178,50 @@ class _SignInScreenState extends State<SignInScreen> {
               //   ), // Call _signIn function
               //   child: const Text('Sign In'),
               // ),
-            ElevatedButton(
-              onPressed: _isLoading ? null : _signIn, // Disable button while loading
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(26),
-                minimumSize: const Size(double.infinity, 50),
-                backgroundColor: const Color(0xff3c76ad),
-                foregroundColor: const Color(0xffffffff),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+              ElevatedButton(
+                onPressed:
+                    _isLoading ? null : _signIn, // Disable button while loading
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(26),
+                  minimumSize: const Size(double.infinity, 50),
+                  backgroundColor: const Color(0xff3c76ad),
+                  foregroundColor: const Color(0xffffffff),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text('Sign In'),
               ),
-              child: _isLoading
-                  ? const SizedBox(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
-              )
-                  : const Text('Sign In'),
-            ),
 
-            const SizedBox(height: 40),
+              const SizedBox(height: 40),
               Center(
                 child: RichText(
                   text: TextSpan(
                     children: <TextSpan>[
                       const TextSpan(
-                        text: 'Haven\'t joined us?',
+                        text: 'Haven\'t joined us? ',
                         style: TextStyle(
                           color: Color(0xff767676),
-                          fontFamily: 'OC-Regular',
+                          // fontFamily: 'OC-Regular',
                         ),
                       ),
                       TextSpan(
-                        text: ' Join now',
+                        text: 'Join now',
                         style: const TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: Color(0xff767676),
-                          fontFamily: 'OC-Regular',
-                          fontSize: 14,
-                        ),
+                            decoration: TextDecoration.underline,
+                            color: Color(0xff3c76ad),
+                            // fontFamily: 'OC-Regular',
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             Navigator.push(
@@ -225,4 +243,3 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 }
-

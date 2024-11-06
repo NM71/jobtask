@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:jobtask/animations/rfkicks_animation.dart';
 import 'package:jobtask/screens/auth/sign_in_screen.dart';
+import 'package:jobtask/screens/dashboard_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jobtask/utils/custom_border.dart';
 import 'package:jobtask/utils/custom_snackbar.dart';
+import 'package:page_transition/page_transition.dart';
 
 class RegistrationFormScreen extends StatefulWidget {
   final String email;
@@ -55,6 +59,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
     });
   }
 
+  // User Registration Function
   Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
@@ -74,7 +79,11 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
         await storage.write(key: 'auth_token', value: token);
 
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => SignInScreen()),
+          // MaterialPageRoute(builder: (context) => SignInScreen()),
+          PageTransition(
+              child:
+              RfkicksAnimation(targetScreen: SignInScreen()),
+              type: PageTransitionType.rightToLeft),
         );
       } catch (e) {
         // ScaffoldMessenger.of(context).showSnackBar(
@@ -133,7 +142,8 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
   Future<void> _resendCode() async {
     if (_isResendAvailable) {
       try {
-        await ApiService.submitEmail(widget.email); // Resend using the same method
+        await ApiService.submitEmail(
+            widget.email); // Resend using the same method
         // ScaffoldMessenger.of(context).showSnackBar(
         //   const SnackBar(content: Text('Verification code resent!')),
         // );
@@ -192,10 +202,29 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                 controller: _codeController,
                 decoration: InputDecoration(
                   labelText: 'Verification Code',
-                  border: const OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.refresh),
-                    onPressed: _isResendAvailable ? _resendCode : null,
+                  labelStyle: TextStyle(color: Color(0xff767676)),
+                  border: customBorder(),
+                  enabledBorder: customBorder(),
+                  focusedBorder: customBorder(),
+                  // border: OutlineInputBorder(
+                  //     borderRadius: BorderRadius.circular(8),
+                  //     gapPadding: 5
+                  // ),
+                  // suffixIcon: IconButton(
+                  //   icon: const Icon(Icons.refresh),
+                  //   onPressed: _isResendAvailable ? _resendCode : null,
+                  // ),
+                  suffixIcon: Container(
+                    margin: EdgeInsets.only(right: 10.0),
+                    padding: EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: _isResendAvailable ? _resendCode : null,
+                      child: Image.asset(
+                        "assets/icons/reload_icon.png",
+                        height: 5,
+                        width: 5,
+                      ),
+                    ),
                   ),
                 ),
                 keyboardType: TextInputType.number,
@@ -226,9 +255,16 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _firstNameController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'First name',
-                        border: OutlineInputBorder(),
+                        labelStyle: TextStyle(color: Color(0xff767676)),
+                        border: customBorder(),
+                        enabledBorder: customBorder(),
+                        focusedBorder: customBorder(),
+                        // border: OutlineInputBorder(
+                        //     borderRadius: BorderRadius.circular(8),
+                        //     gapPadding: 5
+                        // ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -242,9 +278,16 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                   Expanded(
                     child: TextFormField(
                       controller: _surnameController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Surname',
-                        border: OutlineInputBorder(),
+                        labelStyle: TextStyle(color: Color(0xff767676)),
+                        // border: OutlineInputBorder(
+                        //     borderRadius: BorderRadius.circular(8),
+                        //     gapPadding: 5
+                        // ),
+                        border: customBorder(),
+                        enabledBorder: customBorder(),
+                        focusedBorder: customBorder(),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -264,11 +307,14 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                 obscureText: _obscurePassword,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  border: const OutlineInputBorder(),
+                  labelStyle: TextStyle(color: Color(0xff767676)),
+                  border: customBorder(),
+                  enabledBorder: customBorder(),
+                  focusedBorder: customBorder(),
                   suffixIcon: IconButton(
                     icon: Icon(_obscurePassword
-                        ? Icons.visibility
-                        : Icons.visibility_off),
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined, color: Colors.black,),
                     onPressed: () {
                       setState(() {
                         _obscurePassword = !_obscurePassword;
@@ -302,11 +348,13 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
               const SizedBox(height: 10),
               Text(
                 '✓ Minimum of 8 characters',
-                style: TextStyle(color: _isLengthValid ? Colors.green : Colors.red),
+                style: TextStyle(
+                    color: _isLengthValid ? Colors.green : Colors.red),
               ),
               Text(
                 '✓ Uppercase, lowercase letters and one number',
-                style: TextStyle(color: _isComplexityValid ? Colors.green : Colors.red),
+                style: TextStyle(
+                    color: _isComplexityValid ? Colors.green : Colors.red),
               ),
               const SizedBox(height: 20),
 
@@ -326,9 +374,16 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                   }
                 },
                 child: InputDecorator(
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Date of Birth',
-                    border: OutlineInputBorder(),
+                    labelStyle: TextStyle(color: Color(0xff767676)),
+                    border: customBorder(),
+                    enabledBorder: customBorder(),
+                    focusedBorder: customBorder(),
+                    // border: OutlineInputBorder(
+                    //     borderRadius: BorderRadius.circular(8),
+                    //     gapPadding: 5
+                    // ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -343,25 +398,67 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
               ),
               const SizedBox(height: 10),
               const Text('Get a RFK Member Reward on your birthday.',
-                  style: TextStyle(color: Colors.grey)),
-              const SizedBox(height: 20),
+                  style: TextStyle(color: Colors.grey, fontSize: 12,)),
+
+              // Agreements
+              const SizedBox(height: 40),
+              RichText(
+                text: const TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: 'By continuing, I agree to RFK\'s \n',
+                      style: TextStyle(
+                        color: Color(0xff767676),
+                        fontFamily: 'OC-Regular',
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'Privacy Policy ',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Color(0xff767676),
+                        fontFamily: 'OC-Regular',
+                        fontSize: 16,
+                      ),
+                    ),
+                    TextSpan(
+                      text: ' and ',
+                      style: TextStyle(
+                          color: Color(0xff767676), fontFamily: 'OC-Regular'),
+                    ),
+                    TextSpan(
+                      text: 'Terms of Use. ',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Color(0xff767676),
+                        fontFamily: 'OC-Regular',
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(
+                height: 20,
+              ),
 
               // Register Button
               _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : ElevatedButton(
-                onPressed: _isCodeVerified ? _register : null,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(26),
-                  minimumSize: const Size(double.infinity, 50),
-                  backgroundColor: const Color(0xff3c76ad),
-                  foregroundColor: const Color(0xffffffff),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                child: const Text('Verify and Register'),
-              ),
+                      onPressed: _isCodeVerified ? _register : null,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(26),
+                        minimumSize: const Size(double.infinity, 50),
+                        backgroundColor: const Color(0xff3c76ad),
+                        foregroundColor: const Color(0xffffffff),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text('Create Account'),
+                    ),
             ],
           ),
         ),

@@ -250,19 +250,17 @@ class _BeforeAfterComparisonState extends State<BeforeAfterComparison> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _buildHeader(screenWidth),
-              const SizedBox(height: 20),
-              ..._buildImageComparisons(screenWidth),
-            ],
-          ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildHeader(screenWidth),
+            const SizedBox(height: 20),
+            ..._buildImageComparisons(screenWidth),
+          ],
         ),
       ),
     );

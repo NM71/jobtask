@@ -211,65 +211,12 @@
 //   }
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// -------------------------------------------------------
 
 
 import 'package:flutter/material.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
-import 'package:jobtask/screens/reviews_screen.dart';
+import 'package:jobtask/screens/shop/reviews_screen.dart';
 import 'package:jobtask/utils/custom_buttons/my_button.dart';
 import 'package:jobtask/utils/custom_snackbar.dart';
 import 'package:page_transition/page_transition.dart';
@@ -292,6 +239,7 @@ class ShopNow extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           backgroundColor: Colors.white,
           title: Text('${service.name} Shoes'),
           centerTitle: true,
@@ -334,7 +282,7 @@ class ShopNow extends StatelessWidget {
                   child: Text(
                     service.description,
                     style: TextStyle(fontSize: screenWidth * 0.04),
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.start,
                   ),
                 ),
                 SizedBox(height: 20),
