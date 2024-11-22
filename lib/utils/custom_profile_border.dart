@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
-OutlineInputBorder customBorder() {
+
+OutlineInputBorder customProfileBorder(){
   return OutlineInputBorder(
-    borderRadius: BorderRadius.circular(6),
+    borderRadius: BorderRadius.circular(2),
     gapPadding: 5,
     borderSide: BorderSide(
       width: 1,
-      color: Color(0xff767676),
+      color: Color(0xffCDCDCD),
     ),
   );
 }

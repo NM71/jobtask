@@ -69,7 +69,6 @@ class _SplashScreenState extends State<SplashScreen> {
     // );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,11 +79,17 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             Image.asset(
               'assets/images/rfk_preview.png',
-              height: 100,
-              width: 100,
+              height: 150,
+              width: 150,
             ),
             const SizedBox(height: 20),
-            const Text('WELCOME', style: TextStyle(fontSize: 30,color: Color(0xffffffff), fontWeight: FontWeight.bold),),
+            const Text(
+              'WELCOME!',
+              style: TextStyle(
+                  fontSize: 28,
+                  color: Color(0xffffffff),
+                  fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 30),
             const CircularProgressIndicator(
               color: Color(0xff3c76ad),

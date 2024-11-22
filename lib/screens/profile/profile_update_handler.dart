@@ -33,18 +33,24 @@ class ProfileUpdateHandler {
     final trimmedAddress = addressController.text.trim();
     if (trimmedAddress.isNotEmpty && trimmedAddress != currentUserData?['address']) {
       profileData['address'] = trimmedAddress;
+    } else{
+      profileData['address'] = null;
     }
 
     // Only include shoe_size if it's not empty and different from current
     final trimmedShoeSize = shoeSizeController.text.trim();
     if (trimmedShoeSize.isNotEmpty && trimmedShoeSize != currentUserData?['shoe_size']) {
       profileData['shoe_size'] = trimmedShoeSize;
+    }else{
+      profileData['shoe_size'] = null;
     }
 
     // Only include bio if it's not empty and different from current
     final trimmedBio = bioController.text.trim();
     if (trimmedBio.isNotEmpty && trimmedBio != currentUserData?['bio']) {
       profileData['bio'] = trimmedBio;
+    }else{
+      profileData['bio'] = null;
     }
 
     return profileData;

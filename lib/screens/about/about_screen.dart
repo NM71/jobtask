@@ -162,6 +162,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:jobtask/sample_check.dart';
 import 'package:jobtask/utils/FAB_animated.dart';
+import 'package:jobtask/utils/custom_image_carousel.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:ticker_text/ticker_text.dart';
 
@@ -199,8 +200,24 @@ class AboutScreen extends StatelessWidget {
                   // returnDuration: const Duration(milliseconds: 700),
                   primaryCurve: Curves.linear,
                   returnCurve: Curves.linear,
-                  child: Text("👟👟👟 Expedited fee: \$20 (for qualifying services). This will reduce the turnaround time to one business day if shoes are delivered or dropped off by 5 PM EST. 📮📮📮", style: TextStyle(color: Colors.white),),
+                  child: Text(
+                    "👟👟👟 Expedited fee: \$20 (for qualifying services). This will reduce the turnaround time to one business day if shoes are delivered or dropped off by 5 PM EST. 📮📮📮",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              ImageCarousel(
+                assetImagePaths: [
+                  'assets/images/carousel_images/Rfkicks-Carousel 1.png',
+                  'assets/images/carousel_images/Rfkicks-Carousel 3.png',
+                  'assets/images/carousel_images/Rfkicks-Carousel 2.png',
+                ],
+              ),
+              SizedBox(
+                height: 20,
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
@@ -228,8 +245,8 @@ class AboutScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                 child: Text(
                   'Refresh Kicks is a premium sneaker cleaning and restoration service based in New York City providing quality cleaning to full restorations. We started back in 2019 when we partnered with Lucky Laced Sneaker Boutique, a consignment shop located in Williamsburg, Brooklyn. There, we were able to display our services attracting many customers.',
-                  style:
-                      TextStyle(color: Color(0xff727272), fontSize: bodyFontSize),
+                  style: TextStyle(
+                      color: Color(0xff727272), fontSize: bodyFontSize),
                 ),
               ),
               const SizedBox(height: 15),

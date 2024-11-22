@@ -272,38 +272,18 @@
 //
 //
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//---------------------------------------------------------------
 
 import 'package:flutter/material.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
 import 'package:jobtask/screens/cart/cart_screen.dart';
 import 'package:jobtask/screens/cart/product_description.dart';
+import 'package:jobtask/utils/custom_buttons/my_button.dart';
 import 'package:jobtask/utils/custom_snackbar.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class ServicePage extends StatelessWidget {
   final List<Service> services = [
@@ -326,7 +306,7 @@ class ServicePage extends StatelessWidget {
       '● Lace Swap (if needed)\n● Sole Swap (If needed & sole must be provided)\n● Full Repaint (if needed)\n● Replacement Parts (If needed)',
     ),
     Service(
-      'Kids Shoe',
+      'Kids Special',
       150,
       'assets/images/services_images/kids_service.jpg',
       '● A specialized cleaning service for kids shoes, ensuring they look brand new.',
@@ -378,7 +358,8 @@ class ServicePage extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     // Determine crossAxisCount based on screen width
-    int crossAxisCount = (screenWidth < 600) ? 2 : 3; // Adjusts number of columns
+    int crossAxisCount =
+        (screenWidth < 600) ? 2 : 3; // Adjusts number of columns
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -389,9 +370,46 @@ class ServicePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SectionTitle(title: 'Services'),
+
+              // Auth Button
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Authentication Service", style: TextStyle(fontSize: 14),),
+                          Text("! You need to login on rfkicks.com also to make some features work", style: TextStyle(fontSize: 8, color: Color(0xff3c76ad)),),
+                        ],
+                      ),
+                    ),
+                    MyButton(
+                        text: "Check",
+                        onTap: () async {
+                          const url = 'https://rfkicks.com/authentication/';
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
+                        }),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20,),
+
+
               ServiceGrid(services: services, crossAxisCount: crossAxisCount),
               SectionTitle(title: 'Individual Services'),
-              ServiceGrid(services: individualServices, crossAxisCount: crossAxisCount),
+              ServiceGrid(
+                  services: individualServices, crossAxisCount: crossAxisCount),
             ],
           ),
         ),
@@ -428,7 +446,9 @@ class ServiceGrid extends StatelessWidget {
   final List<Service> services;
   final int crossAxisCount;
 
-  const ServiceGrid({Key? key, required this.services, required this.crossAxisCount}) : super(key: key);
+  const ServiceGrid(
+      {Key? key, required this.services, required this.crossAxisCount})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -437,7 +457,7 @@ class ServiceGrid extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
-        childAspectRatio: 0.70, // Aspect ratio adjusted for responsiveness
+        childAspectRatio: 0.75, // Aspect ratio adjusted for responsiveness
       ),
       itemCount: services.length,
       itemBuilder: (context, index) {
@@ -480,7 +500,7 @@ class ServiceCard extends StatelessWidget {
                 Expanded(
                   child: Image.asset(
                     service.imagePath,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fill,
                   ),
                 ),
                 Row(
@@ -490,13 +510,13 @@ class ServiceCard extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         service.name,
-                        style: TextStyle(fontSize: 15),
+                        style: TextStyle(fontSize: 14),
                       ),
                     ),
                     Text(
                       '\$${service.price}',
                       style: TextStyle(
-                          fontSize: 15,
+                          fontSize: 14,
                           color: Color(0xff3c76ad),
                           fontWeight: FontWeight.bold),
                     ),
@@ -511,12 +531,13 @@ class ServiceCard extends StatelessWidget {
                 height: 40,
                 width: 40,
                 decoration:
-                BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                    BoxDecoration(color: Colors.white, shape: BoxShape.circle),
                 child: IconButton(
                   icon: Icon(Icons.shopping_cart_outlined,
                       size: 24, color: Color(0xff3c76ad)),
                   onPressed: () {
-                    Provider.of<CartProvider>(context, listen: false).addToCart(service);
+                    Provider.of<CartProvider>(context, listen: false)
+                        .addToCart(service);
                     CustomSnackbar.show(
                       context: context,
                       message: '${service.name} added to cart',
@@ -548,6 +569,3 @@ class SectionTitle extends StatelessWidget {
     );
   }
 }
-
-
-

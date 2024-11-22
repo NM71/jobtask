@@ -504,12 +504,18 @@
 
 // -----------------------------------------------------------------------------
 
+// -------------------------------------------------------------------------------
+
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:jobtask/animations/rfkicks_animation.dart';
-import 'package:jobtask/sample_check.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
+import 'package:jobtask/screens/cart/checkout_widget.dart';
+import 'package:jobtask/screens/shop/shop_screen.dart';
+import 'package:jobtask/utils/custom_border.dart';
 import 'package:jobtask/utils/custom_buttons/my_button.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -529,37 +535,43 @@ class CartScreen extends StatelessWidget {
               children: [
                 Text("Cart", style: TextStyle(fontSize: screenWidth * 0.08)),
 
+                // Cart UI
                 // Check if the cart is empty
                 if (cartProvider.cartItems.isEmpty) ...[
                   Expanded(
                     child: Center(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            'assets/images/cart_image.png',
-                            height: screenWidth * 0.25, // Responsive height
+                          Column(
+                            children: [
+                              Image.asset(
+                                'assets/images/cart_image.png',
+                                height: screenWidth * 0.15,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'Your Cart is empty.',
+                                style: TextStyle(fontSize: screenWidth * 0.04),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                textAlign: TextAlign.center,
+                                'When you add products, they\'ll\nappear here.',
+                              ),
+                            ],
                           ),
-                          SizedBox(height: 16),
-                          Text(
-                            'Your Cart is empty.',
-                            style: TextStyle(fontSize: screenWidth * 0.05),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'When you add products, they\'ll appear here.',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          SizedBox(height: 24),
                           MyButton(
                             text: "Shop Now",
                             onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) => RfkicksAnimation(targetScreen: CartScreen(),),
-                              //   ),
-                              // );
+                              Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.leftToRight,
+                                  child: ServicePage(),
+                                ),
+                              );
                             },
                           ),
                         ],
@@ -576,7 +588,8 @@ class CartScreen extends StatelessWidget {
                         return CartItemWidget(
                           cartItem: cartItem,
                           onQuantityChanged: (newQuantity) {
-                            cartProvider.updateQuantity(cartItem.service, newQuantity);
+                            cartProvider.updateQuantity(
+                                cartItem.service, newQuantity);
                           },
                           onRemove: () {
                             cartProvider.removeFromCart(cartItem.service);
@@ -592,7 +605,36 @@ class CartScreen extends StatelessWidget {
                   SizedBox(height: 8),
                   _buildEstimatedTotalRow(screenWidth, cartProvider),
                   SizedBox(height: 20),
-                  MyButton(text: "Checkout", onTap: () {}),
+                  MyButton(
+                    text: "Checkout",
+                    onTap: () {
+                      // showCheckoutBottomSheet(context);
+                      // showModalBottomSheet(
+                      //   context: context,
+                      //   // isScrollControlled: true,
+                      //   builder: (context) => CheckoutFlow(),
+                      // );
+
+                      // showModalBottomSheet(
+                      //   context: context,
+                      //   isDismissible: true,
+                      //   isScrollControlled: true,
+                      //   builder: (context) => ConstrainedBox(
+                      //     constraints: BoxConstraints(
+                      //       maxHeight: MediaQuery.of(context).size.height * 0.9,
+                      //     ),
+                      //     child: CheckoutFlow(),
+                      //   ),
+                      // );
+
+                      showModalBottomSheet(
+                        context: context,
+                        isDismissible: true,
+                        // isScrollControlled: true,
+                        builder: (context) => CheckoutFlow(),
+                      );
+                    },
+                  ),
                 ],
               ],
             ),
@@ -634,24 +676,25 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEstimatedTotalRow(double screenWidth, CartProvider cartProvider) {
+  Widget _buildEstimatedTotalRow(
+      double screenWidth, CartProvider cartProvider) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           "Estimated Total",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.045),
+          style: TextStyle(fontSize: screenWidth * 0.045),
         ),
         Text(
           "US\$${cartProvider.getTotalPrice().toStringAsFixed(2)} + Tax",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWidth * 0.045),
+          style: TextStyle(fontSize: screenWidth * 0.045),
         ),
       ],
     );
   }
 }
 
-// New widget to handle individual cart item display and quantity
+// Dynamic Date
 class CartItemWidget extends StatelessWidget {
   final CartItem cartItem;
   final Function(int) onQuantityChanged;
@@ -667,6 +710,15 @@ class CartItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+
+    // Get today's date and date three days later
+    final DateTime today = DateTime.now();
+    final DateTime threeDaysLater = today.add(Duration(days: 3));
+
+    // Format the dates as "Wed, 11 May"
+    final String todayFormatted = DateFormat('EEE, dd MMM').format(today);
+    final String threeDaysLaterFormatted =
+        DateFormat('EEE, dd MMM').format(threeDaysLater);
 
     return Card(
       color: Colors.white,
@@ -698,7 +750,9 @@ class CartItemWidget extends StatelessWidget {
                       SizedBox(height: 5),
                       Text(
                         cartItem.service.description,
-                        style: TextStyle(fontSize: screenWidth * 0.035, color: Color(0xff989898)),
+                        style: TextStyle(
+                            fontSize: screenWidth * 0.035,
+                            color: Color(0xff989898)),
                       ),
                       SizedBox(height: 10),
                     ],
@@ -716,7 +770,8 @@ class CartItemWidget extends StatelessWidget {
                     }
                   },
                 ),
-                Text('${cartItem.quantity}', style: TextStyle(fontSize: screenWidth * 0.035)),
+                Text('${cartItem.quantity}',
+                    style: TextStyle(fontSize: screenWidth * 0.035)),
                 IconButton(
                   icon: Icon(Icons.add_circle_outline),
                   onPressed: () {
@@ -726,7 +781,8 @@ class CartItemWidget extends StatelessWidget {
                 Spacer(),
                 Text(
                   "\$${cartItem.service.price.toStringAsFixed(2)}",
-                  style: TextStyle(color: Color(0xff3c76ad), fontSize: screenWidth * 0.035),
+                  style: TextStyle(
+                      color: Color(0xff3c76ad), fontSize: screenWidth * 0.035),
                 ),
                 IconButton(
                   icon: Icon(Icons.delete, color: Color(0xff3c76ad)),
@@ -734,16 +790,251 @@ class CartItemWidget extends StatelessWidget {
                 ),
               ],
             ),
-            Text("Delivery", style: TextStyle(fontSize: screenWidth * 0.035)),
-            Text("Arrives Wed, 11 May", style: TextStyle(fontSize: screenWidth * 0.035)),
-            Text("to Fri, 13 May", style: TextStyle(fontSize: screenWidth * 0.035)),
-            Divider(
-              indent: screenWidth * 0.05,
-              endIndent: screenWidth * 0.05,
+            SizedBox(
+              height: 10,
             ),
+            Text("Delivery", style: TextStyle(fontSize: screenWidth * 0.035)),
+            Text("Arrives $todayFormatted",
+                style: TextStyle(fontSize: screenWidth * 0.035)),
+            Text("to $threeDaysLaterFormatted",
+                style: TextStyle(fontSize: screenWidth * 0.035)),
+            // Divider(
+            //   indent: screenWidth * 0.05,
+            //   endIndent: screenWidth * 0.05,
+            // ),
           ],
         ),
       ),
     );
   }
+}
+//
+// // Checkout BottomSheet
+// void showCheckoutBottomSheet(BuildContext context) {
+//   showModalBottomSheet(
+//     elevation: 0,
+//     backgroundColor: Colors.white,
+//     context: context,
+//     shape: RoundedRectangleBorder(
+//       borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+//     ),
+//     builder: (context) {
+//       return Column(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           Padding(
+//             padding: const EdgeInsets.all(20.0),
+//             child: Text(
+//               "Checkout",
+//               style: TextStyle(
+//                 fontSize: 20,
+//               ),
+//             ),
+//           ),
+//           Divider(
+//             color: Color(0xffe4e4e4),
+//           ),
+//           _buildOptionRow(context, "Delivery", "Select Delivery"),
+//           Divider(
+//             color: Color(0xffe4e4e4),
+//           ),
+//           _buildOptionRow(context, "Payment", "Select Payment"),
+//           Divider(
+//             color: Color(0xffe4e4e4),
+//           ),
+//           SizedBox(height: 40),
+//           Padding(
+//             padding: const EdgeInsets.all(10.0),
+//             child: MyButton(
+//                 text: "Submit Payment",
+//                 onTap: () {
+//                   // Handle submit payment logic
+//                 }),
+//           )
+//         ],
+//       );
+//     },
+//   );
+// }
+//
+
+Widget _buildOptionRow(BuildContext context, String title, String actionText) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: TextStyle(fontSize: 15),
+        ),
+        Row(
+          children: [
+            Text(
+              actionText,
+              style: TextStyle(fontSize: 15, color: Colors.red),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            IconButton(
+                onPressed: () {
+                  // Add this section inside the if block for delivery selection in _buildOptionRow:
+                  // if (title == "Delivery") {
+                  //   showModalBottomSheet(
+                  //     context: context,
+                  //     builder: (BuildContext context) {
+                  //       // Define delivery options
+                  //       List<String> deliveryTypes = [
+                  //         'Standard-Free',
+                  //         'Express-Next Day',
+                  //         'Two-Day Shipping'
+                  //       ];
+                  //       String selectedDeliveryType =
+                  //           deliveryTypes[0]; // Default selected type
+                  //       return StatefulBuilder(
+                  //         builder:
+                  //             (BuildContext context, StateSetter setState) {
+                  //           return Container(
+                  //             color: Colors.white,
+                  //             width: double.infinity,
+                  //             padding: const EdgeInsets.all(10.0),
+                  //             child: Column(
+                  //               crossAxisAlignment: CrossAxisAlignment.start,
+                  //               mainAxisSize: MainAxisSize.min,
+                  //               children: [
+                  //                 Row(
+                  //                   mainAxisAlignment:
+                  //                       MainAxisAlignment.spaceBetween,
+                  //                   children: [
+                  //                     Text(
+                  //                       'Delivery Options',
+                  //                       style: TextStyle(
+                  //                           fontSize: 16,
+                  //                           fontWeight: FontWeight.bold),
+                  //                     ),
+                  //                     IconButton(
+                  //                       onPressed: () => Navigator.pop(context),
+                  //                       icon: Icon(Icons.close),
+                  //                     ),
+                  //                   ],
+                  //                 ),
+                  //                 Divider(color: Color(0xffe4e4e4)),
+                  //                 Text(
+                  //                   "Select Delivery Type:",
+                  //                   style: TextStyle(
+                  //                       fontSize: 14, color: Colors.grey),
+                  //                 ),
+                  //                 SizedBox(height: 10),
+                  //                 // Delivery Type Dropdown
+                  //                 DropdownButtonHideUnderline(
+                  //                   child: DropdownButton2<String>(
+                  //                     isExpanded: true,
+                  //                     items: deliveryTypes
+                  //                         .map((type) =>
+                  //                             DropdownMenuItem<String>(
+                  //                               value: type,
+                  //                               child: Text(type,
+                  //                                   style: TextStyle(
+                  //                                       fontSize: 14)),
+                  //                             ))
+                  //                         .toList(),
+                  //                     value: selectedDeliveryType,
+                  //                     onChanged: (value) {
+                  //                       setState(() {
+                  //                         selectedDeliveryType = value!;
+                  //                       });
+                  //                     },
+                  //                     buttonStyleData: ButtonStyleData(
+                  //                       decoration: BoxDecoration(
+                  //                         borderRadius:
+                  //                             BorderRadius.circular(5),
+                  //                         border:
+                  //                             Border.all(color: Colors.grey),
+                  //                         color: Colors.white,
+                  //                       ),
+                  //                     ),
+                  //                     dropdownStyleData: DropdownStyleData(
+                  //                       decoration: BoxDecoration(
+                  //                         borderRadius:
+                  //                             BorderRadius.circular(5),
+                  //                         color: Colors.white,
+                  //                       ),
+                  //                     ),
+                  //                   ),
+                  //                 ),
+                  //                 SizedBox(height: 20),
+                  //                 Row(
+                  //                   children: [
+                  //                     Text("Enter delivery address"),
+                  //                     TextButton(
+                  //                       onPressed: () {
+                  //                         showModalBottomSheet(
+                  //                           context: context,
+                  //                           builder: (BuildContext context) {
+                  //                             // Define delivery options
+                  //                             return Container(
+                  //                               color: Colors.white,
+                  //                               child: Padding(
+                  //                                 padding: const EdgeInsets.all(10.0),
+                  //                                 child: Column(
+                  //                                   children: [
+                  //
+                  //                                     Row(
+                  //                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //                                       children: [
+                  //                                         Text("Address"),
+                  //                                         IconButton(onPressed: (){
+                  //                                           Navigator.pop(context);
+                  //                                         }, icon: Icon(Icons.remove)),
+                  //                                       ],
+                  //                                     ),
+                  //                                     SizedBox(height: 10,),
+                  //                                     // Delivery Information
+                  //                                     TextFormField(
+                  //                                       decoration:  InputDecoration(
+                  //                                         contentPadding: EdgeInsets.only(left: 10, top: 20, bottom: 20),
+                  //                                         labelText: 'Email',
+                  //                                         labelStyle: TextStyle(color: Color(0xff767676)),
+                  //                                         border: customBorder(),
+                  //                                         enabledBorder: customBorder(),
+                  //                                         focusedBorder: customBorder(),
+                  //                                         // border: OutlineInputBorder(),
+                  //                                       ),
+                  //                                     ),
+                  //                                   ],
+                  //                                 ),
+                  //                               ),
+                  //                             );
+                  //                           },
+                  //                         );
+                  //                       },
+                  //                       child: Text(
+                  //                         "Edit",
+                  //                         style: TextStyle(
+                  //                           decoration: TextDecoration.underline
+                  //                         ),
+                  //                       ),
+                  //                     ),
+                  //                   ],
+                  //                 ),
+                  //                 SizedBox(height: 20),
+                  //                 MyButton(
+                  //                     text: "Confirm Selection", onTap: () {}),
+                  //
+                  //               ],
+                  //             ),
+                  //           );
+                  //         },
+                  //       );
+                  //     },
+                  //   );
+                  // }
+                },
+                icon: Icon(Icons.add, color: Colors.black)),
+          ],
+        ),
+      ],
+    ),
+  );
 }

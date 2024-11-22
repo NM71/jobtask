@@ -11,15 +11,6 @@ import 'package:jobtask/screens/shop/shop_screen.dart';
 import 'package:jobtask/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 
-// void main() {
-//   runApp(
-//       DevicePreview(builder: (BuildContext context) => MyApp()));
-// }
-
-// void main() {
-//   runApp(MyApp());
-// }
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   CachedNetworkImage.logLevel = CacheManagerLogLevel.verbose;
@@ -33,7 +24,6 @@ void main() {
   );
 }
 
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -43,8 +33,8 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'RFK Member Registration',
-      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Sofia-Pro'),
+      title: 'RFKicks',
+      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Outfit'),
       home: SplashScreen(),
       routes: {
         '/email': (context) => EmailInputScreen(),
@@ -57,3 +47,29 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// void main() {
+//   runApp(
+//       DevicePreview(builder: (BuildContext context) => MyApp()));
+// }
+
+// void main() {
+//   runApp(MyApp());
+// }

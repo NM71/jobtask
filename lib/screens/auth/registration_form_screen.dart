@@ -1,4 +1,7 @@
+// Notifications and Terms and Conditions remaining
+
 import 'dart:async';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:jobtask/animations/rfkicks_animation.dart';
 import 'package:jobtask/screens/auth/sign_in_screen.dart';
@@ -81,8 +84,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
         Navigator.of(context).pushReplacement(
           // MaterialPageRoute(builder: (context) => SignInScreen()),
           PageTransition(
-              child:
-              RfkicksAnimation(targetScreen: SignInScreen()),
+              child: RfkicksAnimation(targetScreen: SignInScreen()),
               type: PageTransitionType.rightToLeft),
         );
       } catch (e) {
@@ -194,33 +196,59 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
               ),
               const SizedBox(height: 15),
               const Text("Now let's make you a RFK Member.",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w400)),
+              const SizedBox(height: 20),
+
+              // Verification code RichText
+              RichText(
+                // textAlign: TextAlign.center,
+                text: TextSpan(
+                  text: 'We’ve sent a code to\n',
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Outfit'),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: '${widget.email}  ',
+                      style: TextStyle(color: Color(0xff767676)),
+                    ),
+
+                    // edit registering email
+                    TextSpan(
+                        text: 'Edit',
+                        style: TextStyle(
+                          fontSize: 16,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.pop(context);
+                          })
+                  ],
+                ),
+              ),
+
+
               const SizedBox(height: 20),
 
               // Verification Code Field
               TextFormField(
                 controller: _codeController,
                 decoration: InputDecoration(
-                  labelText: 'Verification Code',
+                  labelText: 'Code',
                   labelStyle: TextStyle(color: Color(0xff767676)),
                   border: customBorder(),
                   enabledBorder: customBorder(),
                   focusedBorder: customBorder(),
-                  // border: OutlineInputBorder(
-                  //     borderRadius: BorderRadius.circular(8),
-                  //     gapPadding: 5
-                  // ),
-                  // suffixIcon: IconButton(
-                  //   icon: const Icon(Icons.refresh),
-                  //   onPressed: _isResendAvailable ? _resendCode : null,
-                  // ),
                   suffixIcon: Container(
                     margin: EdgeInsets.only(right: 10.0),
                     padding: EdgeInsets.all(8.0),
                     child: GestureDetector(
                       onTap: _isResendAvailable ? _resendCode : null,
                       child: Image.asset(
-                        "assets/icons/reload_icon.png",
+                        "assets/icons/ArrowsClockwise.png",
                         height: 5,
                         width: 5,
                       ),
@@ -228,7 +256,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                   ),
                 ),
                 keyboardType: TextInputType.number,
-                enabled: !_isCodeVerified, // Disable if code is verified
+                enabled: !_isCodeVerified,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the verification code';
@@ -243,7 +271,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
               Text(
                 _isResendAvailable
                     ? 'You can resend the code'
-                    : 'Resend available in $_timerDuration seconds',
+                    : 'Resend in $_timerDuration',
                 style: const TextStyle(color: Colors.grey),
                 textAlign: TextAlign.right,
               ),
@@ -305,6 +333,8 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
               TextFormField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
+                obscuringCharacter: '●',
+                style: TextStyle(fontSize: 16),
                 decoration: InputDecoration(
                   labelText: 'Password',
                   labelStyle: TextStyle(color: Color(0xff767676)),
@@ -312,9 +342,12 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                   enabledBorder: customBorder(),
                   focusedBorder: customBorder(),
                   suffixIcon: IconButton(
-                    icon: Icon(_obscurePassword
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined, color: Colors.black,),
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: Colors.black,
+                    ),
                     onPressed: () {
                       setState(() {
                         _obscurePassword = !_obscurePassword;
@@ -347,16 +380,23 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
               ),
               const SizedBox(height: 10),
               Text(
-                '✓ Minimum of 8 characters',
+                _isLengthValid
+                    ? '✓ Minimum of 8 characters'
+                    : 'X Minimum of 8 characters',
                 style: TextStyle(
-                    color: _isLengthValid ? Colors.green : Colors.red),
+                    color:
+                        _isLengthValid ? Color(0xff32862B) : Color(0xff767676)),
               ),
               Text(
-                '✓ Uppercase, lowercase letters and one number',
+                _isComplexityValid
+                    ? '✓ Uppercase, lowercase letters and one number'
+                    : 'X Uppercase, lowercase letters and one number',
                 style: TextStyle(
-                    color: _isComplexityValid ? Colors.green : Colors.red),
+                    color: _isComplexityValid
+                        ? Color(0xff32862B)
+                        : Color(0xff767676)),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
               // Date of Birth Picker
               InkWell(
@@ -391,52 +431,75 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                       Text(_dateOfBirth == null
                           ? 'Date of Birth'
                           : '${_dateOfBirth!.day} ${_getMonthName(_dateOfBirth!.month)} ${_dateOfBirth!.year}'),
-                      const Icon(Icons.calendar_today),
+                      Image.asset('assets/icons/CalendarBlank.png'),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 10),
               const Text('Get a RFK Member Reward on your birthday.',
-                  style: TextStyle(color: Colors.grey, fontSize: 12,)),
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  )),
 
               // Agreements
               const SizedBox(height: 40),
-              RichText(
-                text: const TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: 'By continuing, I agree to RFK\'s \n',
-                      style: TextStyle(
-                        color: Color(0xff767676),
-                        fontFamily: 'OC-Regular',
+
+              // terms and conditions
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Checkbox(
+                      value: false,
+                      onChanged: (value) {
+                        print(value);
+                      }
+                  ),
+                  Expanded(
+                    child: RichText(
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      text: const TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: 'I agree to RFK\'s ',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'Outfit',
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'Privacy Policy ',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              color: Colors.black,
+                              fontFamily: 'Outfit',
+                              fontSize: 16,
+                            ),
+                          ),
+                          TextSpan(
+                            text: ' and\n',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontFamily: 'Outfit'
+                            ),
+                          ),
+                          TextSpan(
+                            text: 'Terms of Use. ',
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              color: Colors.black,
+                              fontFamily: 'Outfit',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    TextSpan(
-                      text: 'Privacy Policy ',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Color(0xff767676),
-                        fontFamily: 'OC-Regular',
-                        fontSize: 16,
-                      ),
-                    ),
-                    TextSpan(
-                      text: ' and ',
-                      style: TextStyle(
-                          color: Color(0xff767676), fontFamily: 'OC-Regular'),
-                    ),
-                    TextSpan(
-                      text: 'Terms of Use. ',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Color(0xff767676),
-                        fontFamily: 'OC-Regular',
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
 
               SizedBox(
@@ -449,7 +512,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                   : ElevatedButton(
                       onPressed: _isCodeVerified ? _register : null,
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(26),
+                        padding: const EdgeInsets.all(16),
                         minimumSize: const Size(double.infinity, 50),
                         backgroundColor: const Color(0xff3c76ad),
                         foregroundColor: const Color(0xffffffff),

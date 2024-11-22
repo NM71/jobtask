@@ -524,8 +524,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               child: Text(
                                 "Your satisfaction is 100% guaranteed at ReFresh Kicks. We take our time with each and every pair of shoes delivered to us. We thoroughly inspect the kicks after each job to ensure completion. If by any chance we are not satisfied with the service, we redo it until it meets our standards. This ensures that once your kicks are back in your hands, there are no complaints, just a huge smile.",
                                 style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.width * 0.04,
-                                  color: Colors.black54,
+                                  fontSize: MediaQuery.of(context).size.width * 0.03,
+                                  color: Color(0xff767676),
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -538,7 +538,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -587,7 +587,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 10.0),
                   child: Image.asset(
-                    'assets/icons/search_icon.png',
+                    'assets/icons/MagnifyingGlass.png',
                     height: 25,
                     width: 25,
                   ),
@@ -652,22 +652,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               backgroundColor: Colors.white,
-              icon: _buildIcon('assets/icons/home_icon.png', 0),
+              icon: _buildIcon('assets/icons/HouseSimple.png', 0),
               label: 'Home',
             ),
             BottomNavigationBarItem(
               backgroundColor: Colors.white,
-              icon: _buildIcon('assets/images/quickSearch_icon.png', 1),
+              icon: _buildIcon('assets/icons/ListMagnifyingGlass.png', 1),
               label: 'Shop',
             ),
             BottomNavigationBarItem(
               backgroundColor: Colors.white,
-              icon: _buildIcon('assets/icons/cart_icon.png', 2),
+              icon: _buildIcon('assets/icons/cart.png', 2),
               label: 'Cart',
             ),
             BottomNavigationBarItem(
               backgroundColor: Colors.white,
-              icon: _buildIcon('assets/icons/profile_icon1.png', 3),
+              icon: _buildIcon('assets/icons/User.png', 3),
               label: 'Profile',
             ),
           ],

@@ -526,9 +526,6 @@
 
 // ---------------------------------------------------------------------
 
-
-
-
 // Working
 // import 'dart:convert';
 // import 'dart:io';
@@ -947,54 +944,6 @@
 //     // }
 //   }
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // // -----------------------------------------
 // import 'dart:convert';
@@ -1476,57 +1425,14 @@
 //   }
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jobtask/screens/profile/profile_update_handler.dart';
 import 'package:jobtask/screens/profile/settings_screen.dart';
 import 'package:jobtask/services/api_service.dart';
-import 'package:jobtask/startup_screen.dart';
-import 'package:jobtask/utils/custom_border.dart';
 import 'package:jobtask/utils/custom_buttons/icon_text_button.dart';
+import 'package:jobtask/utils/custom_profile_border.dart';
 import 'dart:io';
 
 import 'package:jobtask/utils/custom_snackbar.dart';
@@ -1576,7 +1482,8 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> _updateProfilePicture(BuildContext context) async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _selectedProfilePicture = File(pickedFile.path);
@@ -1589,122 +1496,154 @@ class _UserProfileState extends State<UserProfile> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: isLoading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xff3c76ad),))
+          ? const Center(
+              child: CircularProgressIndicator(
+              color: Color(0xff3c76ad),
+            ))
           : error != null
-          ? Center(child: Text('Error: $error'))
-          : Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // Profile Picture
-          Padding(
-            padding: const EdgeInsets.only(top: 40.0, bottom: 15),
-            child: GestureDetector(
-              // onTap: () => _updateProfilePicture(context),
-              onTap: () {},
-              child: Container(
-                height: 100,
-                width: 100,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xffd9d9d9),
-                  image: _selectedProfilePicture != null
-                      ? DecorationImage(
-                      image: FileImage(_selectedProfilePicture!),
-                      fit: BoxFit.cover)
-                      : userData?['profile_picture'] != null
-                      ? DecorationImage(
-                      image: NetworkImage(userData!['profile_picture']),
-                      fit: BoxFit.cover)
-                      : null,
-                ),
-                child: _selectedProfilePicture == null &&
-                    userData?['profile_picture'] == null
-                    ? const Icon(
-                  Icons.camera_enhance,
-                  size: 40,
-                  color: Colors.white,
-                )
-                    : null,
-              ),
-            ),
-          ),
-
-          // User Name
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Text(
-              userData?['display_name'] ?? 'User Name',
-              style: const TextStyle(fontSize: 25),
-            ),
-          ),
-          SizedBox(height: 10,),
-          // Edit Profile Button
-          OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: Colors.grey)
-            ),
-            onPressed: () => _showEditProfileModal(context),
-            child: const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Text(
-                'Edit Profile',
-                style: TextStyle(fontSize: 18, color: Colors.black),
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 40),
-
-          // Row -> Order History & Settings
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                IconTextButton(
-                  imagePath: 'assets/icons/order_history_icon.png',
-                  text: 'Order History',
-                  textColor: Colors.black,
-                  onPressed: () {},
-                  iconColor: const Color(0xffbababa),
-                ),
-                const SizedBox(
-                  height: 40,
-                  child: VerticalDivider(thickness: 3),
-                ),
-                IconTextButton(
-                  imagePath: 'assets/icons/settings_icon.png',
-                  text: 'Settings',
-                  textColor: Colors.black,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SettingsScreen(
-                          userData: userData,
+              ? Center(child: Text('Error: $error'))
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Profile Picture
+                    Padding(
+                      padding: const EdgeInsets.only(top: 40.0, bottom: 15),
+                      child: GestureDetector(
+                        // onTap: () => _updateProfilePicture(context),
+                        onTap: () {},
+                        child: Container(
+                          height: 84,
+                          width: 84,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color(0xffd9d9d9),
+                            image: _selectedProfilePicture != null
+                                ? DecorationImage(
+                                    image: FileImage(_selectedProfilePicture!),
+                                    fit: BoxFit.cover)
+                                : userData?['profile_picture'] != null
+                                    ? DecorationImage(
+                                        image: NetworkImage(
+                                            userData!['profile_picture']),
+                                        fit: BoxFit.cover)
+                                    : null,
+                          ),
+                          child: _selectedProfilePicture == null &&
+                                  userData?['profile_picture'] == null
+                              ? const Icon(
+                                  Icons.camera_enhance,
+                                  size: 40,
+                                  color: Colors.white,
+                                )
+                              : null,
                         ),
                       ),
-                    );
-                  },
-                  iconColor: const Color(0xffbababa),
+                    ),
+
+                    // User Name
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Text(
+                        userData?['display_name'] ?? 'User Name',
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    // Edit Profile Button
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: Colors.grey)),
+                      onPressed: () => _showEditProfileModal(context),
+                      child: const Padding(
+                        padding: EdgeInsets.all(15.0),
+                        child: Text(
+                          'Edit Profile',
+                          style: TextStyle(fontSize: 16, color: Colors.black),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    // Row -> Order History & Settings
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          IconTextButton(
+                            imagePath: 'assets/icons/OrderHistory.png',
+                            text: 'Order History',
+                            textStyle: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400),
+                            onPressed: () {},
+                            iconColor: const Color(0xffbababa),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                            child: VerticalDivider(thickness: 3),
+                          ),
+                          IconTextButton(
+                            imagePath: 'assets/icons/Settings.png',
+                            text: 'Settings',
+                            textStyle: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SettingsScreen(
+                                    userData: userData,
+                                  ),
+                                ),
+                              );
+                            },
+                            iconColor: const Color(0xffbababa),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // horizontal divider
+                    Divider(
+                      color: Color(0xfff6f6f6),
+                      thickness: 8,
+                    ),
+
+                    Spacer(),
+                    // Member Since
+                    Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(vertical: 19),
+                        decoration: BoxDecoration(color: Color(0xfff6f6f6)),
+                        child: Text(
+                            style: TextStyle(
+                                fontSize: 12, color: Color(0xff767676)),
+                            textAlign: TextAlign.center,
+                            'Member Since ${userData?['registered']?.split('-')[0] ?? 'N/A'}')),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 
+
+  // Edit Profile Modal BottomSheet
   Future<void> _showEditProfileModal(BuildContext context) async {
     final TextEditingController displayNameController =
-    TextEditingController(text: userData?['display_name']);
+        TextEditingController(text: userData?['display_name']);
     final TextEditingController addressController =
-    TextEditingController(text: userData?['address']);
+        TextEditingController(text: userData?['address']);
     final TextEditingController bioController =
-    TextEditingController(text: userData?['bio']);
+        TextEditingController(text: userData?['bio']);
     final TextEditingController shoeSizeController =
-    TextEditingController(text: userData?['shoe_size']);
+        TextEditingController(text: userData?['shoe_size']);
     const int maxBioCharacters = 150;
 
     final result = await showModalBottomSheet<bool>(
@@ -1717,7 +1656,7 @@ class _UserProfileState extends State<UserProfile> {
             color: Colors.white,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
-          height: MediaQuery.of(context).size.height * 0.9,
+          height: MediaQuery.of(context).size.height * 1,
           padding: EdgeInsets.only(
             top: 16,
             left: 16,
@@ -1745,23 +1684,21 @@ class _UserProfileState extends State<UserProfile> {
                       style: TextStyle(color: Colors.black, fontSize: 16),
                     ),
                   ),
-                  const Text(
-                    "Edit Profile",
-                    style: TextStyle(fontSize: 18),
-                  ),
+
                   TextButton(
                     onPressed: () => Navigator.pop(context, true),
                     child: const Text(
                       "Save",
                       style: TextStyle(
-                        color: Color(0xff3c76ad),
+                        color: Color(0xffBABABA),
                         fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ),
                 ],
               ),
+              SizedBox(height: 20,),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -1776,16 +1713,17 @@ class _UserProfileState extends State<UserProfile> {
                               backgroundImage: _selectedProfilePicture != null
                                   ? FileImage(_selectedProfilePicture!)
                                   : userData?['profile_picture'] != null
-                                  ? NetworkImage(userData!['profile_picture'])
-                              as ImageProvider
-                                  : null,
+                                      ? NetworkImage(
+                                              userData!['profile_picture'])
+                                          as ImageProvider
+                                      : null,
                               child: (_selectedProfilePicture == null &&
-                                  userData?['profile_picture'] == null)
+                                      userData?['profile_picture'] == null)
                                   ? const Icon(
-                                Icons.person,
-                                size: 50,
-                                color: Colors.white,
-                              )
+                                      Icons.person,
+                                      size: 50,
+                                      color: Colors.white,
+                                    )
                                   : null,
                             ),
                             Positioned(
@@ -1800,23 +1738,26 @@ class _UserProfileState extends State<UserProfile> {
                                     size: 18,
                                     color: Colors.white,
                                   ),
-                                  onPressed: () => _updateProfilePicture(context),
+                                  onPressed: () =>
+                                      _updateProfilePicture(context),
                                 ),
                               ),
                             ),
                           ],
                         ),
                       ),
+                      SizedBox(height: 5,),
+                      Center(child: Text("Edit", style: TextStyle(fontSize: 10),)),
                       const SizedBox(height: 24),
                       _buildEditField(
-                        "Display Name",
+                        "Name",
                         displayNameController,
                         "Enter your display name",
                       ),
                       _buildEditField(
-                        "Address",
+                        "Hometown",
                         addressController,
-                        "Enter your address",
+                        "Town/City, Country/Region",
                       ),
                       _buildEditField(
                         "Shoe Size",
@@ -1827,8 +1768,8 @@ class _UserProfileState extends State<UserProfile> {
                       const Text(
                         'Bio',
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -1839,10 +1780,13 @@ class _UserProfileState extends State<UserProfile> {
                         decoration: InputDecoration(
                           hintText: 'Tell us about yourself',
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(2),
+                            gapPadding: 5,
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: Color(0xffCDCDCD),
+                            ),
                           ),
-                          filled: true,
-                          fillColor: Colors.grey[50],
                         ),
                       ),
                     ],
@@ -1869,7 +1813,8 @@ class _UserProfileState extends State<UserProfile> {
           );
 
           if (profileData.isNotEmpty) {
-            final success = await ApiService.updateUserProfile(token, profileData);
+            final success =
+                await ApiService.updateUserProfile(token, profileData);
 
             if (success && mounted) {
               // ScaffoldMessenger.of(context).showSnackBar(
@@ -1907,11 +1852,12 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
+  // Edit profile custom components
   Widget _buildEditField(
-      String label,
-      TextEditingController controller,
-      String hintText,
-      ) {
+    String label,
+    TextEditingController controller,
+    String hintText,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -1920,10 +1866,9 @@ class _UserProfileState extends State<UserProfile> {
           Text(
             label,
             style: const TextStyle(
-              fontSize: 16,
-              // fontWeight: FontWeight.bold,
-              color: Colors.grey
-            ),
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                color: Color(0xff767676)),
           ),
           const SizedBox(height: 8),
           TextField(
@@ -1931,9 +1876,9 @@ class _UserProfileState extends State<UserProfile> {
             decoration: InputDecoration(
               hintText: hintText,
               labelStyle: TextStyle(color: Color(0xff767676)),
-              border: customBorder(),
-              enabledBorder: customBorder(),
-              focusedBorder: customBorder(),
+              border: customProfileBorder(),
+              enabledBorder: customProfileBorder(),
+              focusedBorder: customProfileBorder(),
               // border: OutlineInputBorder(
               //   // borderRadius: BorderRadius.circular(2),
               // ),

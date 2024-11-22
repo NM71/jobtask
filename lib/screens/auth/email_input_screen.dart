@@ -20,9 +20,9 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
     final emailRegex = RegExp(
         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
     if (value.isEmpty) {
-      return "Please enter your email";
+      return "Required";
     } else if (!emailRegex.hasMatch(value)) {
-      return "Please enter a valid email";
+      return "Enter a valid email";
     }
     return null;
   }
@@ -32,7 +32,7 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       body: Padding(
-        padding: const EdgeInsets.all(40.0),
+        padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -44,17 +44,17 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
                 children: [
                   Image.asset(
                     'assets/images/header2-2-1.png',
-                    height: 50,
-                    width: 50,
+                    height: 37,
+                    width: 55,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 20),
                   const Text(
                     'Enter your email to join us or sign in.',
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w400),
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 40),
               TextFormField(
                 controller: _emailController,
                 decoration:  InputDecoration(
@@ -77,7 +77,8 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
                       text: 'By continuing, I agree to RFK\'s \n',
                       style: TextStyle(
                         color: Color(0xff767676),
-                        fontFamily: 'OC-Regular',
+                        fontFamily: 'Outfit',
+                        fontSize: 16
                       ),
                     ),
                     TextSpan(
@@ -85,21 +86,21 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
                       style: TextStyle(
                         decoration: TextDecoration.underline,
                         color: Color(0xff767676),
-                        fontFamily: 'OC-Regular',
+                        fontFamily: 'Outfit',
                         fontSize: 16,
                       ),
                     ),
                     TextSpan(
                       text: ' and ',
                       style: TextStyle(
-                          color: Color(0xff767676), fontFamily: 'OC-Regular'),
+                          color: Color(0xff767676), fontFamily: 'Outfit', fontSize: 16),
                     ),
                     TextSpan(
                       text: 'Terms of Use. ',
                       style: TextStyle(
                         decoration: TextDecoration.underline,
                         color: Color(0xff767676),
-                        fontFamily: 'OC-Regular',
+                        fontFamily: 'Outfit',
                         fontSize: 16,
                       ),
                     ),
@@ -109,12 +110,12 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
               const SizedBox(height: 40),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(26),
+                  padding: const EdgeInsets.all(16),
                   minimumSize: const Size(double.infinity, 50),
                   backgroundColor: const Color(0xff3c76ad),
                   foregroundColor: const Color(0xffffffff),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                 ),
                 onPressed: _isLoading ? null : () async {
@@ -161,7 +162,7 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
                     strokeWidth: 2.0,
                   ),
                 )
-                    : const Text('Next', style: TextStyle(fontSize: 16),),
+                    : const Text('Next', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
               ),
             ],
           ),

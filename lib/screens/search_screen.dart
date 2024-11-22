@@ -120,33 +120,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -249,6 +222,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         elevation: 0,
         backgroundColor: Colors.white,
         title: const Text(
@@ -415,6 +389,7 @@ class ServiceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
+      color: Colors.white,
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -467,6 +442,7 @@ class ServiceCard extends StatelessWidget {
                         child: Text(
                           '\$${service.price.toStringAsFixed(2)}',
                           style: const TextStyle(
+                            fontSize: 16,
                             color: Colors.blue,
                             fontWeight: FontWeight.bold,
                           ),

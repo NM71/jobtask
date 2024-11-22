@@ -98,22 +98,22 @@ class _SignInScreenState extends State<SignInScreen> {
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(40.0),
+        padding: const EdgeInsets.all(30.0),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 40),
               Image.asset(
                 'assets/images/header2-2-1.png',
                 height: 50,
                 width: 50,
               ),
               const SizedBox(height: 15),
-              const Text("Sign In to RFK",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 20),
+              const Text("Sign In to ReFresh Kicks",
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w400)),
+              const SizedBox(height: 40),
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
@@ -135,6 +135,7 @@ class _SignInScreenState extends State<SignInScreen> {
               TextFormField(
                 controller: _passwordController,
                 obscureText: _obscurePassword,
+                obscuringCharacter: '●',
                 decoration: InputDecoration(
                   labelText: 'Password',
                   labelStyle: TextStyle(color: Color(0xff767676)),
@@ -160,7 +161,46 @@ class _SignInScreenState extends State<SignInScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 25),
+
+              const SizedBox(height: 40),
+              RichText(
+                text: const TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: 'By continuing, I agree to RFK\'s \n',
+                      style: TextStyle(
+                          color: Color(0xff767676),
+                          fontFamily: 'Outfit',
+                          fontSize: 16
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'Privacy Policy ',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Color(0xff767676),
+                        fontFamily: 'Outfit',
+                        fontSize: 16,
+                      ),
+                    ),
+                    TextSpan(
+                      text: ' and ',
+                      style: TextStyle(
+                          color: Color(0xff767676), fontFamily: 'Outfit', fontSize: 16),
+                    ),
+                    TextSpan(
+                      text: 'Terms of Use. ',
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Color(0xff767676),
+                        fontFamily: 'Outfit',
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 40),
 
               // Sign In button
               // _isLoading // Show loading indicator if loading
@@ -182,7 +222,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 onPressed:
                     _isLoading ? null : _signIn, // Disable button while loading
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(26),
+                  padding: const EdgeInsets.all(16),
                   minimumSize: const Size(double.infinity, 50),
                   backgroundColor: const Color(0xff3c76ad),
                   foregroundColor: const Color(0xffffffff),
@@ -211,27 +251,31 @@ class _SignInScreenState extends State<SignInScreen> {
                         text: 'Haven\'t joined us? ',
                         style: TextStyle(
                           color: Color(0xff767676),
-                          // fontFamily: 'OC-Regular',
+                          fontFamily: 'Outfit',
                         ),
                       ),
                       TextSpan(
                         text: 'Join now',
                         style: const TextStyle(
                             decoration: TextDecoration.underline,
-                            color: Color(0xff3c76ad),
-                            // fontFamily: 'OC-Regular',
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
+                            color: Colors.black,
+                            fontFamily: 'Outfit',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EmailInputScreen(),
-                              ),
+                            Navigator.of(context).pushReplacement(
+                                PageTransition(child: (EmailInputScreen()), type: PageTransitionType.leftToRight)
                             );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => EmailInputScreen(),
+                            //   ),
+                            // );
                           },
                       ),
+
                     ],
                   ),
                 ),

@@ -61,6 +61,7 @@ class ApiService {
       throw Exception('Error registering user: $e');
     }
   }
+
   static Future<String> signIn(String email, String password) async {
     try {
       final response = await http.post(
@@ -79,6 +80,27 @@ class ApiService {
       throw Exception('Error signing in: $e');
     }
   }
+
+  // admin app
+  static Future<String> adminSignIn(String email, String password) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/sign_in'),
+        body: json.encode({'email': email, 'password': password}),
+        headers: {'Content-Type': 'application/json'},
+      ).timeout(timeoutDuration);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['token'];
+      } else {
+        throw Exception('Failed to sign in: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Error signing in: $e');
+    }
+  }
+
 
   static Future<bool> validateToken(String token) async {
     try {

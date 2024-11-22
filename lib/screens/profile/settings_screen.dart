@@ -464,10 +464,7 @@
 // }
 
 
-
-
-
-
+// -----------------------------------------------------------------------------------
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -496,7 +493,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Confirm Logout'),
-              backgroundColor: const Color(0xffc2c2c2),
+              backgroundColor: const Color(0xccf2f2f2),
               content: const Text('Are you sure you want to log out?'),
               actions: [
                 TextButton(
@@ -541,22 +538,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title,
             style: TextStyle(
               color: isLogout ? Colors.red : Colors.black,
-              fontSize: 16 *
-                  MediaQuery.of(context)
-                      .textScaleFactor, // Responsive text size
+              fontWeight: FontWeight.w400,
+              fontSize: 13.5 *
+                  MediaQuery.textScalerOf(context).scale(1)
             ),
           ),
           subtitle: subtitle != null ? Text(subtitle) : null,
           trailing: isDetails
               ? null
-              : const Icon(Icons.chevron_right, color: Colors.grey),
+              : const Icon(Icons.chevron_right, color: Colors.black),
           onTap: onTap,
         ),
         if (showDivider)
           const Divider(
             height: 1,
-            indent: 16,
-            endIndent: 16,
+            color: Color(0xffE4E4E4),
+            // indent: 16,
+            // endIndent: 16,
           ),
       ],
     );
@@ -584,7 +582,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildSettingsItem(
             isDetails: true,
             title: 'Date of Birth',
-            subtitle: '12/2/95',
+            // subtitle: widget.userData?['date_of_birth'] ?? '12/2/95',
+            subtitle: '${widget.userData?['date_of_birth']?.split(' ')[0] ?? 'N/A'}'
           ),
           _buildSettingsItem(
             title: 'Delivery Information',
@@ -605,7 +604,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           _buildSettingsItem(
-            title: 'Refund Order Policy ✔️',
+            title: 'Refund Order Policy',
             onTap: ()  {
               Navigator.push(
                   context,
@@ -621,36 +620,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           _buildSettingsItem(
-            title: 'FAQ\'S  ✔️',
+            title: 'FAQ\'S ',
             onTap: () {
               // Navigate to Frequently Asked Questions
               Navigator.push(context, PageTransition(child: FAQS(), type: PageTransitionType.rightToLeft));
             },
           ),
           _buildSettingsItem(
-            title: 'Explore Our Website  ✔️',
+            title: 'Explore Our Website ',
             onTap: () async {
-              const url = 'https://rfkicks.com/';
-              if (await canLaunch(url)) {
-                await launch(url);
+              Uri url = Uri.parse('https://rfkicks.com/');
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url);
               } else {
                 throw 'Could not launch $url';
               }
             },
           ),
           _buildSettingsItem(
-            title: 'Terms of Use  ✔️',
+            title: 'Terms of Use ',
             onTap: () async {
-              const url = 'https://rfkicks.com/terms-conditions/';
-              if (await canLaunch(url)) {
-                await launch(url);
+              Uri url = Uri.parse('https://rfkicks.com/terms-conditions/');
+              if (await canLaunchUrl(url)) {
+                await launchUrl(url);
               } else {
                 throw 'Could not launch $url';
               }
             },
           ),
           _buildSettingsItem(
-            title: 'Privacy Policy  ✔️',
+            title: 'Privacy Policy ',
             onTap: () {
               // Navigate to privacy policy
               Navigator.push(
@@ -667,7 +666,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           _buildSettingsItem(
-            title: 'Log Out  ✔️',
+            title: 'Log Out ',
             isLogout: true,
             showDivider: false,
             onTap: _logout,

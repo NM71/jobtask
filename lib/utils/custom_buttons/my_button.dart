@@ -11,9 +11,9 @@ class MyButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       splashColor: Colors.blue.withOpacity(0.3),
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(6),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
         decoration: BoxDecoration(
           color: const Color(0xff3c76ad),
           borderRadius: BorderRadius.circular(8),
@@ -23,7 +23,7 @@ class MyButton extends StatelessWidget {
             text,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 14,
               // fontWeight: FontWeight.bold,
             ),
           ),
