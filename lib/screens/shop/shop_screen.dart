@@ -276,7 +276,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
-import 'package:jobtask/screens/cart/cart_screen.dart';
 import 'package:jobtask/screens/cart/product_description.dart';
 import 'package:jobtask/utils/custom_buttons/my_button.dart';
 import 'package:jobtask/utils/custom_snackbar.dart';
