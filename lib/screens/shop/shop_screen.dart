@@ -393,9 +393,9 @@ class ServicePage extends StatelessWidget {
                     MyButton(
                         text: "Check",
                         onTap: () async {
-                          const url = 'https://rfkicks.com/authentication/';
-                          if (await canLaunch(url)) {
-                            await launch(url);
+                          Uri url = Uri.parse('https://rfkicks.com/authentication/');
+                          if (await canLaunchUrl(url)) {
+                            await launchUrl(url);
                           } else {
                             throw 'Could not launch $url';
                           }

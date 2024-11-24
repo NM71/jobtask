@@ -499,12 +499,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
                   child: const Text('Cancel',
-                      style: TextStyle(color: Colors.black, fontSize: 16)),
+                      style: TextStyle(color: Colors.black, fontSize: 17)),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(true),
                   child: const Text('Logout',
-                      style: TextStyle(color: Color(0xff3c76ad), fontSize: 16)),
+                      style: TextStyle(color: Color(0xff3c76ad), fontSize: 17)),
                 ),
               ],
             );
@@ -534,13 +534,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Column(
       children: [
         ListTile(
-          title: Text(
-            title,
-            style: TextStyle(
-              color: isLogout ? Colors.red : Colors.black,
-              fontWeight: FontWeight.w400,
-              fontSize: 13.5 *
-                  MediaQuery.textScalerOf(context).scale(1)
+          title: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14.0),
+            child: Text(
+              title,
+              style: TextStyle(
+                color: isLogout ? Colors.red : Colors.black,
+                fontWeight: FontWeight.w400,
+                fontSize: 13.5 *
+                    MediaQuery.textScalerOf(context).scale(1)
+              ),
             ),
           ),
           subtitle: subtitle != null ? Text(subtitle) : null,
@@ -573,6 +576,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         // padding: EdgeInsets.symmetric(
         //     vertical: 10, horizontal: 16), // Responsive padding
+
         children: [
           _buildSettingsItem(
             isDetails: true,
