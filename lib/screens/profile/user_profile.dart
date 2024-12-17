@@ -1434,8 +1434,9 @@ import 'package:jobtask/services/api_service.dart';
 import 'package:jobtask/utils/custom_buttons/icon_text_button.dart';
 import 'package:jobtask/utils/custom_profile_border.dart';
 import 'dart:io';
-
 import 'package:jobtask/utils/custom_snackbar.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:shimmer/shimmer.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -1458,8 +1459,12 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> _loadUserProfile() async {
+    if (!mounted) return;
+
     try {
       final token = await storage.read(key: 'auth_token');
+      if (!mounted) return;
+
       if (token == null) {
         setState(() {
           error = 'No authentication token found';
@@ -1469,11 +1474,15 @@ class _UserProfileState extends State<UserProfile> {
       }
 
       final profile = await ApiService.getUserProfile(token);
+      if (!mounted) return;
+
       setState(() {
         userData = profile;
         isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         error = e.toString();
         isLoading = false;
@@ -1491,17 +1500,167 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
+  String _formatDate(String? dateString) {
+    if (dateString == null) return 'N/A';
+
+    final date = DateTime.parse(dateString);
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+
+    return '${months[date.month - 1]} ${date.year}';
+  }
+
+  // Shimmers for the Profile Page
+  Widget _buildShimmerEffect() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // Profile Picture Shimmer
+        Padding(
+          padding: const EdgeInsets.only(top: 40.0, bottom: 15),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: 84,
+              width: 84,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ),
+
+        // Name Shimmer
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              width: 150,
+              height: 24,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 10),
+
+        // Edit Profile Button Shimmer
+        Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            width: 120,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: Colors.grey[300]!),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 40),
+
+        // Order History & Settings Shimmer
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildIconTextShimmer(),
+              const SizedBox(
+                height: 30,
+                child: VerticalDivider(thickness: 3),
+              ),
+              _buildIconTextShimmer(),
+            ],
+          ),
+        ),
+
+        // Divider
+        const Divider(
+          color: Color(0xfff6f6f6),
+          thickness: 8,
+        ),
+
+        const Spacer(),
+
+        // Member Since Shimmer
+        Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 19),
+            color: Colors.white,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIconTextShimmer() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Column(
+        children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            width: 80,
+            height: 12,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(
-              color: Color(0xff3c76ad),
-            ))
+          ? _buildShimmerEffect()
           : error != null
-              ? Center(child: Text('Error: $error'))
+              // ? Center(child: Text('Error: $error'))
+              ? Center(
+                  child: Text(
+                    'Profile could not be loaded, Reload the page ',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -1510,7 +1669,10 @@ class _UserProfileState extends State<UserProfile> {
                       padding: const EdgeInsets.only(top: 40.0, bottom: 15),
                       child: GestureDetector(
                         // onTap: () => _updateProfilePicture(context),
-                        onTap: () {},
+                        onTap: () {
+                          print(
+                              'Profile Picture: ${userData?['profile_picture']}');
+                        },
                         child: Container(
                           height: 84,
                           width: 84,
@@ -1596,14 +1758,22 @@ class _UserProfileState extends State<UserProfile> {
                                 color: Colors.black,
                                 fontWeight: FontWeight.w400),
                             onPressed: () {
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => SettingsScreen(
+                              //       userData: userData,
+                              //     ),
+                              //   ),
+                              // );
+
                               Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SettingsScreen(
-                                    userData: userData,
-                                  ),
-                                ),
-                              );
+                                  context,
+                                  PageTransition(
+                                      child: SettingsScreen(
+                                        userData: userData,
+                                      ),
+                                      type: PageTransitionType.fade));
                             },
                             iconColor: const Color(0xffbababa),
                           ),
@@ -1627,14 +1797,201 @@ class _UserProfileState extends State<UserProfile> {
                             style: TextStyle(
                                 fontSize: 12, color: Color(0xff767676)),
                             textAlign: TextAlign.center,
-                            'Member Since ${userData?['registered']?.split('-')[0] ?? 'N/A'}')),
+                            'Member Since ${_formatDate(userData?['registered'])}')),
+                    // Container(
+                    //     width: double.infinity,
+                    //     padding: EdgeInsets.symmetric(vertical: 19),
+                    //     decoration: BoxDecoration(color: Color(0xfff6f6f6)),
+                    //     child: Text(
+                    //         style: TextStyle(
+                    //             fontSize: 12, color: Color(0xff767676)),
+                    //         textAlign: TextAlign.center,
+                    //         'Member Since ${userData?['registered']?.split('-')[0] ?? 'N/A'}')),
+
+                    // Padding(
+                    //   padding: const EdgeInsets.only(top: 40.0, bottom: 15),
+                    //   child: GestureDetector(
+                    //     onTap: () {},
+                    //     child: Container(
+                    //       height: 84,
+                    //       width: 84,
+                    //       decoration: BoxDecoration(
+                    //         shape: BoxShape.circle,
+                    //         color: const Color(0xffd9d9d9),
+                    //         image: _selectedProfilePicture != null
+                    //             ? DecorationImage(
+                    //             image: FileImage(_selectedProfilePicture!),
+                    //             fit: BoxFit.cover)
+                    //             : userData?['profile_picture'] != null
+                    //             ? DecorationImage(
+                    //             image: NetworkImage(
+                    //                 userData!['profile_picture']),
+                    //             fit: BoxFit.cover)
+                    //             : null,
+                    //       ),
+                    //       child: _selectedProfilePicture == null &&
+                    //           userData?['profile_picture'] == null
+                    //           ? const Icon(
+                    //         Icons.camera_enhance,
+                    //         size: 40,
+                    //         color: Colors.white,
+                    //       )
+                    //           : null,
+                    //     ),
+                    //   ),
+                    // ),
+                    // ... rest of your existing UI code
                   ],
                 ),
     );
   }
 
+// ... keep existing methods (_showEditProfileModal, _buildEditField)
+
+// @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Colors.white,
+//       body: isLoading
+//           ? const Center(
+//               child: CircularProgressIndicator(
+//               color: Color(0xff3c76ad),
+//             ))
+//           : error != null
+//               ? Center(child: Text('Error: $error'))
+//               : Column(
+//                   crossAxisAlignment: CrossAxisAlignment.center,
+//                   children: [
+//                     // Profile Picture
+//                     Padding(
+//                       padding: const EdgeInsets.only(top: 40.0, bottom: 15),
+//                       child: GestureDetector(
+//                         // onTap: () => _updateProfilePicture(context),
+//                         onTap: () {},
+//                         child: Container(
+//                           height: 84,
+//                           width: 84,
+//                           decoration: BoxDecoration(
+//                             shape: BoxShape.circle,
+//                             color: const Color(0xffd9d9d9),
+//                             image: _selectedProfilePicture != null
+//                                 ? DecorationImage(
+//                                     image: FileImage(_selectedProfilePicture!),
+//                                     fit: BoxFit.cover)
+//                                 : userData?['profile_picture'] != null
+//                                     ? DecorationImage(
+//                                         image: NetworkImage(
+//                                             userData!['profile_picture']),
+//                                         fit: BoxFit.cover)
+//                                     : null,
+//                           ),
+//                           child: _selectedProfilePicture == null &&
+//                                   userData?['profile_picture'] == null
+//                               ? const Icon(
+//                                   Icons.camera_enhance,
+//                                   size: 40,
+//                                   color: Colors.white,
+//                                 )
+//                               : null,
+//                         ),
+//                       ),
+//                     ),
+//
+//                     // User Name
+//                     Padding(
+//                       padding: const EdgeInsets.symmetric(vertical: 20),
+//                       child: Text(
+//                         userData?['display_name'] ?? 'User Name',
+//                         style: const TextStyle(
+//                             fontSize: 20, fontWeight: FontWeight.w400),
+//                       ),
+//                     ),
+//                     SizedBox(
+//                       height: 10,
+//                     ),
+//                     // Edit Profile Button
+//                     OutlinedButton(
+//                       style: OutlinedButton.styleFrom(
+//                           side: BorderSide(color: Colors.grey)),
+//                       onPressed: () => _showEditProfileModal(context),
+//                       child: const Padding(
+//                         padding: EdgeInsets.all(15.0),
+//                         child: Text(
+//                           'Edit Profile',
+//                           style: TextStyle(fontSize: 16, color: Colors.black),
+//                         ),
+//                       ),
+//                     ),
+//
+//                     const SizedBox(height: 40),
+//
+//                     // Row -> Order History & Settings
+//                     Padding(
+//                       padding: const EdgeInsets.symmetric(horizontal: 30.0),
+//                       child: Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                         children: [
+//                           IconTextButton(
+//                             imagePath: 'assets/icons/OrderHistory.png',
+//                             text: 'Order History',
+//                             textStyle: TextStyle(
+//                                 fontSize: 12,
+//                                 color: Colors.black,
+//                                 fontWeight: FontWeight.w400),
+//                             onPressed: () {},
+//                             iconColor: const Color(0xffbababa),
+//                           ),
+//                           const SizedBox(
+//                             height: 30,
+//                             child: VerticalDivider(thickness: 3),
+//                           ),
+//                           IconTextButton(
+//                             imagePath: 'assets/icons/Settings.png',
+//                             text: 'Settings',
+//                             textStyle: TextStyle(
+//                                 fontSize: 12,
+//                                 color: Colors.black,
+//                                 fontWeight: FontWeight.w400),
+//                             onPressed: () {
+//                               Navigator.push(
+//                                 context,
+//                                 MaterialPageRoute(
+//                                   builder: (context) => SettingsScreen(
+//                                     userData: userData,
+//                                   ),
+//                                 ),
+//                               );
+//                             },
+//                             iconColor: const Color(0xffbababa),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//
+//                     // horizontal divider
+//                     Divider(
+//                       color: Color(0xfff6f6f6),
+//                       thickness: 8,
+//                     ),
+//
+//                     Spacer(),
+//                     // Member Since
+//                     Container(
+//                         width: double.infinity,
+//                         padding: EdgeInsets.symmetric(vertical: 19),
+//                         decoration: BoxDecoration(color: Color(0xfff6f6f6)),
+//                         child: Text(
+//                             style: TextStyle(
+//                                 fontSize: 12, color: Color(0xff767676)),
+//                             textAlign: TextAlign.center,
+//                             'Member Since ${userData?['registered']?.split('-')[0] ?? 'N/A'}')),
+//                   ],
+//                 ),
+//     );
+//   }
 
   // Edit Profile Modal BottomSheet
+
   Future<void> _showEditProfileModal(BuildContext context) async {
     final TextEditingController displayNameController =
         TextEditingController(text: userData?['display_name']);
@@ -1684,7 +2041,6 @@ class _UserProfileState extends State<UserProfile> {
                       style: TextStyle(color: Colors.black, fontSize: 16),
                     ),
                   ),
-
                   TextButton(
                     onPressed: () => Navigator.pop(context, true),
                     child: const Text(
@@ -1698,7 +2054,9 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                 ],
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -1746,8 +2104,14 @@ class _UserProfileState extends State<UserProfile> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 5,),
-                      Center(child: Text("Edit", style: TextStyle(fontSize: 10),)),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Center(
+                          child: Text(
+                        "Edit",
+                        style: TextStyle(fontSize: 10),
+                      )),
                       const SizedBox(height: 24),
                       _buildEditField(
                         "Name",
@@ -1784,7 +2148,7 @@ class _UserProfileState extends State<UserProfile> {
                             gapPadding: 5,
                             borderSide: BorderSide(
                               width: 1,
-                              color: Color(0xffCDCDCD),
+                              color: Color(0xff767676),
                             ),
                           ),
                         ),
@@ -1879,11 +2243,6 @@ class _UserProfileState extends State<UserProfile> {
               border: customProfileBorder(),
               enabledBorder: customProfileBorder(),
               focusedBorder: customProfileBorder(),
-              // border: OutlineInputBorder(
-              //   // borderRadius: BorderRadius.circular(2),
-              // ),
-              // filled: true,
-              // fillColor: Colors.grey[50],
             ),
           ),
         ],

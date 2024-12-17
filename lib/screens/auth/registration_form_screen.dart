@@ -5,7 +5,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:jobtask/animations/rfkicks_animation.dart';
 import 'package:jobtask/screens/auth/sign_in_screen.dart';
-import 'package:jobtask/screens/dashboard_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jobtask/utils/custom_border.dart';
@@ -27,6 +26,8 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
   final _firstNameController = TextEditingController();
   final _surnameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+  bool _obscureConfirmPassword = true;
 
   DateTime? _dateOfBirth;
   bool _obscurePassword = true;
@@ -64,6 +65,14 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
 
   // User Registration Function
   Future<void> _register() async {
+    // DOB Validation
+    if (_dateOfBirth == null) {
+      CustomSnackbar.show(
+        context: context,
+        message: 'Please select your date of birth',
+      );
+      return;
+    }
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
@@ -82,18 +91,16 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
         await storage.write(key: 'auth_token', value: token);
 
         Navigator.of(context).pushReplacement(
-          // MaterialPageRoute(builder: (context) => SignInScreen()),
           PageTransition(
               child: RfkicksAnimation(targetScreen: SignInScreen()),
               type: PageTransitionType.rightToLeft),
         );
       } catch (e) {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text('Error: ${e.toString()}')),
-        // );
         CustomSnackbar.show(
           context: context,
-          message: 'Error: ${e.toString()}',
+          message: e.toString().contains('already registered')
+              ? 'This email is already registered'
+              : 'Registration failed: ${e.toString()}',
         );
       } finally {
         setState(() {
@@ -102,6 +109,46 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
       }
     }
   }
+
+  // Future<void> _register() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     setState(() {
+  //       _isLoading = true;
+  //     });
+  //     try {
+  //       final userData = {
+  //         'email': widget.email.trim(),
+  //         'firstName': _firstNameController.text,
+  //         'surname': _surnameController.text,
+  //         'password': _passwordController.text.trim(),
+  //         'dateOfBirth': _dateOfBirth!.toIso8601String(),
+  //       };
+  //       final token = await ApiService.registerUser(userData);
+
+  //       const storage = FlutterSecureStorage();
+  //       await storage.write(key: 'auth_token', value: token);
+
+  //       Navigator.of(context).pushReplacement(
+  //         // MaterialPageRoute(builder: (context) => SignInScreen()),
+  //         PageTransition(
+  //             child: RfkicksAnimation(targetScreen: SignInScreen()),
+  //             type: PageTransitionType.rightToLeft),
+  //       );
+  //     } catch (e) {
+  //       // ScaffoldMessenger.of(context).showSnackBar(
+  //       //   SnackBar(content: Text('Error: ${e.toString()}')),
+  //       // );
+  //       CustomSnackbar.show(
+  //         context: context,
+  //         message: 'Error: ${e.toString()}',
+  //       );
+  //     } finally {
+  //       setState(() {
+  //         _isLoading = false;
+  //       });
+  //     }
+  //   }
+  // }
 
   Future<void> _verifyCode() async {
     if (_codeController.text.length == 6 && !_isCodeVerified) {
@@ -166,6 +213,18 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
     }
   }
 
+  // DOB Validation
+  bool _isValidDOB(DateTime date) {
+    final now = DateTime.now();
+    final minAge = 13; // Minimum age requirement
+    final maxAge = 120; // Maximum reasonable age
+
+    final minDate = DateTime(now.year - maxAge);
+    final maxDate = DateTime(now.year - minAge);
+
+    return date.isAfter(minDate) && date.isBefore(maxDate);
+  }
+
   @override
   void dispose() {
     _timer.cancel();
@@ -174,6 +233,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
     _firstNameController.dispose();
     _surnameController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -229,7 +289,6 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                   ],
                 ),
               ),
-
 
               const SizedBox(height: 20),
 
@@ -398,19 +457,71 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
               ),
               const SizedBox(height: 24),
 
+              // Confirm Password Field
+              TextFormField(
+                controller: _confirmPasswordController,
+                obscureText: _obscureConfirmPassword,
+                obscuringCharacter: '●',
+                style: TextStyle(fontSize: 16),
+                decoration: InputDecoration(
+                  labelText: 'Confirm Password',
+                  labelStyle: TextStyle(color: Color(0xff767676)),
+                  border: customBorder(),
+                  enabledBorder: customBorder(),
+                  focusedBorder: customBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureConfirmPassword
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureConfirmPassword = !_obscureConfirmPassword;
+                      });
+                    },
+                  ),
+                ),
+                validator: (value) {
+                  if (value != _passwordController.text) {
+                    return 'Passwords do not match';
+                  }
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 20),
+
               // Date of Birth Picker
               InkWell(
                 onTap: () async {
                   final DateTime? picked = await showDatePicker(
                     context: context,
-                    initialDate: _dateOfBirth ?? DateTime.now(),
-                    firstDate: DateTime(1900),
+                    // initialDate: _dateOfBirth ?? DateTime.now(),
+                    // firstDate: DateTime(1900),
+                    // lastDate: DateTime.now(),
+                    initialDate:
+                        DateTime.now().subtract(Duration(days: 365 * 13)),
+                    firstDate:
+                        DateTime.now().subtract(Duration(days: 365 * 120)),
                     lastDate: DateTime.now(),
                   );
-                  if (picked != null && picked != _dateOfBirth) {
-                    setState(() {
-                      _dateOfBirth = picked;
-                    });
+                  // if (picked != null && picked != _dateOfBirth) {
+                  //   setState(() {
+                  //     _dateOfBirth = picked;
+                  //   });
+                  // }
+                  if (picked != null) {
+                    if (_isValidDOB(picked)) {
+                      setState(() => _dateOfBirth = picked);
+                    } else {
+                      CustomSnackbar.show(
+                        context: context,
+                        message:
+                            'Please enter a valid date of birth (age 13-120)',
+                      );
+                    }
                   }
                 },
                 child: InputDecorator(
@@ -455,8 +566,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                       value: false,
                       onChanged: (value) {
                         print(value);
-                      }
-                  ),
+                      }),
                   Expanded(
                     child: RichText(
                       softWrap: true,
@@ -482,9 +592,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                           TextSpan(
                             text: ' and\n',
                             style: TextStyle(
-                                color: Colors.black,
-                                fontFamily: 'Outfit'
-                            ),
+                                color: Colors.black, fontFamily: 'Outfit'),
                           ),
                           TextSpan(
                             text: 'Terms of Use. ',

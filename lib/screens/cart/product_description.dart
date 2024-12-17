@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:jobtask/screens/shop/shop_now.dart';
 import 'package:jobtask/utils/custom_buttons/my_button.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 
 import '../shop/shop_screen.dart';
 
 class ProductDescription extends StatelessWidget {
   final Service service;
+  final List<Service> allServices;
 
-  const ProductDescription({Key? key, required this.service}) : super(key: key);
+  const ProductDescription(
+      {Key? key, required this.service, required this.allServices})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +28,7 @@ class ProductDescription extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset(service.imagePath,
+            Image.network(service.imagePath,
                 height: 160, width: 160, fit: BoxFit.cover),
             SizedBox(height: 10),
             Row(
@@ -54,28 +58,21 @@ class ProductDescription extends StatelessWidget {
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 20),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     Navigator.push(
-            //         context,
-            //         PageTransition(
-            //             child: ShopNow(shoeSize: 0, service: service,),
-            //             type: PageTransitionType.rightToLeft));
-            //   },
-            //   style: ElevatedButton.styleFrom(
-            //     backgroundColor: Color(0xff3c76ad),
-            //     foregroundColor: Colors.white,
-            //     side: const BorderSide(color: Colors.white24),
-            //   ),
-            //   child: const Text('Shop Now'),
-            // ),
-            MyButton(text: "Shop Now", onTap: () {
-              Navigator.push(
-                  context,
-                  PageTransition(
-                      child: ShopNow(shoeSize: 0, service: service,),
-                      type: PageTransitionType.rightToLeft));
-            })
+            MyButton(
+                text: "Shop Now",
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      PageTransition(
+                          child: ShopNow(
+                            shoeSize: 0,
+                            service: service,
+                            allServices: Provider.of<ServiceProvider>(context,
+                                    listen: false)
+                                .getAllServices(),
+                          ),
+                          type: PageTransitionType.rightToLeft));
+                })
           ],
         ),
       ),

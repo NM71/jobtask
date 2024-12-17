@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:jobtask/animations/rfkicks_animation.dart';
 import 'package:jobtask/screens/auth/email_input_screen.dart';
+import 'package:jobtask/screens/auth/forgot_password_screen.dart';
 import 'package:jobtask/screens/dashboard_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -66,7 +67,6 @@ class _SignInScreenState extends State<SignInScreen> {
         final storage = FlutterSecureStorage();
         await storage.write(key: 'auth_token', value: token);
 
-
         // use of Rfkicks Animation Screen
         Navigator.of(context).pushReplacement(
           // MaterialPageRoute(builder: (context) => DashboardScreen(token: token)),
@@ -76,7 +76,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   RfkicksAnimation(targetScreen: DashboardScreen(token: token)),
               type: PageTransitionType.rightToLeft),
         );
-
       } catch (e) {
         // ScaffoldMessenger.of(context).showSnackBar(
         //   SnackBar(content: Text('Error: ${e.toString()}')),
@@ -161,6 +160,24 @@ class _SignInScreenState extends State<SignInScreen> {
                   return null;
                 },
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ForgotPasswordScreen()),
+                      );
+                    },
+                    child: Text(
+                      'Forgot Password?',
+                      style: TextStyle(color: Color(0xff3c76ad)),
+                    ),
+                  ),
+                ],
+              ),
 
               const SizedBox(height: 40),
               RichText(
@@ -171,8 +188,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       style: TextStyle(
                           color: Color(0xff767676),
                           fontFamily: 'Outfit',
-                          fontSize: 16
-                      ),
+                          fontSize: 16),
                     ),
                     TextSpan(
                       text: 'Privacy Policy ',
@@ -186,7 +202,9 @@ class _SignInScreenState extends State<SignInScreen> {
                     TextSpan(
                       text: ' and ',
                       style: TextStyle(
-                          color: Color(0xff767676), fontFamily: 'Outfit', fontSize: 16),
+                          color: Color(0xff767676),
+                          fontFamily: 'Outfit',
+                          fontSize: 16),
                     ),
                     TextSpan(
                       text: 'Terms of Use. ',
@@ -265,8 +283,9 @@ class _SignInScreenState extends State<SignInScreen> {
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             Navigator.of(context).pushReplacement(
-                                PageTransition(child: (EmailInputScreen()), type: PageTransitionType.leftToRight)
-                            );
+                                PageTransition(
+                                    child: (EmailInputScreen()),
+                                    type: PageTransitionType.leftToRight));
                             // Navigator.push(
                             //   context,
                             //   MaterialPageRoute(
@@ -275,7 +294,6 @@ class _SignInScreenState extends State<SignInScreen> {
                             // );
                           },
                       ),
-
                     ],
                   ),
                 ),

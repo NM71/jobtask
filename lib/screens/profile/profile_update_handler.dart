@@ -21,40 +21,45 @@ class ProfileUpdateHandler {
     }
 
     // Handle profile picture
+    // Handle profile picture as multipart file upload
     if (selectedProfilePicture != null) {
-      final bytes = await selectedProfilePicture.readAsBytes();
-      profileData['profile_picture'] = 'data:image/jpeg;base64,${base64Encode(bytes)}';
-    } else if (currentUserData?['profile_picture'] != null) {
-      // Only include existing profile picture if we're not uploading a new one
-      profileData['profile_picture'] = currentUserData!['profile_picture'];
+      profileData['profile_picture'] = selectedProfilePicture.path;
     }
+    // if (selectedProfilePicture != null) {
+    //   final bytes = await selectedProfilePicture.readAsBytes();
+    //   profileData['profile_picture'] =
+    //       'data:image/jpeg;base64,${base64Encode(bytes)}';
+    // } else if (currentUserData?['profile_picture'] != null) {
+    //   // Only include existing profile picture if we're not uploading a new one
+    //   profileData['profile_picture'] = currentUserData!['profile_picture'];
+    // }
 
     // Only include address if it's not empty and different from current
     final trimmedAddress = addressController.text.trim();
-    if (trimmedAddress.isNotEmpty && trimmedAddress != currentUserData?['address']) {
+    if (trimmedAddress.isNotEmpty &&
+        trimmedAddress != currentUserData?['address']) {
       profileData['address'] = trimmedAddress;
-    } else{
-      profileData['address'] = null;
+    } else {
+      // profileData['address'] = null;
     }
 
     // Only include shoe_size if it's not empty and different from current
     final trimmedShoeSize = shoeSizeController.text.trim();
-    if (trimmedShoeSize.isNotEmpty && trimmedShoeSize != currentUserData?['shoe_size']) {
+    if (trimmedShoeSize.isNotEmpty &&
+        trimmedShoeSize != currentUserData?['shoe_size']) {
       profileData['shoe_size'] = trimmedShoeSize;
-    }else{
-      profileData['shoe_size'] = null;
+    } else {
+      // profileData['shoe_size'] = null;
     }
 
     // Only include bio if it's not empty and different from current
     final trimmedBio = bioController.text.trim();
     if (trimmedBio.isNotEmpty && trimmedBio != currentUserData?['bio']) {
       profileData['bio'] = trimmedBio;
-    }else{
-      profileData['bio'] = null;
+    } else {
+      // profileData['bio'] = null;
     }
 
     return profileData;
   }
 }
-
-

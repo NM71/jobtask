@@ -56,6 +56,16 @@ dependencies:
   carousel_slider: ^5.0.0
   google_fonts: ^6.2.1
   dropdown_button2: ^2.3.9
+  skeletonizer: ^1.4.2
+  typewritertext: ^3.0.9
+  flutter_stripe: ^11.3.0
+  flutter_paypal: ^0.2.1
+  flutter_intro: ^3.4.0
+  flutter_dotenv: ^5.2.1
+  country_picker: ^2.0.27
+  fl_chart: ^0.69.2
+  intl: ^0.19.0
+  connectivity_plus: ^6.1.0
 
 dev_dependencies:
   flutter_test:
@@ -87,6 +97,7 @@ flutter:
     - assets/images/carousel_images/
     - assets/fonts/
     - assets/icons/
+    - .env
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
@@ -117,6 +128,10 @@ flutter:
     - family: Outfit
       fonts:
         - asset: assets/fonts/Outfit-Regular.ttf
+
+    - family: Halvetica
+      fonts:
+        - asset: assets/fonts/HelveticaNowText-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

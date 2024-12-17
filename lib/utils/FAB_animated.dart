@@ -105,15 +105,15 @@ class _FloatingActionAnimationState extends State<FloatingActionAnimation>
   @override
   Widget build(BuildContext context) {
     return AvatarGlow(
-      glowColor: Color(0xff3c76ad),
+      glowColor: Color(0xff9ec1ec),
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
           return FloatingActionButton(
             backgroundColor: Color(0xffffffff),
             shape: RoundedRectangleBorder(
-              side: BorderSide(color: Color(0xff000000)),
-              borderRadius: BorderRadius.circular(10),
+              // side: BorderSide(color: Color(0xff000000)),
+              borderRadius: BorderRadius.circular(6),
             ),
             onPressed: () {
               // Navigator.push(

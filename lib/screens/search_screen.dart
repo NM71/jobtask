@@ -110,16 +110,6 @@
 //   Service(this.name, this.price, this.imagePath);
 // }
 
-
-
-
-
-
-
-
-
-
-
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -185,10 +175,14 @@ class _SearchScreenState extends State<SearchScreen> {
     // Simulate network delay for smooth loading animation
     Future.delayed(const Duration(milliseconds: 500), () {
       final filtered = services.where((service) {
-        final nameMatch = service.name.toLowerCase().contains(query.toLowerCase());
-        final categoryMatch = service.category.toLowerCase().contains(query.toLowerCase());
-        final descriptionMatch = service.description.toLowerCase().contains(query.toLowerCase());
-        final tagsMatch = service.tags.any((tag) => tag.toLowerCase().contains(query.toLowerCase()));
+        final nameMatch =
+            service.name.toLowerCase().contains(query.toLowerCase());
+        final categoryMatch =
+            service.category.toLowerCase().contains(query.toLowerCase());
+        final descriptionMatch =
+            service.description.toLowerCase().contains(query.toLowerCase());
+        final tagsMatch = service.tags
+            .any((tag) => tag.toLowerCase().contains(query.toLowerCase()));
 
         return nameMatch || categoryMatch || descriptionMatch || tagsMatch;
       }).toList();
@@ -204,7 +198,8 @@ class _SearchScreenState extends State<SearchScreen> {
     if (!_searchHistory.contains(query) && query.trim().isNotEmpty) {
       setState(() {
         _searchHistory.insert(0, query); // Add to beginning of list
-        if (_searchHistory.length > 5) { // Limit history to 5 items
+        if (_searchHistory.length > 5) {
+          // Limit history to 5 items
           _searchHistory.removeLast();
         }
       });
@@ -268,12 +263,12 @@ class _SearchScreenState extends State<SearchScreen> {
                   prefixIcon: const Icon(Icons.search, color: Colors.black54),
                   suffixIcon: _searchController.text.isNotEmpty
                       ? IconButton(
-                    icon: const Icon(Icons.clear, color: Colors.black54),
-                    onPressed: () {
-                      _searchController.clear();
-                      _filterServices('');
-                    },
-                  )
+                          icon: const Icon(Icons.clear, color: Colors.black54),
+                          onPressed: () {
+                            _searchController.clear();
+                            _filterServices('');
+                          },
+                        )
                       : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -303,9 +298,10 @@ class _SearchScreenState extends State<SearchScreen> {
                       children: [
                         Text(
                           'Recent Searches',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                       ],
                     ),
@@ -335,34 +331,34 @@ class _SearchScreenState extends State<SearchScreen> {
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : _filteredServices.isEmpty
-                  ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.search_off,
-                      size: 64,
-                      color: Colors.grey[400],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'No services found',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              )
-                  : ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: _filteredServices.length,
-                itemBuilder: (context, index) {
-                  final service = _filteredServices[index];
-                  return ServiceCard(service: service);
-                },
-              ),
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.search_off,
+                                size: 64,
+                                color: Colors.grey[400],
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'No services found',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: _filteredServices.length,
+                          itemBuilder: (context, index) {
+                            final service = _filteredServices[index];
+                            return ServiceCard(service: service);
+                          },
+                        ),
             ),
           ],
         ),
@@ -403,7 +399,8 @@ class ServiceCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(12)),
               child: AspectRatio(
                 aspectRatio: 16 / 9,
                 child: Hero(
@@ -501,11 +498,11 @@ class Service {
   final List<String> tags;
 
   Service(
-      this.name,
-      this.price,
-      this.imagePath,
-      this.category,
-      this.description,
-      this.tags,
-      );
+    this.name,
+    this.price,
+    this.imagePath,
+    this.category,
+    this.description,
+    this.tags,
+  );
 }

@@ -11,10 +11,10 @@ class PrivacyPolicyScreen extends StatelessWidget {
         body: Container(
           decoration: BoxDecoration(
             border: Border.all(
-              width: 2,
+              width: 1,
               color: Color(0xff3c76ad),
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(6),
           ),
           margin: EdgeInsets.all(15),
           padding: EdgeInsets.all(15),
@@ -28,7 +28,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.2,
                   width: MediaQuery.of(context).size.width * 0.5,
                 ),
-                SizedBox(height: 20,),
+                SizedBox(height: 10,),
                 // Introduction
                 RichText(
                   text: TextSpan(

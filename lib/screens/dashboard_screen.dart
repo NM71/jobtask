@@ -303,7 +303,6 @@
 
 // implemented with willPopScope
 import 'package:flutter/material.dart';
-import 'package:jobtask/sample_check.dart';
 import 'package:jobtask/screens/about/about_screen.dart';
 import 'package:jobtask/screens/cart/cart_screen.dart';
 import 'package:jobtask/screens/profile/user_profile.dart';
@@ -488,96 +487,108 @@ class _DashboardScreenState extends State<DashboardScreen> {
           //       child: Image.asset('assets/images/header2-2-1.png')),
           // ),
 
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Container(
-                        color: Colors.white,
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.03,
-                          vertical: MediaQuery.of(context).size.height * 0.02,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/images/satisfied_icon.png",
-                              color: Color(0xff3c76ad),
-                              width: MediaQuery.of(context).size.width * 0.15,
-                              height: MediaQuery.of(context).size.height * 0.1,
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: GestureDetector(
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      color: Colors.white,
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.03,
+                        vertical: MediaQuery.of(context).size.height * 0.02,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/images/satisfied_icon.png",
+                            color: Color(0xff3c76ad),
+                            width: MediaQuery.of(context).size.width * 0.15,
+                            height: MediaQuery.of(context).size.height * 0.1,
+                          ),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.02),
+                          Text(
+                            "Satisfaction Guaranteed!",
+                            style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.05,
+                              fontWeight: FontWeight.bold,
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                            Text(
-                              "Satisfaction Guaranteed!",
+                          ),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.02),
+                          Flexible(
+                            child: Text(
+                              "Your satisfaction is 100% guaranteed at ReFresh Kicks. We take our time with each and every pair of shoes delivered to us. We thoroughly inspect the kicks after each job to ensure completion. If by any chance we are not satisfied with the service, we redo it until it meets our standards. This ensures that once your kicks are back in your hands, there are no complaints, just a huge smile.",
                               style: TextStyle(
-                                fontSize: MediaQuery.of(context).size.width * 0.05,
-                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.03,
+                                color: Color(0xff767676),
                               ),
+                              textAlign: TextAlign.center,
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                            Flexible(
-                              child: Text(
-                                "Your satisfaction is 100% guaranteed at ReFresh Kicks. We take our time with each and every pair of shoes delivered to us. We thoroughly inspect the kicks after each job to ensure completion. If by any chance we are not satisfied with the service, we redo it until it meets our standards. This ensures that once your kicks are back in your hands, there are no complaints, just a huge smile.",
-                                style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.width * 0.03,
-                                  color: Color(0xff767676),
-                                ),
-                                textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.04),
+                          Text(
+                            "You can also find us here.",
+                            style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width * 0.045,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.03),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              // Facebook
+                              _buildSocialIcon(
+                                context,
+                                icon: Icons.facebook,
+                                color: Colors.blue,
+                                url:
+                                    'https://www.facebook.com/refreshkicksnyc/',
                               ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                            Text(
-                              "You can also find us here.",
-                              style: TextStyle(
-                                fontSize: MediaQuery.of(context).size.width * 0.045,
-                                fontWeight: FontWeight.w500,
+                              // Instagram
+                              _buildImageIcon(
+                                context,
+                                asset: 'assets/icons/instagram_icon.png',
+                                url: 'https://www.instagram.com/refresh.kicks/',
                               ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                // Facebook
-                                _buildSocialIcon(
-                                  context,
-                                  icon: Icons.facebook,
-                                  color: Colors.blue,
-                                  url: 'https://www.facebook.com/refreshkicksnyc/',
-                                ),
-                                // Instagram
-                                _buildImageIcon(
-                                  context,
-                                  asset: 'assets/icons/instagram_icon.png',
-                                  url: 'https://www.instagram.com/refresh.kicks/',
-                                ),
-                                // Twitter (X)
-                                _buildImageIcon(
-                                  context,
-                                  asset: 'assets/icons/twitter_icon.png',
-                                  url: 'https://x.com/refreshkicks/',
-                                ),
-                                // TikTok
-                                _buildImageIcon(
-                                  context,
-                                  asset: 'assets/icons/tiktok_icon.png',
-                                  url: 'https://www.tiktok.com/@refreshkicks',
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Image.asset('assets/images/header2-2-1.png'),
-              ),
+                              // Twitter (X)
+                              _buildImageIcon(
+                                context,
+                                asset: 'assets/icons/twitter_icon.png',
+                                url: 'https://x.com/refreshkicks/',
+                              ),
+                              // TikTok
+                              _buildImageIcon(
+                                context,
+                                asset: 'assets/icons/tiktok_icon.png',
+                                url: 'https://www.tiktok.com/@refreshkicks',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+              child: Image.asset('assets/images/header2-2-1.png'),
             ),
+          ),
           backgroundColor: const Color(0xffffffff),
           actions: [
             Padding(
@@ -680,6 +691,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
   Widget _buildIcon(String assetPath, int index) {
     return Image.asset(
       assetPath,
@@ -689,7 +701,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 }
-
 
 // Widget for building social icon buttons
 Widget _buildSocialIcon(BuildContext context,

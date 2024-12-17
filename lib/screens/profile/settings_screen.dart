@@ -463,7 +463,6 @@
 //   }
 // }
 
-
 // -----------------------------------------------------------------------------------
 
 import 'package:flutter/material.dart';
@@ -471,6 +470,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jobtask/screens/about/FAQS.dart';
 import 'package:jobtask/screens/about/order_refund_policy.dart';
 import 'package:jobtask/screens/about/privacy_policy_screen.dart';
+import 'package:jobtask/services/api_service.dart';
 import 'package:jobtask/startup_screen.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -487,6 +487,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final storage = const FlutterSecureStorage();
 
+  // logout function
   Future<void> _logout() async {
     bool confirmLogout = await showDialog<bool>(
           context: context,
@@ -494,6 +495,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             return AlertDialog(
               title: const Text('Confirm Logout'),
               backgroundColor: const Color(0xccf2f2f2),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6)),
               content: const Text('Are you sure you want to log out?'),
               actions: [
                 TextButton(
@@ -501,11 +504,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   child: const Text('Cancel',
                       style: TextStyle(color: Colors.black, fontSize: 17)),
                 ),
-                TextButton(
+                ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('Logout',
-                      style: TextStyle(color: Color(0xff3c76ad), fontSize: 17)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xff3c76ad),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  child: Text('Logout'),
                 ),
+                // TextButton(
+                //   onPressed: () => Navigator.of(context).pop(true),
+                //   child: const Text('Logout',
+                //       style: TextStyle(color: Color(0xff3c76ad), fontSize: 17)),
+                // ),
               ],
             );
           },
@@ -518,6 +532,93 @@ class _SettingsScreenState extends State<SettingsScreen> {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const StartupScreen()),
           (route) => false,
+        );
+      }
+    }
+  }
+
+  // delete account function
+  Future<void> _deleteAccount() async {
+    bool confirmDelete = await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Delete Account'),
+              backgroundColor: const Color(0xccf2f2f2),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6)),
+              content: const Text(
+                  'Are you sure you want to delete your account? This action cannot be undone.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Cancel',
+                      style: TextStyle(color: Colors.black, fontSize: 17)),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  child: Text('Delete'),
+                ),
+                // TextButton(
+                //   onPressed: () => Navigator.of(context).pop(true),
+                //   child: const Text('Delete',
+                //       style: TextStyle(color: Colors.red, fontSize: 17)),
+                // ),
+              ],
+            );
+          },
+        ) ??
+        false;
+
+    if (confirmDelete) {
+      try {
+        // Get the auth token from secure storage
+        final storage = const FlutterSecureStorage();
+        final token = await storage.read(key: 'auth_token');
+
+        if (token == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Authentication token not found')),
+          );
+          return;
+        }
+
+        // Call API to delete account
+        final success = await ApiService.deleteAccount(token);
+
+        if (success) {
+          // Clear the auth token
+          await storage.delete(key: 'auth_token');
+
+          // Navigate to startup screen
+          if (mounted) {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const StartupScreen()),
+              (route) => false,
+            );
+
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Account deleted successfully')),
+            );
+          }
+        } else {
+          // Show error message if deletion failed
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to delete account')),
+          );
+        }
+      } catch (e) {
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
         );
       }
     }
@@ -539,11 +640,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Text(
               title,
               style: TextStyle(
-                color: isLogout ? Colors.red : Colors.black,
-                fontWeight: FontWeight.w400,
-                fontSize: 13.5 *
-                    MediaQuery.textScalerOf(context).scale(1)
-              ),
+                  color: isLogout ? Colors.red : Colors.black,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 13.5 * MediaQuery.textScalerOf(context).scale(1)),
             ),
           ),
           subtitle: subtitle != null ? Text(subtitle) : null,
@@ -578,17 +677,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
         //     vertical: 10, horizontal: 16), // Responsive padding
 
         children: [
-          _buildSettingsItem(
-            isDetails: true,
-            title: 'Email',
-            subtitle: widget.userData?['email'] ?? 'Lorem@mail.com',
+          SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 14.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Email', style: TextStyle(fontSize: 13.5)),
+                Text(widget.userData?['email'] ?? 'Lorem@mail.com'),
+              ],
+            ),
           ),
-          _buildSettingsItem(
-            isDetails: true,
-            title: 'Date of Birth',
-            // subtitle: widget.userData?['date_of_birth'] ?? '12/2/95',
-            subtitle: '${widget.userData?['date_of_birth']?.split(' ')[0] ?? 'N/A'}'
+          Divider(
+            height: 1,
+            color: Color(0xffE4E4E4),
+            // indent: 16,
+            // endIndent: 16,
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 14.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Date of Birth', style: TextStyle(fontSize: 13.5)),
+                Text(
+                    '${widget.userData?['date_of_birth']?.split(' ')[0] ?? 'N/A'}'),
+              ],
+            ),
+          ),
+          Divider(
+            height: 1,
+            color: Color(0xffE4E4E4),
+            // indent: 16,
+            // endIndent: 16,
+          ),
+          // _buildSettingsItem(
+          //   isDetails: true,
+          //   title: 'Date of Birth',
+          //   subtitle: widget.userData?['email'] ?? 'Lorem@mail.com',
+          // ),
+          // _buildSettingsItem(
+          //     isDetails: true,
+          //     title: 'Date of Birth',
+          //     // subtitle: widget.userData?['date_of_birth'] ?? '12/2/95',
+          //     subtitle:
+          //         '${widget.userData?['date_of_birth']?.split(' ')[0] ?? 'N/A'}'),
           _buildSettingsItem(
             title: 'Delivery Information',
             onTap: () {
@@ -609,7 +742,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           _buildSettingsItem(
             title: 'Refund Order Policy',
-            onTap: ()  {
+            onTap: () {
               Navigator.push(
                   context,
                   PageTransition(
@@ -627,7 +760,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: 'FAQ\'S ',
             onTap: () {
               // Navigate to Frequently Asked Questions
-              Navigator.push(context, PageTransition(child: FAQS(), type: PageTransitionType.rightToLeft));
+              Navigator.push(
+                  context,
+                  PageTransition(
+                      child: FAQS(), type: PageTransitionType.rightToLeft));
             },
           ),
           _buildSettingsItem(
@@ -665,9 +801,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           _buildSettingsItem(
             title: 'Delete Account',
-            onTap: () {
-              // Show delete account confirmation
-            },
+            onTap: _deleteAccount,
           ),
           _buildSettingsItem(
             title: 'Log Out ',

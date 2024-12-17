@@ -12,10 +12,10 @@ class FAQS extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            width: 2,
+            width: 1,
             color: Color(0xff3c76ad),
           ),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(6),
         ),
         margin: EdgeInsets.all(15),
         padding: EdgeInsets.all(15),
@@ -32,7 +32,7 @@ class FAQS extends StatelessWidget {
                 width: MediaQuery.of(context).size.width * 0.5,
               ),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               RichText(
                 text: const TextSpan(
@@ -51,64 +51,58 @@ class FAQS extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-
-
               ReusableExpandableCard(
                   title: "How long does each restoration or cleaning take?",
                   content:
-                  "On average, a cleaning may take up to two to three business days to be completed. For more intricate services such as re-glues, re-dyes, re-paints, and sole swaps may take a minimum of a week (in most cases, these services are completed sooner). Please remember these processes can be complex and we want pure perfection."),
+                      "On average, a cleaning may take up to two to three business days to be completed. For more intricate services such as re-glues, re-dyes, re-paints, and sole swaps may take a minimum of a week (in most cases, these services are completed sooner). Please remember these processes can be complex and we want pure perfection."),
               SizedBox(
                 height: 10,
               ),
-
               ReusableExpandableCard(
                   title: "Are the material used on my shoes safe?",
                   content:
-                  "Yes, of course! We proudly utilize eco-friendly products, championing sustainability while enhancing the confidence of footwear enthusiasts with love and care."),
+                      "Yes, of course! We proudly utilize eco-friendly products, championing sustainability while enhancing the confidence of footwear enthusiasts with love and care."),
               SizedBox(
                 height: 10,
               ),
-
               ReusableExpandableCard(
                   title: "Do you provide shoe repair services? ",
                   content:
-                  "Yes, in addition to our cleaning services, we provide expert sneaker repair options. These include regluing, patching holes (for shoes made from canvas or flyknit material), and professional repainting. "),
+                      "Yes, in addition to our cleaning services, we provide expert sneaker repair options. These include regluing, patching holes (for shoes made from canvas or flyknit material), and professional repainting. "),
               SizedBox(
                 height: 10,
               ),
-
               ReusableExpandableCard(
                   title: "What type of shoes do you clean? ",
                   content:
-                  "We clean a wide variety of shoes, including sneakers, dress shoes, boots, and athletic shoes. Our specialized cleaning techniques ensure that your shoes receive the best care, regardless of their material or style."),
+                      "We clean a wide variety of shoes, including sneakers, dress shoes, boots, and athletic shoes. Our specialized cleaning techniques ensure that your shoes receive the best care, regardless of their material or style."),
               SizedBox(
                 height: 10,
               ),
-
               ReusableExpandableCard(
                   title: "How much does Refresh Kicks services costs? ",
                   content:
-                  "We offer four different price tiers along with additional services that may be needed which are listed our services. You may choose your desired option at checkout."),
+                      "We offer four different price tiers along with additional services that may be needed which are listed our services. You may choose your desired option at checkout."),
               SizedBox(
                 height: 10,
               ),
-
               ReusableExpandableCard(
                   title: "How do I order a RFK service? ",
                   content:
-                  "Currently, there are TWO ways that can be possible. You may order via our website www.Rfkicks.com or through our RFK App. Once you’re logged into either or you may carefully browse which services best fit your needs and order. After that, let us take it from there. We will be offering in person drop offs momentarily."),
+                      "Currently, there are TWO ways that can be possible. You may order via our website www.Rfkicks.com or through our RFK App. Once you’re logged into either or you may carefully browse which services best fit your needs and order. After that, let us take it from there. We will be offering in person drop offs momentarily."),
               SizedBox(
                 height: 10,
               ),
-              RichText(text: const TextSpan(
-                text:
-                '\nStill you have any questions? Please contact our team at info@rfkicks.com\n\n',
-                style: TextStyle(
-                  color: Color(0xff767676),
-                  fontFamily: 'OC-Regular',
+              RichText(
+                text: const TextSpan(
+                  text:
+                      '\nStill you have any questions? Please contact our team at info@rfkicks.com\n\n',
+                  style: TextStyle(
+                    color: Color(0xff767676),
+                    fontFamily: 'OC-Regular',
+                  ),
                 ),
-              ),)
-
+              )
             ],
           ),
         ),

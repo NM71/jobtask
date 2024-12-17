@@ -10,17 +10,17 @@ class OrderRefundPolicy extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           border: Border.all(
-            width: 2,
+            width: 1,
             color: Color(0xff3c76ad),
           ),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(6),
         ),
         margin: EdgeInsets.all(15),
         padding: EdgeInsets.all(15),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 20,),
+              SizedBox(height: 10,),
               Image.asset(
                 "assets/images/rfk_preview.png",
                 color: Color(0xff3c76ad),
