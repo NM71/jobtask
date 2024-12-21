@@ -494,7 +494,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Confirm Logout'),
-              backgroundColor: const Color(0xccf2f2f2),
+              backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6)),
               content: const Text('Are you sure you want to log out?'),
@@ -544,7 +544,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Delete Account'),
-              backgroundColor: const Color(0xccf2f2f2),
+              backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(6)),
               content: const Text(
@@ -684,7 +684,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Email', style: TextStyle(fontSize: 13.5)),
-                Text(widget.userData?['email'] ?? 'Lorem@mail.com'),
+                Text(
+                  widget.userData?['email'] ?? 'Lorem@mail.com',
+                  style: TextStyle(color: Color(0xffff821d)),
+                ),
               ],
             ),
           ),
@@ -701,7 +704,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 Text('Date of Birth', style: TextStyle(fontSize: 13.5)),
                 Text(
-                    '${widget.userData?['date_of_birth']?.split(' ')[0] ?? 'N/A'}'),
+                  '${widget.userData?['date_of_birth']?.split(' ')[0] ?? 'N/A'}',
+                  style: TextStyle(color: Color(0xffff821d)),
+                ),
               ],
             ),
           ),

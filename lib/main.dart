@@ -97,6 +97,7 @@ import 'package:jobtask/screens/auth/email_input_screen.dart';
 import 'package:jobtask/screens/auth/sign_in_screen.dart';
 import 'package:jobtask/screens/auth/signin_conformation_screen.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
+import 'package:jobtask/screens/profile/order_history_screen.dart';
 import 'package:jobtask/screens/shop/shop_screen.dart';
 import 'package:jobtask/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -291,6 +292,7 @@ class _MyAppState extends State<MyApp> {
               userName: '',
             ),
         '/shop': (context) => ServicePage(),
+        '/order-history': (context) => OrderHistoryScreen(),
         '/admin-login': (context) => AdminLoginScreen(),
         '/admin-dashboard': (context) => AdminDashboardScreen(),
         '/admin-services': (context) => AdminServicesScreen(),

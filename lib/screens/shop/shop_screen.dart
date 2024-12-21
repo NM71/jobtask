@@ -561,6 +561,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
 import 'package:jobtask/screens/cart/product_description.dart';
@@ -814,9 +815,9 @@ class _ServicePageState extends State<ServicePage> {
             children: [
               SectionTitle(title: 'Services'),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(6),
                   border: Border.all(),
                 ),
                 child: Row(
@@ -831,9 +832,9 @@ class _ServicePageState extends State<ServicePage> {
                             style: TextStyle(fontSize: 12),
                           ),
                           Text(
-                            "! You need to login on rfkicks.com also to make some features work",
+                            "Login on Rfkicks.com to use this feature.",
                             style: TextStyle(
-                                fontSize: 7, color: Color(0xff3c76ad)),
+                                fontSize: 8, color: Color(0xff3c76ad)),
                           ),
                         ],
                       ),
@@ -1124,12 +1125,12 @@ class ServiceCard extends StatelessWidget {
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(2),
-          side: BorderSide(
-            color: Color(0xff3c76ad),
-            width: 1,
-          ),
+          // side: BorderSide(
+          //   color: Color(0xff3c76ad),
+          //   width: 1,
+          // ),
         ),
-        elevation: 0,
+        elevation: 3,
         color: Colors.white,
         child: Stack(
           children: [
@@ -1198,6 +1199,7 @@ class ServiceCard extends StatelessWidget {
                     color: Color(0xff3c76ad),
                   ),
                   onPressed: () {
+                    HapticFeedback.lightImpact();
                     Provider.of<CartProvider>(context, listen: false)
                         .addToCart(service);
                     CustomSnackbar.show(

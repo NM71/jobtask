@@ -215,7 +215,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xccf2f2f2),
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         title: Text(
           'Confirm Logout',

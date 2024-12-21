@@ -109,9 +109,10 @@ class StartupScreen extends StatelessWidget {
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          backgroundColor:
-                                              const Color(0xccf2f2f2),
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                                          backgroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(6)),
                                           content: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [

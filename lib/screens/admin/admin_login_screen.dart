@@ -20,17 +20,17 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            const Positioned.fill(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    opacity: 0.5,
-                    image: AssetImage('assets/images/rfkicks_bg.jpg'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
+            // const Positioned.fill(
+            //   child: DecoratedBox(
+            //     decoration: BoxDecoration(
+            //       image: DecorationImage(
+            //         opacity: 0.5,
+            //         image: AssetImage('assets/images/rfkicks_bg.jpg'),
+            //         fit: BoxFit.cover,
+            //       ),
+            //     ),
+            //   ),
+            // ),
             SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
@@ -132,7 +132,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                               foregroundColor: const Color(0xffffffff),
                               minimumSize: const Size(double.infinity, 50),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(6),
                               ),
                             ),
                             child: _isLoading

@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:jobtask/screens/auth/registration_form_screen.dart';
+import 'package:jobtask/screens/custom_webview_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:jobtask/utils/custom_snackbar.dart';
 
@@ -57,8 +59,9 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
               const SizedBox(height: 40),
               TextFormField(
                 controller: _emailController,
-                decoration:  InputDecoration(
-                  contentPadding: EdgeInsets.only(left: 10, top: 20, bottom: 20),
+                decoration: InputDecoration(
+                  contentPadding:
+                      EdgeInsets.only(left: 10, top: 20, bottom: 20),
                   labelText: 'Email',
                   labelStyle: TextStyle(color: Color(0xff767676)),
                   border: customBorder(),
@@ -71,15 +74,14 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
               ),
               const SizedBox(height: 40),
               RichText(
-                text: const TextSpan(
+                text: TextSpan(
                   children: <TextSpan>[
-                    TextSpan(
+                    const TextSpan(
                       text: 'By continuing, I agree to RFK\'s \n',
                       style: TextStyle(
-                        color: Color(0xff767676),
-                        fontFamily: 'Outfit',
-                        fontSize: 16
-                      ),
+                          color: Color(0xff767676),
+                          fontFamily: 'Outfit',
+                          fontSize: 16),
                     ),
                     TextSpan(
                       text: 'Privacy Policy ',
@@ -89,20 +91,46 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
                         fontFamily: 'Outfit',
                         fontSize: 16,
                       ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CustomWebViewScreen(
+                                url: 'https://rfkicks.com/privacy-policy/',
+                                title: 'Privacy Policy',
+                              ),
+                            ),
+                          );
+                        },
                     ),
-                    TextSpan(
+                    const TextSpan(
                       text: ' and ',
                       style: TextStyle(
-                          color: Color(0xff767676), fontFamily: 'Outfit', fontSize: 16),
+                          color: Color(0xff767676),
+                          fontFamily: 'Outfit',
+                          fontSize: 16),
                     ),
                     TextSpan(
                       text: 'Terms of Use. ',
-                      style: TextStyle(
+                      style: const TextStyle(
                         decoration: TextDecoration.underline,
                         color: Color(0xff767676),
                         fontFamily: 'Outfit',
                         fontSize: 16,
                       ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CustomWebViewScreen(
+                                url: 'https://rfkicks.com/terms-conditions/',
+                                title: 'Terms of Use',
+                              ),
+                            ),
+                          );
+                        },
                     ),
                   ],
                 ),
@@ -118,51 +146,66 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
-                onPressed: _isLoading ? null : () async {
-                  setState(() {
-                    _isLoading = true; // Start loading
-                  });
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        setState(() {
+                          _isLoading = true; // Start loading
+                        });
 
-                  if (_formKey.currentState!.validate()) {
-                    try {
-                      final success = await ApiService.submitEmail(_emailController.text);
-                      if (success) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegistrationFormScreen(email: _emailController.text),
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      //   SnackBar(content: Text('Error: ${e.toString()}')),
-                      // );
-                      CustomSnackbar.show(
-                        context: context,
-                        message: 'Error: ${e.toString()}',
-                      );
-                    } finally {
-                      setState(() {
-                        _isLoading = false; // Stop loading
-                      });
-                    }
-                  } else {
-                    setState(() {
-                      _isLoading = false; // Stop loading if validation fails
-                    });
-                  }
-                },
+                        if (_formKey.currentState!.validate()) {
+                          try {
+                            final success = await ApiService.submitEmail(
+                                _emailController.text);
+                            if (success) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RegistrationFormScreen(
+                                      email: _emailController.text),
+                                ),
+                              );
+                            }
+                          } catch (e) {
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   SnackBar(content: Text('Error: ${e.toString()}')),
+                            // );
+                            CustomSnackbar.show(
+                                context: context,
+                                message:
+                                    'Please check your email and try again');
+
+                            // CustomSnackbar.show(
+                            //   context: context,
+                            //   message: 'Error: ${e.toString()}',
+                            // );
+                          } finally {
+                            setState(() {
+                              _isLoading = false; // Stop loading
+                            });
+                          }
+                        } else {
+                          setState(() {
+                            _isLoading =
+                                false; // Stop loading if validation fails
+                          });
+                        }
+                      },
                 child: _isLoading
                     ? const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    strokeWidth: 2.0,
-                  ),
-                )
-                    : const Text('Next', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),),
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          strokeWidth: 2.0,
+                        ),
+                      )
+                    : const Text(
+                        'Next',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w400),
+                      ),
               ),
             ],
           ),

@@ -2,7 +2,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jobtask/models/admin_services.dart';
+import 'package:jobtask/screens/admin/admin_reviews_screen.dart';
+import 'package:jobtask/screens/shop/reviews_screen.dart';
 import 'package:jobtask/services/admin_api_service.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AdminServicesScreen extends StatefulWidget {
@@ -281,6 +284,14 @@ class _AdminServicesScreenState extends State<AdminServicesScreen>
       color: Colors.white.withOpacity(0.1),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AdminReviewsScreen(serviceId: service.id),
+            ),
+          );
+        },
         contentPadding: EdgeInsets.all(12),
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(6),

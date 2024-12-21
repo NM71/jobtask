@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jobtask/animations/rfkicks_animation.dart';
 import 'package:jobtask/screens/auth/email_input_screen.dart';
 import 'package:jobtask/screens/auth/forgot_password_screen.dart';
+import 'package:jobtask/screens/custom_webview_screen.dart';
 import 'package:jobtask/screens/dashboard_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -81,9 +82,13 @@ class _SignInScreenState extends State<SignInScreen> {
         //   SnackBar(content: Text('Error: ${e.toString()}')),
         // );
         CustomSnackbar.show(
-          context: context,
-          message: 'Error: ${e.toString()}',
-        );
+            context: context,
+            message: 'Please check your email and password and try again');
+
+        // CustomSnackbar.show(
+        //   context: context,
+        //   message: 'Error: ${e.toString()}',
+        // );
       } finally {
         setState(() {
           _isLoading = false; // Stop loading
@@ -167,8 +172,12 @@ class _SignInScreenState extends State<SignInScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => ForgotPasswordScreen()),
+                        PageTransition(
+                          child: ForgotPasswordScreen(),
+                          type: PageTransitionType.rightToLeft,
+                        ),
+                        // MaterialPageRoute(
+                        //     builder: (context) => ForgotPasswordScreen()),
                       );
                     },
                     child: Text(
@@ -181,9 +190,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
               const SizedBox(height: 40),
               RichText(
-                text: const TextSpan(
+                text: TextSpan(
                   children: <TextSpan>[
-                    TextSpan(
+                    const TextSpan(
                       text: 'By continuing, I agree to RFK\'s \n',
                       style: TextStyle(
                           color: Color(0xff767676),
@@ -198,8 +207,20 @@ class _SignInScreenState extends State<SignInScreen> {
                         fontFamily: 'Outfit',
                         fontSize: 16,
                       ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CustomWebViewScreen(
+                                url: 'https://rfkicks.com/privacy-policy/',
+                                title: 'Privacy Policy',
+                              ),
+                            ),
+                          );
+                        },
                     ),
-                    TextSpan(
+                    const TextSpan(
                       text: ' and ',
                       style: TextStyle(
                           color: Color(0xff767676),
@@ -208,12 +229,24 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     TextSpan(
                       text: 'Terms of Use. ',
-                      style: TextStyle(
+                      style: const TextStyle(
                         decoration: TextDecoration.underline,
                         color: Color(0xff767676),
                         fontFamily: 'Outfit',
                         fontSize: 16,
                       ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CustomWebViewScreen(
+                                url: 'https://rfkicks.com/terms-conditions/',
+                                title: 'Terms of Use',
+                              ),
+                            ),
+                          );
+                        },
                     ),
                   ],
                 ),
@@ -245,7 +278,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   backgroundColor: const Color(0xff3c76ad),
                   foregroundColor: const Color(0xffffffff),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                 ),
                 child: _isLoading

@@ -18,7 +18,8 @@ class ReusableExpandableCard extends StatelessWidget {
         collapsedIconColor: Colors.white,
         title: Text(
           title,
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+              fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16),
         ),
         backgroundColor: Color(0xff5c5c5c),
         iconColor: Colors.white,
@@ -28,7 +29,7 @@ class ReusableExpandableCard extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               content,
-              style: TextStyle(fontSize: 16.0, color: Colors.white),
+              style: TextStyle(fontSize: 12.0, color: Colors.white),
             ),
           ),
         ],

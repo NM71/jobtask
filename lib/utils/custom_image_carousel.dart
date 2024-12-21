@@ -90,7 +90,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
         clipBehavior: Clip.none,
         enlargeCenterPage: true,
         aspectRatio: 16 / 9,
-        viewportFraction: 0.9,
+        viewportFraction: 0.7,
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:jobtask/models/order_receipt.dart';
 import 'package:jobtask/screens/shop/shop_screen.dart';
 import 'dart:convert';
 
@@ -492,4 +493,372 @@ class ApiService {
       throw Exception('Error updating order: $e');
     }
   }
+
+  // Reviews and Ratings
+  // Get reviews for a specific service
+  static Future<List<Map<String, dynamic>>> getServiceReviews(
+      int serviceId) async {
+    try {
+      // Add timestamp to prevent caching
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final response = await http.get(
+        Uri.parse(
+            '$baseUrl/get_service_reviews.php?service_id=$serviceId&t=$timestamp'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+        },
+      ).timeout(timeoutDuration);
+
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return List<Map<String, dynamic>>.from(data['reviews']);
+      } else {
+        throw Exception('Failed to load reviews');
+      }
+    } catch (e) {
+      print('Error in getServiceReviews: $e');
+      throw Exception('Error loading reviews: $e');
+    }
+  }
+
+  // static Future<List<Map<String, dynamic>>> getServiceReviews(
+  //     int serviceId) async {
+  //   try {
+  //     print('Fetching reviews for service ID: $serviceId');
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/get_service_reviews.php?service_id=$serviceId'),
+  //       headers: {'Content-Type': 'application/json'},
+  //     ).timeout(timeoutDuration);
+
+  //     print('Response status code: ${response.statusCode}');
+  //     print('Response body: ${response.body}');
+
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       return List<Map<String, dynamic>>.from(data['reviews']);
+  //     } else {
+  //       throw Exception('Failed to load reviews');
+  //     }
+  //   } catch (e) {
+  //     print('Error in getServiceReviews: $e');
+  //     throw Exception('Error loading reviews: $e');
+  //   }
+  // }
+
+  // static Future<List<Map<String, dynamic>>> getServiceReviews(
+  //     int serviceId) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/get_service_reviews.php?service_id=$serviceId'),
+  //       headers: {'Content-Type': 'application/json'},
+  //     ).timeout(timeoutDuration);
+
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       return List<Map<String, dynamic>>.from(data['reviews']);
+  //     } else {
+  //       throw Exception('Failed to load reviews');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Error loading reviews: $e');
+  //   }
+  // }
+
+// Add a new review
+  static Future<bool> addServiceReview(
+      String token, Map<String, dynamic> reviewData) async {
+    try {
+      print('Making request to: $baseUrl/add_service_review.php');
+      print('Headers: ${{
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      }}');
+      print('Body: ${json.encode(reviewData)}');
+
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/add_service_review.php'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token'
+            },
+            body: json.encode(reviewData),
+          )
+          .timeout(timeoutDuration);
+
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Error in addServiceReview: $e');
+      throw Exception('Error adding review: $e');
+    }
+  }
+
+  // static Future<bool> addServiceReview(
+  //     String token, Map<String, dynamic> reviewData) async {
+  //   try {
+  //     final response = await http
+  //         .post(
+  //           Uri.parse('$baseUrl/add_service_review.php'),
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //             'Authorization': 'Bearer $token'
+  //           },
+  //           body: json.encode(reviewData),
+  //         )
+  //         .timeout(timeoutDuration);
+
+  //     return response.statusCode == 200;
+  //   } catch (e) {
+  //     throw Exception('Error adding review: $e');
+  //   }
+  // }
+
+  // Get order receipt
+  static Future<OrderReceipt> getOrderReceipt(String token, int orderId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/get_order_receipt.php?order_id=$orderId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ).timeout(timeoutDuration);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['status'] == 'success') {
+          return OrderReceipt.fromJson(data['order']);
+        }
+        throw Exception(data['message'] ?? 'Failed to load receipt');
+      } else {
+        throw Exception('Server returned status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching order receipt: $e');
+      throw Exception('Failed to load receipt: $e');
+    }
+  }
+
+  // static Future<OrderReceipt> getOrderReceipt(String token, int orderId) async {
+  //   try {
+  //     print('Fetching receipt for order: $orderId');
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/generate_receipt.php?order_id=$orderId'),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     print('Receipt API Response: ${response.body}');
+
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       if (data['status'] == 'success') {
+  //         return OrderReceipt.fromJson(data['receipt']);
+  //       }
+  //       throw Exception('Failed to load receipt: ${data['message']}');
+  //     } else {
+  //       throw Exception('Failed to load receipt: ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     print('Receipt Error Details: $e');
+  //     throw Exception('Error loading receipt: $e');
+  //   }
+  // }
+
+  // static Future<OrderReceipt> getOrderReceipt(String token, int orderId) async {
+  //   try {
+  //     print('Fetching receipt for order: $orderId');
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/generate_receipt.php?order_id=$orderId'),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     print('Receipt API Response: ${response.body}');
+
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       return OrderReceipt.fromJson(data['receipt']);
+  //     } else {
+  //       throw Exception('Failed to load receipt: ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     print('Receipt Error Details: $e');
+  //     throw Exception('Error loading receipt: $e');
+  //   }
+  // }
+
+  // static Future<OrderReceipt> getOrderReceipt(String token, int orderId) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/generate_receipt.php?order_id=$orderId'),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //         'Cache-Control': 'no-cache',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       return OrderReceipt.fromJson(data['receipt']);
+  //     } else {
+  //       throw Exception('Failed to load receipt');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Error loading receipt: $e');
+  //   }
+  // }
+
+  static Future<bool> cancelOrder(String token, String orderId) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/cancel_order.php'),
+        body: json.encode({'order_id': orderId, 'status': 'cancelled'}),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ).timeout(timeoutDuration);
+
+      final data = json.decode(response.body);
+      return data['status'] == 'success';
+    } catch (e) {
+      print('Error cancelling order: $e');
+      throw Exception('Failed to cancel order');
+    }
+  }
+
+  // Get Order History
+  static Future<List<OrderReceipt>> getOrderHistory(String token) async {
+    try {
+      print('Fetching order history with token: ${token.substring(0, 10)}...');
+
+      final response = await http.get(
+        Uri.parse('$baseUrl/get_order_history.php'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ).timeout(timeoutDuration);
+
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['status'] == 'success') {
+          final List<dynamic> ordersData = data['orders'];
+          return ordersData
+              .map((orderJson) => OrderReceipt.fromJson(orderJson))
+              .toList();
+        }
+        throw Exception('Failed to load orders: ${data['message']}');
+      } else {
+        throw Exception('Server returned status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Detailed error in getOrderHistory: $e');
+      throw Exception('Failed to load orders: $e');
+    }
+  }
+
+  // static Future<List<OrderReceipt>> getOrderHistory(String token) async {
+  //   try {
+  //     print('Fetching order history with token: ${token.substring(0, 10)}...');
+
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/get_order_history.php'),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     print('Response status code: ${response.statusCode}');
+  //     print('Response body: ${response.body}');
+
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       if (data['status'] == 'success') {
+  //         final orders = (data['orders'] as List)
+  //             .map((order) => OrderReceipt.fromJson(order))
+  //             .toList();
+  //         print('Successfully parsed ${orders.length} orders');
+  //         return orders;
+  //       }
+  //       throw Exception(data['message'] ?? 'Unknown error occurred');
+  //     } else {
+  //       throw Exception('Server returned status code: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('Detailed error in getOrderHistory: $e');
+  //     throw Exception('Failed to load orders: $e');
+  //   }
+  // }
+
+  // static Future<List<OrderReceipt>> getOrderHistory(String token) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/get_order_history.php'),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     print('Order History Response: ${response.body}');
+
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       if (data['status'] == 'success') {
+  //         return (data['orders'] as List)
+  //             .map((order) => OrderReceipt.fromJson(order))
+  //             .toList();
+  //       }
+  //       throw Exception(data['message']);
+  //     } else {
+  //       throw Exception('Failed to load orders');
+  //     }
+  //   } catch (e) {
+  //     print('Order History Error: $e');
+  //     throw Exception('Error loading orders: $e');
+  //   }
+  // }
+
+  // static Future<List<OrderReceipt>> getOrderHistory(String token) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/get_order_history.php'),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //         'Cache-Control': 'no-cache',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       return (data['orders'] as List)
+  //           .map((order) => OrderReceipt.fromJson(order))
+  //           .toList();
+  //     } else {
+  //       throw Exception('Failed to load order history');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Error loading order history: $e');
+  //   }
+  // }
 }

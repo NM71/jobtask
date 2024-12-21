@@ -1426,8 +1426,10 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:jobtask/screens/profile/order_history_screen.dart';
 import 'package:jobtask/screens/profile/profile_update_handler.dart';
 import 'package:jobtask/screens/profile/settings_screen.dart';
 import 'package:jobtask/services/api_service.dart';
@@ -1743,7 +1745,14 @@ class _UserProfileState extends State<UserProfile> {
                                 fontSize: 12,
                                 color: Colors.black,
                                 fontWeight: FontWeight.w400),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => OrderHistoryScreen(),
+                                ),
+                              );
+                            },
                             iconColor: const Color(0xffbababa),
                           ),
                           const SizedBox(
@@ -1758,6 +1767,8 @@ class _UserProfileState extends State<UserProfile> {
                                 color: Colors.black,
                                 fontWeight: FontWeight.w400),
                             onPressed: () {
+                              HapticFeedback.lightImpact();
+
                               // Navigator.push(
                               //   context,
                               //   MaterialPageRoute(
@@ -1991,7 +2002,6 @@ class _UserProfileState extends State<UserProfile> {
 //   }
 
   // Edit Profile Modal BottomSheet
-
   Future<void> _showEditProfileModal(BuildContext context) async {
     final TextEditingController displayNameController =
         TextEditingController(text: userData?['display_name']);
@@ -2002,168 +2012,208 @@ class _UserProfileState extends State<UserProfile> {
     final TextEditingController shoeSizeController =
         TextEditingController(text: userData?['shoe_size']);
     const int maxBioCharacters = 150;
+    File? tempSelectedImage = _selectedProfilePicture;
+
+    bool _hasChanges = false;
 
     final result = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          height: MediaQuery.of(context).size.height * 1,
-          padding: EdgeInsets.only(
-            top: 16,
-            left: 16,
-            right: 16,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-          ),
-          child: Column(
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            void checkChanges() {
+              setModalState(() {
+                _hasChanges =
+                    displayNameController.text != userData?['display_name'] ||
+                        addressController.text != userData?['address'] ||
+                        bioController.text != userData?['bio'] ||
+                        shoeSizeController.text != userData?['shoe_size'] ||
+                        _selectedProfilePicture != null;
+              });
+            }
+
+            displayNameController.addListener(checkChanges);
+            addressController.addListener(checkChanges);
+            bioController.addListener(checkChanges);
+            shoeSizeController.addListener(checkChanges);
+
+            return Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              height: MediaQuery.of(context).size.height * 1,
+              padding: EdgeInsets.only(
+                top: 16,
+                left: 16,
+                right: 16,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+              ),
+              child: Column(
                 children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: const Text(
-                      "Cancel",
-                      style: TextStyle(color: Colors.black, fontSize: 16),
+                  Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: const Text(
-                      "Save",
-                      style: TextStyle(
-                        color: Color(0xffBABABA),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Center(
-                        child: Stack(
-                          children: [
-                            CircleAvatar(
-                              radius: 50,
-                              backgroundColor: const Color(0xffd9d9d9),
-                              backgroundImage: _selectedProfilePicture != null
-                                  ? FileImage(_selectedProfilePicture!)
-                                  : userData?['profile_picture'] != null
-                                      ? NetworkImage(
-                                              userData!['profile_picture'])
-                                          as ImageProvider
-                                      : null,
-                              child: (_selectedProfilePicture == null &&
-                                      userData?['profile_picture'] == null)
-                                  ? const Icon(
-                                      Icons.person,
-                                      size: 50,
-                                      color: Colors.white,
-                                    )
-                                  : null,
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: CircleAvatar(
-                                radius: 18,
-                                backgroundColor: const Color(0xff3c76ad),
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.camera_alt,
-                                    size: 18,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () =>
-                                      _updateProfilePicture(context),
-                                ),
-                              ),
-                            ),
-                          ],
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text(
+                          "Cancel",
+                          style: TextStyle(color: Colors.black, fontSize: 16),
                         ),
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Center(
-                          child: Text(
-                        "Edit",
-                        style: TextStyle(fontSize: 10),
-                      )),
-                      const SizedBox(height: 24),
-                      _buildEditField(
-                        "Name",
-                        displayNameController,
-                        "Enter your display name",
-                      ),
-                      _buildEditField(
-                        "Hometown",
-                        addressController,
-                        "Town/City, Country/Region",
-                      ),
-                      _buildEditField(
-                        "Shoe Size",
-                        shoeSizeController,
-                        "Enter your shoe size",
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Bio',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: bioController,
-                        maxLength: maxBioCharacters,
-                        maxLines: 3,
-                        decoration: InputDecoration(
-                          hintText: 'Tell us about yourself',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(2),
-                            gapPadding: 5,
-                            borderSide: BorderSide(
-                              width: 1,
-                              color: Color(0xff767676),
-                            ),
+                      TextButton(
+                        onPressed: _hasChanges
+                            ? () => Navigator.pop(context, true)
+                            : null,
+                        child: Text(
+                          "Save",
+                          style: TextStyle(
+                            color:
+                                _hasChanges ? Colors.black : Color(0xffBABABA),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
                       ),
                     ],
                   ),
-                ),
+                  SizedBox(height: 20),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Stack(
+                              children: [
+                                CircleAvatar(
+                                  radius: 50,
+                                  backgroundColor: const Color(0xffd9d9d9),
+                                  // backgroundImage: _selectedProfilePicture !=
+                                  //         null
+                                  backgroundImage: tempSelectedImage != null
+                                      // ? FileImage(_selectedProfilePicture!)
+                                      ? FileImage(tempSelectedImage!)
+                                      // : userData?['profile_picture'] != null
+                                      : userData?['profile_picture'] != null
+                                          // ? NetworkImage(
+                                          //         userData!['profile_picture'])
+                                          //     as ImageProvider
+                                          ? NetworkImage(
+                                                  userData!['profile_picture'])
+                                              as ImageProvider
+                                          : null,
+                                  child: (_selectedProfilePicture == null &&
+                                          userData?['profile_picture'] == null)
+                                      ? const Icon(
+                                          Icons.person,
+                                          size: 50,
+                                          color: Colors.white,
+                                        )
+                                      : null,
+                                ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: CircleAvatar(
+                                    radius: 18,
+                                    backgroundColor: const Color(0xff3c76ad),
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.camera_alt,
+                                        size: 18,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () async {
+                                        final pickedFile = await ImagePicker()
+                                            .pickImage(
+                                                source: ImageSource.gallery);
+                                        if (pickedFile != null) {
+                                          setModalState(() {
+                                            // _selectedProfilePicture =
+                                            //     File(pickedFile.path);
+                                            tempSelectedImage =
+                                                File(pickedFile.path);
+
+                                            _hasChanges = true;
+                                          });
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Center(
+                              child: Text(
+                            "Edit",
+                            style: TextStyle(fontSize: 10),
+                          )),
+                          const SizedBox(height: 24),
+                          _buildEditField(
+                            "Name",
+                            displayNameController,
+                            "Enter your display name",
+                          ),
+                          _buildEditField(
+                            "Hometown",
+                            addressController,
+                            "Town/City, Country/Region",
+                          ),
+                          _buildEditField(
+                            "Shoe Size",
+                            shoeSizeController,
+                            "Enter your shoe size",
+                          ),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'Bio',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextField(
+                            controller: bioController,
+                            maxLength: maxBioCharacters,
+                            maxLines: 3,
+                            decoration: InputDecoration(
+                              hintText: 'Tell us about yourself',
+                              border: customProfileBorder(),
+                              enabledBorder: customProfileBorder(),
+                              focusedBorder: customProfileBorder(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
 
+    // Handle the result and update profile
     if (result == true) {
+      _selectedProfilePicture = tempSelectedImage; // Update the main image
+
       final token = await storage.read(key: 'auth_token');
       if (token != null) {
         try {
@@ -2181,9 +2231,6 @@ class _UserProfileState extends State<UserProfile> {
                 await ApiService.updateUserProfile(token, profileData);
 
             if (success && mounted) {
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   const SnackBar(content: Text('Profile updated successfully')),
-              // );
               CustomSnackbar.show(
                 context: context,
                 message: 'Profile updated successfully',
@@ -2192,9 +2239,6 @@ class _UserProfileState extends State<UserProfile> {
             }
           } else {
             if (mounted) {
-              // ScaffoldMessenger.of(context).showSnackBar(
-              //   const SnackBar(content: Text('No changes to update')),
-              // );
               CustomSnackbar.show(
                 context: context,
                 message: 'No changes to update',
@@ -2203,9 +2247,6 @@ class _UserProfileState extends State<UserProfile> {
           }
         } catch (e) {
           if (mounted) {
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //   SnackBar(content: Text('Failed to update profile: $e')),
-            // );
             CustomSnackbar.show(
               context: context,
               message: 'Failed to update profile: $e',
@@ -2215,6 +2256,230 @@ class _UserProfileState extends State<UserProfile> {
       }
     }
   }
+
+  // Future<void> _showEditProfileModal(BuildContext context) async {
+  //   final TextEditingController displayNameController =
+  //       TextEditingController(text: userData?['display_name']);
+  //   final TextEditingController addressController =
+  //       TextEditingController(text: userData?['address']);
+  //   final TextEditingController bioController =
+  //       TextEditingController(text: userData?['bio']);
+  //   final TextEditingController shoeSizeController =
+  //       TextEditingController(text: userData?['shoe_size']);
+  //   const int maxBioCharacters = 150;
+
+  //   final result = await showModalBottomSheet<bool>(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     backgroundColor: Colors.transparent,
+  //     builder: (BuildContext context) {
+  //       return Container(
+  //         decoration: const BoxDecoration(
+  //           color: Colors.white,
+  //           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  //         ),
+  //         height: MediaQuery.of(context).size.height * 1,
+  //         padding: EdgeInsets.only(
+  //           top: 16,
+  //           left: 16,
+  //           right: 16,
+  //           bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+  //         ),
+  //         child: Column(
+  //           children: [
+  //             Container(
+  //               width: 40,
+  //               height: 4,
+  //               decoration: BoxDecoration(
+  //                 color: Colors.grey[300],
+  //                 borderRadius: BorderRadius.circular(2),
+  //               ),
+  //             ),
+  //             const SizedBox(height: 16),
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 TextButton(
+  //                   onPressed: () => Navigator.pop(context, false),
+  //                   child: const Text(
+  //                     "Cancel",
+  //                     style: TextStyle(color: Colors.black, fontSize: 16),
+  //                   ),
+  //                 ),
+  //                 TextButton(
+  //                   onPressed: () => Navigator.pop(context, true),
+  //                   child: const Text(
+  //                     "Save",
+  //                     style: TextStyle(
+  //                       color: Color(0xffBABABA),
+  //                       fontSize: 16,
+  //                       fontWeight: FontWeight.w400,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //             SizedBox(
+  //               height: 20,
+  //             ),
+  //             Expanded(
+  //               child: SingleChildScrollView(
+  //                 child: Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Center(
+  //                       child: Stack(
+  //                         children: [
+  //                           CircleAvatar(
+  //                             radius: 50,
+  //                             backgroundColor: const Color(0xffd9d9d9),
+  //                             backgroundImage: _selectedProfilePicture != null
+  //                                 ? FileImage(_selectedProfilePicture!)
+  //                                 : userData?['profile_picture'] != null
+  //                                     ? NetworkImage(
+  //                                             userData!['profile_picture'])
+  //                                         as ImageProvider
+  //                                     : null,
+  //                             child: (_selectedProfilePicture == null &&
+  //                                     userData?['profile_picture'] == null)
+  //                                 ? const Icon(
+  //                                     Icons.person,
+  //                                     size: 50,
+  //                                     color: Colors.white,
+  //                                   )
+  //                                 : null,
+  //                           ),
+  //                           Positioned(
+  //                             bottom: 0,
+  //                             right: 0,
+  //                             child: CircleAvatar(
+  //                               radius: 18,
+  //                               backgroundColor: const Color(0xff3c76ad),
+  //                               child: IconButton(
+  //                                 icon: const Icon(
+  //                                   Icons.camera_alt,
+  //                                   size: 18,
+  //                                   color: Colors.white,
+  //                                 ),
+  //                                 onPressed: () =>
+  //                                     _updateProfilePicture(context),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                     SizedBox(
+  //                       height: 5,
+  //                     ),
+  //                     Center(
+  //                         child: Text(
+  //                       "Edit",
+  //                       style: TextStyle(fontSize: 10),
+  //                     )),
+  //                     const SizedBox(height: 24),
+  //                     _buildEditField(
+  //                       "Name",
+  //                       displayNameController,
+  //                       "Enter your display name",
+  //                     ),
+  //                     _buildEditField(
+  //                       "Hometown",
+  //                       addressController,
+  //                       "Town/City, Country/Region",
+  //                     ),
+  //                     _buildEditField(
+  //                       "Shoe Size",
+  //                       shoeSizeController,
+  //                       "Enter your shoe size",
+  //                     ),
+  //                     const SizedBox(height: 16),
+  //                     const Text(
+  //                       'Bio',
+  //                       style: TextStyle(
+  //                         fontSize: 12,
+  //                         fontWeight: FontWeight.w400,
+  //                       ),
+  //                     ),
+  //                     const SizedBox(height: 8),
+  //                     TextField(
+  //                       controller: bioController,
+  //                       maxLength: maxBioCharacters,
+  //                       maxLines: 3,
+  //                       decoration: InputDecoration(
+  //                         hintText: 'Tell us about yourself',
+  //                         border: OutlineInputBorder(
+  //                           borderRadius: BorderRadius.circular(2),
+  //                           gapPadding: 5,
+  //                           borderSide: BorderSide(
+  //                             width: 1,
+  //                             color: Color(0xff767676),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+
+  //   if (result == true) {
+  //     final token = await storage.read(key: 'auth_token');
+  //     if (token != null) {
+  //       try {
+  //         final profileData = await ProfileUpdateHandler.prepareProfileData(
+  //           displayNameController: displayNameController,
+  //           addressController: addressController,
+  //           shoeSizeController: shoeSizeController,
+  //           bioController: bioController,
+  //           selectedProfilePicture: _selectedProfilePicture,
+  //           currentUserData: userData,
+  //         );
+
+  //         if (profileData.isNotEmpty) {
+  //           final success =
+  //               await ApiService.updateUserProfile(token, profileData);
+
+  //           if (success && mounted) {
+  //             // ScaffoldMessenger.of(context).showSnackBar(
+  //             //   const SnackBar(content: Text('Profile updated successfully')),
+  //             // );
+  //             CustomSnackbar.show(
+  //               context: context,
+  //               message: 'Profile updated successfully',
+  //             );
+  //             _loadUserProfile();
+  //           }
+  //         } else {
+  //           if (mounted) {
+  //             // ScaffoldMessenger.of(context).showSnackBar(
+  //             //   const SnackBar(content: Text('No changes to update')),
+  //             // );
+  //             CustomSnackbar.show(
+  //               context: context,
+  //               message: 'No changes to update',
+  //             );
+  //           }
+  //         }
+  //       } catch (e) {
+  //         if (mounted) {
+  //           // ScaffoldMessenger.of(context).showSnackBar(
+  //           //   SnackBar(content: Text('Failed to update profile: $e')),
+  //           // );
+  //           CustomSnackbar.show(
+  //             context: context,
+  //             message: 'Failed to update profile: $e',
+  //           );
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   // Edit profile custom components
   Widget _buildEditField(

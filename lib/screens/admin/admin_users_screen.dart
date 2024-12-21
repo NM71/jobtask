@@ -516,7 +516,7 @@ class UserCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xff3c76ad),
+              color: Colors.white,
             ),
           ),
           subtitle: Text(

@@ -493,17 +493,17 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen>
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          const Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  opacity: 0.3,
-                  image: AssetImage('assets/images/rfk_preview.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
+          // const Positioned.fill(
+          //   child: DecoratedBox(
+          //     decoration: BoxDecoration(
+          //       image: DecorationImage(
+          //         opacity: 0.3,
+          //         image: AssetImage('assets/images/rfk_preview.png'),
+          //         fit: BoxFit.cover,
+          //       ),
+          //     ),
+          //   ),
+          // ),
           SafeArea(
             child: Column(
               children: [
@@ -1251,8 +1251,8 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen>
           service['name'] ?? '',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        subtitle: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               'Revenue: \$${revenue.toStringAsFixed(2)}',
@@ -1264,24 +1264,24 @@ class _AdminAnalyticsScreenState extends State<AdminAnalyticsScreen>
             ),
           ],
         ),
-        trailing: SizedBox(
-          width: 60,
-          height: 60,
-          child: PieChart(
-            PieChartData(
-              sections: [
-                PieChartSectionData(
-                  color: Color(0xff3c76ad),
-                  value: revenue,
-                  radius: 20,
-                  showTitle: false,
-                ),
-              ],
-              sectionsSpace: 0,
-              centerSpaceRadius: 20,
-            ),
-          ),
-        ),
+        // trailing: SizedBox(
+        //   width: 60,
+        //   height: 60,
+        //   child: PieChart(
+        //     PieChartData(
+        //       sections: [
+        //         PieChartSectionData(
+        //           color: Color(0xff3c76ad),
+        //           value: revenue,
+        //           radius: 20,
+        //           showTitle: false,
+        //         ),
+        //       ],
+        //       sectionsSpace: 0,
+        //       centerSpaceRadius: 20,
+        //     ),
+        //   ),
+        // ),
       ),
     );
   }

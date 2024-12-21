@@ -102,6 +102,25 @@ class _DeliveryAddressFormState extends State<DeliveryAddressForm> {
     }
   }
 
+  Widget _buildHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          'Delivery',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        IconButton(
+          icon: Text('-', style: TextStyle(fontSize: 24)),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -119,32 +138,21 @@ class _DeliveryAddressFormState extends State<DeliveryAddressForm> {
       height: MediaQuery.of(context).size.height * 0.9,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        // borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
           // Drag Handle
-          Container(
-            width: 40,
-            height: 4,
-            margin: EdgeInsets.symmetric(vertical: 15),
-            decoration: BoxDecoration(
-              color: Color(0xff3c76ad),
-              borderRadius: BorderRadius.circular(2),
-            ),
+          SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: _buildHeader(),
           ),
 
-          // Title
-          Padding(
-            padding: EdgeInsets.only(bottom: 20),
-            child: Text(
-              'Delivery Address',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+          Divider(
+            color: Color(0xffe4e4e4),
           ),
+          SizedBox(height: 10),
 
           // Form
           Expanded(
@@ -278,7 +286,7 @@ class _DeliveryAddressFormState extends State<DeliveryAddressForm> {
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey.shade300),
             borderRadius: BorderRadius.circular(6),
-            color: Colors.grey.shade50,
+            color: Colors.white,
           ),
           child: Row(
             children: [
@@ -292,7 +300,7 @@ class _DeliveryAddressFormState extends State<DeliveryAddressForm> {
                 ),
               ),
               Spacer(),
-              Icon(Icons.keyboard_arrow_down, size: 16, color: Colors.grey),
+              Icon(Icons.keyboard_arrow_down, size: 20, color: Colors.black),
             ],
           ),
         ),
@@ -309,14 +317,14 @@ class _DeliveryAddressFormState extends State<DeliveryAddressForm> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Color(0xff3c76ad),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(6),
           ),
-          elevation: 0,
+          // elevation: 0,
         ),
         child: Text(
           'Add Delivery Address',
           style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+              fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
         ),
       ),
     );

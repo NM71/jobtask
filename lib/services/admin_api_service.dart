@@ -159,6 +159,35 @@ class AdminApiService {
   //   }
   // }
 
+  // Services Reviews
+  static Future<List<Map<String, dynamic>>> getServiceReviews(
+      int serviceId) async {
+    try {
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final response = await http.get(
+        Uri.parse(
+            '$baseUrl/get_service_reviews.php?service_id=$serviceId&t=$timestamp'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+        },
+      ).timeout(timeoutDuration);
+
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return List<Map<String, dynamic>>.from(data['reviews']);
+      } else {
+        throw Exception('Failed to load reviews');
+      }
+    } catch (e) {
+      throw Exception('Error loading reviews: $e');
+    }
+  }
+
   static Future<Service> addService(Map<String, dynamic> serviceData) async {
     try {
       final response = await http.post(

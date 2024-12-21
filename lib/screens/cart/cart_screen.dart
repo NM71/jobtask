@@ -390,108 +390,224 @@ class _CartScreenState extends State<CartScreen> {
         builder: (context, cartProvider, child) {
           final screenWidth = MediaQuery.of(context).size.width;
 
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Cart", style: TextStyle(fontSize: screenWidth * 0.08)),
-                if (cartProvider.cartItems.isEmpty) ...[
-                  Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/cart_image.png',
-                                height: screenWidth * 0.15,
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'Your Cart is empty.',
-                                style: TextStyle(fontSize: screenWidth * 0.04),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                textAlign: TextAlign.center,
-                                'When you add products, they\'ll\nappear here.',
-                              ),
-                            ],
-                          ),
-                          MyButton(
-                            text: "Shop Now",
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.leftToRight,
-                                  child: ServicePage(),
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("Cart",
+                        style: TextStyle(fontSize: screenWidth * 0.08)),
+                    if (cartProvider.cartItems.isEmpty) ...[
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              children: [
+                                SizedBox(
+                                  height: 50,
                                 ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ] else ...[
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: cartProvider.cartItems.length,
-                      itemBuilder: (context, index) {
-                        final cartItem = cartProvider.cartItems[index];
-                        return CartItemWidget(
-                          cartItem: cartItem,
-                          onQuantityChanged: (newQuantity) {
-                            cartProvider.updateQuantity(
-                                cartItem.service, newQuantity);
-                          },
-                          onRemove: () {
-                            cartProvider.removeFromCart(cartItem.service);
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  _buildSubtotalRow(screenWidth, cartProvider),
-                  SizedBox(height: 8),
-                  _buildDeliveryRow(screenWidth),
-                  SizedBox(height: 8),
-                  _buildEstimatedTotalRow(screenWidth, cartProvider),
-                  SizedBox(height: 20),
-                  // MyButton(
-                  //   text: "Checkout",
-                  //   onTap: () => _handleCheckout(context, cartProvider),
-                  // ),
-                  MyButton(
-                    text: "Checkout",
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => CheckoutBottomSheet(
-                          totalAmount: cartProvider.getTotalPrice(),
-                          onCheckout: (deliveryType, paymentMethod) async {
-                            // Existing checkout logic here
-                            _handleCheckout(context, cartProvider);
-                          },
+                                Image.asset(
+                                  'assets/images/cart_image.png',
+                                  height: screenWidth * 0.15,
+                                ),
+                                SizedBox(height: 25),
+                                Text(
+                                  'Your Cart is empty.',
+                                  style:
+                                      TextStyle(fontSize: screenWidth * 0.04),
+                                ),
+                                SizedBox(height: 16),
+                                Text(
+                                  textAlign: TextAlign.center,
+                                  'When you add products, they\'ll\nappear here.',
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 25),
+                            MyButton(
+                              text: "Shop Now",
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.leftToRight,
+                                    child: ServicePage(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
-                ],
-              ],
+                      ),
+                    ] else ...[
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: cartProvider.cartItems.length,
+                        itemBuilder: (context, index) {
+                          final cartItem = cartProvider.cartItems[index];
+                          return CartItemWidget(
+                            cartItem: cartItem,
+                            onQuantityChanged: (newQuantity) {
+                              cartProvider.updateQuantity(
+                                  cartItem.service, newQuantity);
+                            },
+                            onRemove: () {
+                              cartProvider.removeFromCart(cartItem.service);
+                            },
+                          );
+                        },
+                      ),
+                      SizedBox(height: 20),
+                      _buildSubtotalRow(screenWidth, cartProvider),
+                      SizedBox(height: 8),
+                      _buildDeliveryRow(screenWidth),
+                      SizedBox(height: 8),
+                      _buildEstimatedTotalRow(screenWidth, cartProvider),
+                      SizedBox(height: 20),
+                      MyButton(
+                        text: "Checkout",
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) => CheckoutBottomSheet(
+                              totalAmount: cartProvider.getTotalPrice(),
+                              onCheckout: (deliveryType, paymentMethod) async {
+                                _handleCheckout(context, cartProvider);
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ],
+                ),
+              ),
             ),
           );
         },
       ),
     );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     backgroundColor: Colors.white,
+  //     body: Consumer<CartProvider>(
+  //       builder: (context, cartProvider, child) {
+  //         final screenWidth = MediaQuery.of(context).size.width;
+
+  //         return Padding(
+  //           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Text("Cart", style: TextStyle(fontSize: screenWidth * 0.08)),
+  //               if (cartProvider.cartItems.isEmpty) ...[
+  //                 Expanded(
+  //                   child: Center(
+  //                     child: Column(
+  //                       mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //                       crossAxisAlignment: CrossAxisAlignment.center,
+  //                       children: [
+  //                         Column(
+  //                           children: [
+  //                             Image.asset(
+  //                               'assets/images/cart_image.png',
+  //                               height: screenWidth * 0.15,
+  //                             ),
+  //                             SizedBox(height: 16),
+  //                             Text(
+  //                               'Your Cart is empty.',
+  //                               style: TextStyle(fontSize: screenWidth * 0.04),
+  //                             ),
+  //                             SizedBox(height: 8),
+  //                             Text(
+  //                               textAlign: TextAlign.center,
+  //                               'When you add products, they\'ll\nappear here.',
+  //                             ),
+  //                           ],
+  //                         ),
+  //                         MyButton(
+  //                           text: "Shop Now",
+  //                           onTap: () {
+  //                             Navigator.push(
+  //                               context,
+  //                               PageTransition(
+  //                                 type: PageTransitionType.leftToRight,
+  //                                 child: ServicePage(),
+  //                               ),
+  //                             );
+  //                           },
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ] else ...[
+  //                 Expanded(
+  //                   child: ListView.builder(
+  //                     itemCount: cartProvider.cartItems.length,
+  //                     itemBuilder: (context, index) {
+  //                       final cartItem = cartProvider.cartItems[index];
+  //                       return CartItemWidget(
+  //                         cartItem: cartItem,
+  //                         onQuantityChanged: (newQuantity) {
+  //                           cartProvider.updateQuantity(
+  //                               cartItem.service, newQuantity);
+  //                         },
+  //                         onRemove: () {
+  //                           cartProvider.removeFromCart(cartItem.service);
+  //                         },
+  //                       );
+  //                     },
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: 20),
+  //                 _buildSubtotalRow(screenWidth, cartProvider),
+  //                 SizedBox(height: 8),
+  //                 _buildDeliveryRow(screenWidth),
+  //                 SizedBox(height: 8),
+  //                 _buildEstimatedTotalRow(screenWidth, cartProvider),
+  //                 SizedBox(height: 20),
+  //                 // MyButton(
+  //                 //   text: "Checkout",
+  //                 //   onTap: () => _handleCheckout(context, cartProvider),
+  //                 // ),
+  //                 MyButton(
+  //                   text: "Checkout",
+  //                   onTap: () {
+  //                     showModalBottomSheet(
+  //                       context: context,
+  //                       isScrollControlled: true,
+  //                       backgroundColor: Colors.transparent,
+  //                       builder: (context) => CheckoutBottomSheet(
+  //                         totalAmount: cartProvider.getTotalPrice(),
+  //                         onCheckout: (deliveryType, paymentMethod) async {
+  //                           // Existing checkout logic here
+  //                           _handleCheckout(context, cartProvider);
+  //                         },
+  //                       ),
+  //                     );
+  //                   },
+  //                 ),
+  //               ],
+  //             ],
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
   Future<void> _handleCheckout(
       BuildContext context, CartProvider cartProvider) async {
@@ -714,11 +830,11 @@ class CartItemWidget extends StatelessWidget {
               children: [
                 Image.network(
                   cartItem.service.imagePath,
-                  height: screenWidth * 0.4,
-                  width: screenWidth * 0.4,
+                  height: screenWidth * 0.38,
+                  width: screenWidth * 0.38,
                   fit: BoxFit.cover,
                 ),
-                SizedBox(width: 10),
+                SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -767,7 +883,8 @@ class CartItemWidget extends StatelessWidget {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete, size: 24, color: Color(0xff3c76ad)),
+                  icon: Icon(Icons.delete_outline,
+                      size: 24, color: Color(0xff3c76ad)),
                   onPressed: onRemove,
                 ),
               ],
