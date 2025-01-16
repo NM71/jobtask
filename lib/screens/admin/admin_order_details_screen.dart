@@ -45,6 +45,7 @@ class AdminOrderDetailsScreen extends StatelessWidget {
                     '${order.currency?.toUpperCase() ?? ''} ${order.totalAmount}'),
                 _buildInfoRow('Payment Method',
                     order.paymentMethodTitle?.toUpperCase() ?? 'N/A'),
+                _buildInfoRow('Delivery Type', order.deliveryType ?? ''),
                 _buildInfoRow('Transaction ID', order.transactionId ?? 'N/A'),
               ],
             ),

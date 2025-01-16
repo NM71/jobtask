@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   @override
@@ -6,78 +9,116 @@ class AdminDashboardScreen extends StatefulWidget {
 }
 
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          const Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  opacity: 0.3,
-                  image: AssetImage('assets/images/rfkicks_bg.jpg'),
-                  fit: BoxFit.cover,
-                ),
-              ),
+  Future<bool> _onWillPop() async {
+    bool? shouldExit = await showAdaptiveDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog.adaptive(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+        title: Text('Exit ReFresh Kicks Admin?'),
+        content: Text('Are you sure you want to exit?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(
+              'No',
+              style: TextStyle(fontSize: 17, color: Color(0xff000000)),
             ),
           ),
-          SafeArea(
-            child: Column(
-              children: [
-                _buildHeader(),
-                SizedBox(
-                  height: 20,
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 20,
-                      crossAxisSpacing: 20,
-                      children: [
-                        _buildDashboardItem(
-                          title: 'Services',
-                          icon: Icons.design_services_rounded,
-                          color: Color(0xff3c76ad),
-                          subtitle: 'Manage Services',
-                          onTap: () =>
-                              Navigator.pushNamed(context, '/admin-services'),
-                        ),
-                        _buildDashboardItem(
-                          title: 'Orders',
-                          icon: Icons.shopping_bag_rounded,
-                          color: Color(0xff142943),
-                          subtitle: 'Track Orders',
-                          onTap: () =>
-                              Navigator.pushNamed(context, '/admin-orders'),
-                        ),
-                        _buildDashboardItem(
-                          title: 'Users',
-                          icon: Icons.group_rounded,
-                          color: Color(0xff2c5582),
-                          subtitle: 'User Management',
-                          onTap: () =>
-                              Navigator.pushNamed(context, '/admin-users'),
-                        ),
-                        _buildDashboardItem(
-                          title: 'Analytics',
-                          icon: Icons.analytics_rounded,
-                          color: Color(0xff1e3d5c),
-                          subtitle: 'View Statistics',
-                          onTap: () =>
-                              Navigator.pushNamed(context, '/admin-analytics'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(
+              'Yes',
+              style: TextStyle(fontSize: 17, color: Color(0xff007AFF)),
             ),
           ),
         ],
+      ),
+    );
+
+    if (shouldExit ?? false) {
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+      exit(0);
+    }
+
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Stack(
+          children: [
+            const Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    opacity: 0.3,
+                    image: AssetImage('assets/images/rfkicks_bg.jpg'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+            SafeArea(
+              child: Column(
+                children: [
+                  _buildHeader(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: GridView.count(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 20,
+                        children: [
+                          _buildDashboardItem(
+                            title: 'Services',
+                            icon: Icons.design_services_rounded,
+                            color: Color(0xff3c76ad),
+                            subtitle: 'Manage Services',
+                            onTap: () =>
+                                Navigator.pushNamed(context, '/admin-services'),
+                          ),
+                          _buildDashboardItem(
+                            title: 'Orders',
+                            icon: Icons.shopping_bag_rounded,
+                            color: Color(0xff142943),
+                            subtitle: 'Track Orders',
+                            onTap: () =>
+                                Navigator.pushNamed(context, '/admin-orders'),
+                          ),
+                          _buildDashboardItem(
+                            title: 'Users',
+                            icon: Icons.group_rounded,
+                            color: Color(0xff2c5582),
+                            subtitle: 'User Management',
+                            onTap: () =>
+                                Navigator.pushNamed(context, '/admin-users'),
+                          ),
+                          _buildDashboardItem(
+                            title: 'Analytics',
+                            icon: Icons.analytics_rounded,
+                            color: Color(0xff1e3d5c),
+                            subtitle: 'View Statistics',
+                            onTap: () => Navigator.pushNamed(
+                                context, '/admin-analytics'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -212,9 +253,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   }
 
   Future<void> _handleLogout() async {
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAdaptiveDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => AlertDialog.adaptive(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         title: Text(

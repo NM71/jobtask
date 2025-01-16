@@ -7,7 +7,8 @@ import 'package:http/http.dart' as http;
 
 class ImageCarousel extends StatefulWidget {
   final List<String>? imageUrls; // Optional list of network image URLs
-  final List<String>? assetImagePaths; // Optional list of local asset image paths
+  final List<String>?
+      assetImagePaths; // Optional list of local asset image paths
 
   ImageCarousel({this.imageUrls, this.assetImagePaths});
 
@@ -83,15 +84,15 @@ class _ImageCarouselState extends State<ImageCarousel> {
     return _carouselItems.isEmpty
         ? Center(child: CircularProgressIndicator())
         : CarouselSlider(
-      items: _carouselItems,
-      options: CarouselOptions(
-        height: MediaQuery.of(context).size.height*0.35,
-        autoPlay: true,
-        clipBehavior: Clip.none,
-        enlargeCenterPage: true,
-        aspectRatio: 16 / 9,
-        viewportFraction: 0.7,
-      ),
-    );
+            items: _carouselItems,
+            options: CarouselOptions(
+              height: MediaQuery.of(context).size.height * 0.37,
+              autoPlay: true,
+              clipBehavior: Clip.none,
+              enlargeCenterPage: true,
+              aspectRatio: 16 / 9,
+              viewportFraction: 0.9,
+            ),
+          );
   }
 }

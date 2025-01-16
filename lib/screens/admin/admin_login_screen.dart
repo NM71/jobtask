@@ -173,7 +173,9 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString()),
+          // content: Text(e.toString()),
+          content: Text(
+              'Unable to login. Please check your internet and try again.'),
           backgroundColor: Colors.red,
           behavior: SnackBarBehavior.floating,
         ),

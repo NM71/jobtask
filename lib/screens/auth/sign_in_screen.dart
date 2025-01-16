@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:jobtask/animations/rfkicks_animation.dart';
 import 'package:jobtask/screens/auth/email_input_screen.dart';
 import 'package:jobtask/screens/auth/forgot_password_screen.dart';
+import 'package:jobtask/screens/cart/cart_provider.dart';
 import 'package:jobtask/screens/custom_webview_screen.dart';
 import 'package:jobtask/screens/dashboard_screen.dart';
+import 'package:jobtask/screens/onboarding/onboarding_screens.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jobtask/utils/custom_border.dart';
 import 'package:jobtask/utils/custom_snackbar.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -55,47 +58,113 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> _signIn() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
-        _isLoading = true; // Start loading
+        _isLoading = true;
       });
 
-      // Trim the email and password inputs
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
       try {
         final token = await ApiService.signIn(email, password);
-
         final storage = FlutterSecureStorage();
         await storage.write(key: 'auth_token', value: token);
 
-        // use of Rfkicks Animation Screen
-        Navigator.of(context).pushReplacement(
-          // MaterialPageRoute(builder: (context) => DashboardScreen(token: token)),
-          // PageTransition(child: DashboardScreen(token: token), type: PageTransitionType.rightToLeft),
-          PageTransition(
-              child:
-                  RfkicksAnimation(targetScreen: DashboardScreen(token: token)),
-              type: PageTransitionType.rightToLeft),
-        );
-      } catch (e) {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text('Error: ${e.toString()}')),
-        // );
-        CustomSnackbar.show(
-            context: context,
-            message: 'Please check your email and password and try again');
+        // Get user profile and set cart user ID
+        final userProfile = await ApiService.getUserProfile(token);
+        final userId = userProfile['ID'].toString();
+        Provider.of<CartProvider>(context, listen: false).setUserId(userId);
 
-        // CustomSnackbar.show(
-        //   context: context,
-        //   message: 'Error: ${e.toString()}',
-        // );
+        // Check onboarding status
+        final onboardingCompleted =
+            await ApiService.checkOnboardingStatus(token);
+
+        if (!onboardingCompleted) {
+          // Get user profile to get the name
+          final userProfile = await ApiService.getUserProfile(token);
+
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OnboardingFlow(
+                  userName: userProfile['display_name'] ?? 'User',
+                ),
+              ),
+            );
+          }
+        } else {
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              PageTransition(
+                child: RfkicksAnimation(
+                  targetScreen: DashboardScreen(token: token),
+                ),
+                type: PageTransitionType.rightToLeft,
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          CustomSnackbar.show(
+            context: context,
+            message:
+                'Please check your email/password or internet and try again',
+          );
+        }
       } finally {
         setState(() {
-          _isLoading = false; // Stop loading
+          _isLoading = false;
         });
       }
     }
   }
+
+  // Future<void> _signIn() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     setState(() {
+  //       _isLoading = true; // Start loading
+  //     });
+
+  //     // Trim the email and password inputs
+  //     final email = _emailController.text.trim();
+  //     final password = _passwordController.text.trim();
+
+  //     try {
+  //       final token = await ApiService.signIn(email, password);
+
+  //       final storage = FlutterSecureStorage();
+  //       await storage.write(key: 'auth_token', value: token);
+
+  //       // use of Rfkicks Animation Screen
+  //       Navigator.of(context).pushReplacement(
+  //         // MaterialPageRoute(builder: (context) => DashboardScreen(token: token)),
+  //         // PageTransition(child: DashboardScreen(token: token), type: PageTransitionType.rightToLeft),
+  //         PageTransition(
+  //             child:
+  //                 RfkicksAnimation(targetScreen: DashboardScreen(token: token)),
+  //             type: PageTransitionType.rightToLeft),
+  //       );
+  //     } catch (e) {
+  //       // ScaffoldMessenger.of(context).showSnackBar(
+  //       //   SnackBar(content: Text('Error: ${e.toString()}')),
+  //       // );
+  //       CustomSnackbar.show(
+  //           context: context,
+  //           message: 'Please check your email and password and try again');
+
+  //       // CustomSnackbar.show(
+  //       //   context: context,
+  //       //   message: 'Error: ${e.toString()}',
+  //       // );
+  //     } finally {
+  //       setState(() {
+  //         _isLoading = false; // Stop loading
+  //       });
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +257,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ],
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
               RichText(
                 text: TextSpan(
                   children: <TextSpan>[
@@ -251,7 +320,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
 
               // Sign In button
               // _isLoading // Show loading indicator if loading
@@ -293,7 +362,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     : const Text('Sign In'),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 30),
               Center(
                 child: RichText(
                   text: TextSpan(

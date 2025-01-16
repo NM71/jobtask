@@ -10,6 +10,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jobtask/utils/custom_border.dart';
 import 'package:jobtask/utils/custom_snackbar.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RegistrationFormScreen extends StatefulWidget {
   final String email;
@@ -28,6 +29,8 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   bool _obscureConfirmPassword = true;
+  bool _termsAccepted = false;
+  bool _getUpdates = false;
 
   DateTime? _dateOfBirth;
   bool _obscurePassword = true;
@@ -73,6 +76,15 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
       );
       return;
     }
+
+    if (!_termsAccepted) {
+      CustomSnackbar.show(
+        context: context,
+        message: 'Please accept the Terms and Privacy Policy to continue',
+      );
+      return;
+    }
+
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
@@ -202,13 +214,13 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
         );
         _startTimer();
       } catch (e) {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   SnackBar(content: Text('Error resending code: ${e.toString()}')),
-        // );
-        CustomSnackbar.show(
-          context: context,
-          message: 'Error resending code: ${e.toString()}',
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error resending code: ${e.toString()}')),
         );
+        // CustomSnackbar.show(
+        //   context: context,
+        //   message: 'Error resending code: ${e.toString()}',
+        // );
       }
     }
   }
@@ -242,22 +254,22 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(40.0),
+        padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 36),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 40),
               Image.asset(
                 'assets/images/header2-2-1.png',
-                height: 50,
-                width: 50,
+                height: 37,
+                width: 55,
               ),
               const SizedBox(height: 15),
               const Text("Now let's make you a RFK Member.",
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.w400)),
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
 
               // Verification code RichText
               RichText(
@@ -290,7 +302,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
 
               // Verification Code Field
               TextFormField(
@@ -306,10 +318,13 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                     padding: EdgeInsets.all(8.0),
                     child: GestureDetector(
                       onTap: _isResendAvailable ? _resendCode : null,
-                      child: Image.asset(
-                        "assets/icons/ArrowsClockwise.png",
-                        height: 5,
-                        width: 5,
+                      child: Opacity(
+                        opacity: _isResendAvailable ? 1.0 : 0.5,
+                        child: Image.asset(
+                          "assets/icons/ArrowsClockwise.png",
+                          height: 24,
+                          width: 24,
+                        ),
                       ),
                     ),
                   ),
@@ -326,15 +341,23 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 10),
-              Text(
-                _isResendAvailable
-                    ? 'You can resend the code'
-                    : 'Resend in $_timerDuration',
-                style: const TextStyle(color: Colors.grey),
-                textAlign: TextAlign.right,
+              const SizedBox(height: 5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    _isResendAvailable
+                        ? 'Resend Code'
+                        : 'Resend in $_timerDuration',
+                    style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400),
+                    textAlign: TextAlign.right,
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               // Name Fields
               Row(
@@ -437,23 +460,36 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 10),
-              Text(
-                _isLengthValid
-                    ? '✓ Minimum of 8 characters'
-                    : 'X Minimum of 8 characters',
-                style: TextStyle(
-                    color:
-                        _isLengthValid ? Color(0xff32862B) : Color(0xff767676)),
+              const SizedBox(height: 5),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Text(
+                  _isLengthValid
+                      ? '✓ Minimum of 8 characters'
+                      : 'X Minimum of 8 characters',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: _isLengthValid
+                          ? Color(0xff32862B)
+                          : Color(0xff767676)),
+                ),
               ),
-              Text(
-                _isComplexityValid
-                    ? '✓ Uppercase, lowercase letters and one number'
-                    : 'X Uppercase, lowercase letters and one number',
-                style: TextStyle(
-                    color: _isComplexityValid
-                        ? Color(0xff32862B)
-                        : Color(0xff767676)),
+              const SizedBox(height: 10),
+
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Text(
+                  _isComplexityValid
+                      ? '✓ Uppercase, lowercase letters and one number'
+                      : 'X Uppercase, lowercase letters and one number',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: _isComplexityValid
+                          ? Color(0xff32862B)
+                          : Color(0xff767676)),
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -552,7 +588,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                     children: [
                       Text(
                         _dateOfBirth == null
-                            ? 'Select Date of Birth'
+                            ? 'Date of Birth'
                             : '${_dateOfBirth!.day} ${_getMonthName(_dateOfBirth!.month)} ${_dateOfBirth!.year}',
                         style: TextStyle(
                           color: _dateOfBirth == null
@@ -563,7 +599,7 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                       ),
                       Image.asset(
                         'assets/icons/CalendarBlank.png',
-                        color: Color(0xff767676),
+                        color: Colors.black,
                         height: 24,
                         width: 24,
                       ),
@@ -635,23 +671,55 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
               // Agreements
               const SizedBox(height: 40),
 
+              // Get Updates Checkbox
               // terms and conditions
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Checkbox(
-                      value: false,
-                      onChanged: (value) {
-                        print(value);
-                      }),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    value: _getUpdates,
+                    onChanged: (value) {
+                      setState(() {
+                        _getUpdates = value ?? false;
+                      });
+                    },
+                    activeColor: Colors.black,
+                  ),
+                  Expanded(
+                    child: Text(
+                        'Sign up for emails to get updates from RFK on products, offers and your Member benefits.'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+
+              // terms and conditions
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Checkbox(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    value: _termsAccepted,
+                    onChanged: (value) {
+                      setState(() {
+                        _termsAccepted = value ?? false;
+                      });
+                    },
+                    activeColor: Colors.black,
+                  ),
                   Expanded(
                     child: RichText(
                       softWrap: true,
-                      overflow: TextOverflow.ellipsis,
-                      text: const TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
+                      text: TextSpan(
+                        children: [
+                          const TextSpan(
                             text: 'I agree to RFK\'s ',
                             style: TextStyle(
                               color: Colors.black,
@@ -659,27 +727,41 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                             ),
                           ),
                           TextSpan(
-                            text: 'Privacy Policy ',
-                            style: TextStyle(
+                            text: 'Privacy Policy',
+                            style: const TextStyle(
                               decoration: TextDecoration.underline,
                               color: Colors.black,
                               fontFamily: 'Outfit',
                               fontSize: 16,
                             ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                // Launch privacy policy URL
+                                launchUrl(Uri.parse(
+                                    'https://rfkicks.com/privacy-policy'));
+                              },
+                          ),
+                          const TextSpan(
+                            text: ' and ',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'Outfit',
+                            ),
                           ),
                           TextSpan(
-                            text: ' and\n',
-                            style: TextStyle(
-                                color: Colors.black, fontFamily: 'Outfit'),
-                          ),
-                          TextSpan(
-                            text: 'Terms of Use. ',
-                            style: TextStyle(
+                            text: 'Terms of Use',
+                            style: const TextStyle(
                               decoration: TextDecoration.underline,
                               color: Colors.black,
                               fontFamily: 'Outfit',
                               fontSize: 16,
                             ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                // Launch terms of use URL
+                                launchUrl(Uri.parse(
+                                    'https://rfkicks.com/terms-of-use'));
+                              },
                           ),
                         ],
                       ),

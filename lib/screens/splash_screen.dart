@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:jobtask/screens/auth/sign_in_screen.dart';
 import 'package:jobtask/screens/dashboard_screen.dart';
@@ -18,56 +20,75 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkToken();
   }
 
-  // Future<void> _checkToken() async {
-  //   final storage = FlutterSecureStorage();
-  //   final token = await storage.read(key: 'auth_token');
-  //   await Future.delayed(const Duration(seconds: 3));
-  //
-  //   if (token != null) {
-  //     try {
-  //       final isValid = await ApiService.validateToken(token);
-  //       if (isValid) {
-  //         Navigator.of(context).pushReplacement(
-  //           MaterialPageRoute(builder: (context) => DashboardScreen(token: token)),
-  //         );
-  //         return;
-  //       }
-  //     } catch (e) {
-  //       print('Error validating token: $e');
-  //     }
-  //   }
-  //
-  //   Navigator.of(context).pushReplacement(
-  //     MaterialPageRoute(builder: (context) => StartupScreen()),
-  //   );
-  // }
-
   Future<void> _checkToken() async {
     final storage = const FlutterSecureStorage();
     final token = await storage.read(key: 'auth_token');
+    print('Stored token: $token');
+
     await Future.delayed(const Duration(seconds: 3));
 
     if (token != null) {
       try {
-        final isValid = await ApiService.validateToken(token);
-        if (isValid) {
-          navigateWithSlideTransition(context, DashboardScreen(token: token));
+        final isValidFromApi = await ApiService.validateToken(token);
+        print('API Validation result: $isValidFromApi');
 
-          // Navigator.of(context).pushReplacement(
-          //   _createSlideTransition(DashboardScreen(token: token)),
-          // );
+        if (isValidFromApi) {
+          navigateWithSlideTransition(context, DashboardScreen(token: token));
           return;
         }
+
+        // Move JWT validation here, outside the catch block
+        final parts = token.split('.');
+        if (parts.length == 3) {
+          final payload = json.decode(
+              utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
+          final expirationDate =
+              DateTime.fromMillisecondsSinceEpoch(payload['exp'] * 1000);
+
+          if (expirationDate.isAfter(DateTime.now())) {
+            navigateWithSlideTransition(context, DashboardScreen(token: token));
+            return;
+          }
+        }
       } catch (e) {
-        print('Error validating token: $e');
+        print('Token validation error: $e');
       }
     }
 
     navigateWithSlideTransition(context, const StartupScreen());
-    // Navigator.of(context).pushReplacement(
-    //   _createSlideTransition(StartupScreen()),
-    // );
   }
+
+  // Future<void> _checkToken() async {
+  //   final storage = const FlutterSecureStorage();
+  //   final token = await storage.read(key: 'auth_token');
+  //   print('Stored token: $token'); // Debug print
+
+  //   await Future.delayed(const Duration(seconds: 3));
+
+  //   if (token != null) {
+  //     try {
+  //       final isValid = await ApiService.validateToken(token);
+  //       print('Token validation result: $isValid'); // Debug print
+
+  //       if (isValid) {
+  //         navigateWithSlideTransition(context, DashboardScreen(token: token));
+
+  //         // Navigator.of(context).pushReplacement(
+  //         //   _createSlideTransition(DashboardScreen(token: token)),
+  //         // );
+  //         return;
+  //       }
+  //     } catch (e) {
+  //       print('Error validating token: $e');
+  //       print('Token validation error: $e'); // Debug print
+  //     }
+  //   }
+
+  //   navigateWithSlideTransition(context, const StartupScreen());
+  //   // Navigator.of(context).pushReplacement(
+  //   //   _createSlideTransition(StartupScreen()),
+  //   // );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +100,8 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             Image.asset(
               'assets/images/rfk_preview.png',
-              height: 150,
-              width: 150,
+              height: 154,
+              width: 154,
             ),
             const SizedBox(height: 20),
             const Text(
@@ -88,12 +109,10 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(
                   fontSize: 28,
                   color: Color(0xffffffff),
-                  fontWeight: FontWeight.bold),
+                  fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 30),
-            const CircularProgressIndicator(
-              color: Color(0xff3c76ad),
-            ),
+            const CircularProgressIndicator(color: Color(0xffffffff)),
           ],
         ),
       ),

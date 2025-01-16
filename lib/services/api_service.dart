@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:jobtask/models/order_receipt.dart';
+import 'package:jobtask/models/saved_card.dart';
 import 'package:jobtask/screens/shop/shop_screen.dart';
 import 'dart:convert';
 
@@ -105,6 +106,167 @@ class ApiService {
       throw Exception('Error signing in: $e');
     }
   }
+
+  // Onboarding
+  static Future<bool> checkOnboardingStatus(String token) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/get_user_profile'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ).timeout(timeoutDuration);
+
+      // print('Full response: ${response.body}'); // Debug print
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final userProfile = data['user'];
+
+        // print(
+        //     'Onboarding status: ${userProfile['onboarding_completed']}'); // Debug print
+
+        return userProfile['onboarding_completed'] == 1 ||
+            userProfile['onboarding_completed'] == '1' ||
+            userProfile['onboarding_completed'] == true;
+      }
+      return false;
+    } catch (e) {
+      print('Error checking onboarding status: $e');
+      return false;
+    }
+  }
+
+  // static Future<bool> checkOnboardingStatus(String token) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/get_user_profile'),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       final userProfile = data['user'];
+
+  //       // Check if shoe_size exists as that indicates onboarding completion
+  //       return userProfile['shoe_size'] != null &&
+  //           userProfile['shoe_size'].isNotEmpty;
+  //     }
+  //     return false;
+  //   } catch (e) {
+  //     print('Error checking onboarding status: $e');
+  //     return false;
+  //   }
+  // }
+
+  // static Future<bool> checkOnboardingStatus(String token) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/get_user_profile'),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       final profileData = data['user_profile'];
+  //       return profileData['onboarding_completed'] == '1' ||
+  //           profileData['onboarding_completed'] == 1;
+  //     }
+  //     return false;
+  //   } catch (e) {
+  //     print('Error checking onboarding status: $e');
+  //     return false;
+  //   }
+  // }
+  // static Future<bool> checkOnboardingStatus(String token) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/get_user_profile'),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body)['user'];
+  //       return data['onboarding_completed'] == true;
+  //     }
+  //     return false;
+  //   } catch (e) {
+  //     print('Error checking onboarding status: $e');
+  //     return false;
+  //   }
+  // }
+
+  static Future<bool> completeOnboarding(
+      String token, Map<String, dynamic> onboardingData) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$baseUrl/update_user_profile'),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token',
+            },
+            body: json.encode({
+              'shoe_size': onboardingData['shoe_size'].toString(),
+              'preferences': json.encode({
+                'category': onboardingData['category'],
+              }),
+              'onboarding_completed': '1'
+            }),
+          )
+          .timeout(timeoutDuration);
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['success'] == true;
+      }
+      return false;
+    } catch (e) {
+      print('Error completing onboarding: $e');
+      return false;
+    }
+  }
+
+  // static Future<bool> completeOnboarding(
+  //     String token, Map<String, dynamic> onboardingData) async {
+  //   try {
+  //     var request = http.MultipartRequest(
+  //       'POST',
+  //       Uri.parse('$baseUrl/update_user_profile'),
+  //     );
+
+  //     request.headers['Authorization'] = 'Bearer $token';
+
+  //     // Add onboarding data
+  //     request.fields['shoe_size'] = onboardingData['shoe_size'].toString();
+  //     request.fields['preferences'] = json.encode({
+  //       'category': onboardingData['category'],
+  //     });
+  //     request.fields['onboarding_completed'] = 'true';
+
+  //     var response = await request.send();
+  //     var responseData = await response.stream.bytesToString();
+  //     var jsonResponse = json.decode(responseData);
+
+  //     return jsonResponse['success'] == true;
+  //   } catch (e) {
+  //     print('Error completing onboarding: $e');
+  //     return false;
+  //   }
+  // }
 
   static Future<bool> validateToken(String token) async {
     try {
@@ -423,10 +585,10 @@ class ApiService {
   //     throw Exception('Error creating payment: $e');
   //   }
   // }
+  // -------------------------------------------------------------
   static Future<Map<String, String>> createPaymentIntent(
       String token, Map<String, dynamic> paymentData) async {
     try {
-      // Add detailed service information to the payment data
       final servicesData = paymentData['cart_items']
           .map((item) => {
                 'service_id': item['product_id'],
@@ -436,7 +598,6 @@ class ApiService {
               })
           .toList();
 
-      // Add address data structure
       final addressData = {
         'address_type': 'shipping',
         'first_name': paymentData['shipping_first_name'],
@@ -455,10 +616,18 @@ class ApiService {
         ...paymentData,
         'services_details': servicesData,
         'shipping_address': addressData,
+        'delivery_type': paymentData['delivery_type'],
+        'payment_method_type': 'card',
+        'use_saved_card': paymentData['payment_method'] != null,
+        'off_session': paymentData['payment_method'] != null,
+        'confirm': paymentData['payment_method'] != null,
       };
 
+      print(
+          'Creating payment intent with data: ${json.encode(enhancedPaymentData)}');
+
       final response = await http.post(
-        Uri.parse('$baseUrl/handle_payment.php'),
+        Uri.parse('$baseUrl/create_payment_intent.php'),
         body: json.encode(enhancedPaymentData),
         headers: {
           'Content-Type': 'application/json',
@@ -466,15 +635,340 @@ class ApiService {
         },
       ).timeout(timeoutDuration);
 
+      print('Response Status: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
       final data = json.decode(response.body);
       return {
         'clientSecret': data['clientSecret'],
-        'orderId': data['order_id'].toString()
+        'paymentIntentId': data['payment_intent_id']
       };
     } catch (e) {
+      print('Payment creation error details: $e');
       throw Exception('Error creating payment: $e');
     }
   }
+
+  // -------------------------------------------------------------
+  // static Future<Map<String, String>> createPaymentIntent(
+  //     String token, Map<String, dynamic> paymentData) async {
+  //   try {
+  //     final servicesData = paymentData['cart_items']
+  //         .map((item) => {
+  //               'service_id': item['product_id'],
+  //               'quantity': item['quantity'],
+  //               'price': item['price'],
+  //               'total_amount': (item['quantity'] * item['price']),
+  //             })
+  //         .toList();
+
+  //     final addressData = {
+  //       'address_type': 'shipping',
+  //       'first_name': paymentData['shipping_first_name'],
+  //       'last_name': paymentData['shipping_last_name'],
+  //       'address_1': paymentData['shipping_address_1'],
+  //       'address_2': paymentData['shipping_address_2'],
+  //       'city': paymentData['shipping_city'],
+  //       'state': paymentData['shipping_state'],
+  //       'postcode': paymentData['shipping_postcode'],
+  //       'country': paymentData['shipping_country'],
+  //       'email': paymentData['email'],
+  //       'phone': paymentData['shipping_phone'],
+  //     };
+
+  //     final enhancedPaymentData = {
+  //       ...paymentData,
+  //       'services_details': servicesData,
+  //       'shipping_address': addressData,
+  //       'delivery_type': paymentData['delivery_type'],
+  //       'payment_method_type': 'card',
+  //       'off_session': paymentData['use_saved_card'] == true,
+  //       'confirm': paymentData['use_saved_card'] == true,
+  //     };
+
+  //     final response = await http.post(
+  //       Uri.parse('$baseUrl/create_payment_intent.php'),
+  //       body: json.encode(enhancedPaymentData),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     print('Response Status: ${response.statusCode}');
+  //     print('Response Body: ${response.body}');
+
+  //     final data = json.decode(response.body);
+  //     return {
+  //       'clientSecret': data['clientSecret'],
+  //       'paymentIntentId': data['payment_intent_id']
+  //     };
+  //   } catch (e) {
+  //     throw Exception('Error creating payment: $e');
+  //   }
+  // }
+  // -------------------------------------------------------------
+  // static Future<Map<String, String>> createPaymentIntent(
+  //     String token, Map<String, dynamic> paymentData) async {
+  //   try {
+  //     // Add detailed service information to the payment data
+  //     final servicesData = paymentData['cart_items']
+  //         .map((item) => {
+  //               'service_id': item['product_id'],
+  //               'quantity': item['quantity'],
+  //               'price': item['price'],
+  //               'total_amount': (item['quantity'] * item['price']),
+  //             })
+  //         .toList();
+
+  //     // Add address data structure
+  //     final addressData = {
+  //       'address_type': 'shipping',
+  //       'first_name': paymentData['shipping_first_name'],
+  //       'last_name': paymentData['shipping_last_name'],
+  //       'address_1': paymentData['shipping_address_1'],
+  //       'address_2': paymentData['shipping_address_2'],
+  //       'city': paymentData['shipping_city'],
+  //       'state': paymentData['shipping_state'],
+  //       'postcode': paymentData['shipping_postcode'],
+  //       'country': paymentData['shipping_country'],
+  //       'email': paymentData['email'],
+  //       'phone': paymentData['shipping_phone'],
+  //     };
+
+  //     final enhancedPaymentData = {
+  //       ...paymentData,
+  //       'services_details': servicesData,
+  //       'shipping_address': addressData,
+  //       'delivery_type': paymentData['delivery_type'],
+  //     };
+
+  //     final response = await http.post(
+  //       Uri.parse('$baseUrl/create_payment_intent.php'),
+  //       body: json.encode(enhancedPaymentData),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     print('Response Status: ${response.statusCode}');
+  //     print('Response Body: ${response.body}');
+
+  //     final data = json.decode(response.body);
+  //     return {
+  //       'clientSecret': data['clientSecret'],
+  //       'paymentIntentId': data['payment_intent_id']
+  //     };
+  //   } catch (e) {
+  //     throw Exception('Error creating payment: $e');
+  //   }
+  // }
+// ---------------------------------------------------
+  // static Future<String> createOrder(String token, String paymentIntentId,
+  //     Map<String, dynamic> paymentData) async {
+  //   try {
+  //     // Add detailed service information to the payment data
+  //     final servicesData = paymentData['cart_items']
+  //         .map((item) => {
+  //               'service_id': item['product_id'],
+  //               'quantity': item['quantity'],
+  //               'price': item['price'],
+  //               'total_amount': (item['quantity'] * item['price']),
+  //             })
+  //         .toList();
+
+  //     // Get delivery address from storage
+  //     final addressData = {
+  //       'first_name': paymentData['shipping_first_name'],
+  //       'last_name': paymentData['shipping_last_name'],
+  //       'address_1': paymentData['shipping_address_1'],
+  //       'address_2': paymentData['shipping_address_2'],
+  //       'city': paymentData['shipping_city'],
+  //       'state': paymentData['shipping_state'],
+  //       'postcode': paymentData['shipping_postcode'],
+  //       'country': paymentData['shipping_country'],
+  //       'phone': paymentData['shipping_phone'],
+  //     };
+
+  //     final orderData = {
+  //       ...paymentData,
+  //       'payment_intent_id': paymentIntentId,
+  //       'services_details': servicesData,
+  //       'shipping_address': addressData,
+  //     };
+
+  //     final response = await http.post(
+  //       Uri.parse('$baseUrl/create_order.php'),
+  //       body: json.encode(orderData),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     final data = json.decode(response.body);
+  //     return data['order_id'].toString();
+  //   } catch (e) {
+  //     throw Exception('Error creating order: $e');
+  //   }
+  // }
+// ----------------------------------------------------------------
+  static Future<String> createOrder(String token, String paymentIntentId,
+      Map<String, dynamic> paymentData) async {
+    try {
+      final servicesData = paymentData['cart_items']
+          .map((item) => {
+                'service_id': item['product_id'],
+                'quantity': item['quantity'],
+                'price': item['price'],
+                'total_amount': (item['quantity'] * item['price']),
+              })
+          .toList();
+
+      final addressData = {
+        'first_name': paymentData['shipping_first_name'],
+        'last_name': paymentData['shipping_last_name'],
+        'address_1': paymentData['shipping_address_1'],
+        'address_2': paymentData['shipping_address_2'],
+        'city': paymentData['shipping_city'],
+        'state': paymentData['shipping_state'],
+        'postcode': paymentData['shipping_postcode'],
+        'country': paymentData['shipping_country'],
+        'phone': paymentData['shipping_phone'],
+      };
+
+      final orderData = {
+        ...paymentData,
+        'payment_intent_id': paymentIntentId,
+        'services_details': servicesData,
+        'shipping_address': addressData,
+        'payment_method': paymentData['payment_method'],
+        'use_saved_card': paymentData['use_saved_card'],
+      };
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/create_order.php'),
+        body: json.encode(orderData),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ).timeout(timeoutDuration);
+
+      final data = json.decode(response.body);
+      return data['order_id'].toString();
+    } catch (e) {
+      throw Exception('Error creating order: $e');
+    }
+  }
+
+  // static Future<String> createOrder(String token, String paymentIntentId,
+  //     Map<String, dynamic> paymentData) async {
+  //   try {
+  //     final servicesData = paymentData['cart_items']
+  //         .map((item) => {
+  //               'service_id': item['product_id'],
+  //               'quantity': item['quantity'],
+  //               'price': item['price'],
+  //               'total_amount': (item['quantity'] * item['price']),
+  //             })
+  //         .toList();
+
+  //     final addressData = {
+  //       'address_type': 'shipping',
+  //       'first_name': paymentData['shipping_first_name'],
+  //       'last_name': paymentData['shipping_last_name'],
+  //       'address_1': paymentData['shipping_address_1'],
+  //       'address_2': paymentData['shipping_address_2'],
+  //       'city': paymentData['shipping_city'],
+  //       'state': paymentData['shipping_state'],
+  //       'postcode': paymentData['shipping_postcode'],
+  //       'country': paymentData['shipping_country'],
+  //       'email': paymentData['email'],
+  //       'phone': paymentData['shipping_phone'],
+  //     };
+
+  //     final orderData = {
+  //       ...paymentData,
+  //       'payment_intent_id': paymentIntentId,
+  //       'services_details': servicesData,
+  //       'shipping_address': addressData,
+  //       'delivery_type': paymentData['delivery_type'],
+  //     };
+
+  //     final response = await http.post(
+  //       Uri.parse('$baseUrl/create_order.php'),
+  //       body: json.encode(orderData),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     final data = json.decode(response.body);
+  //     return data['order_id'].toString();
+  //   } catch (e) {
+  //     throw Exception('Error creating order: $e');
+  //   }
+  // }
+
+  // static Future<Map<String, String>> createPaymentIntent(
+  //     String token, Map<String, dynamic> paymentData) async {
+  //   try {
+  //     // Add detailed service information to the payment data
+  //     final servicesData = paymentData['cart_items']
+  //         .map((item) => {
+  //               'service_id': item['product_id'],
+  //               'quantity': item['quantity'],
+  //               'price': item['price'],
+  //               'total_amount': (item['quantity'] * item['price']),
+  //             })
+  //         .toList();
+
+  //     // Add address data structure
+  //     final addressData = {
+  //       'address_type': 'shipping',
+  //       'first_name': paymentData['shipping_first_name'],
+  //       'last_name': paymentData['shipping_last_name'],
+  //       'address_1': paymentData['shipping_address_1'],
+  //       'address_2': paymentData['shipping_address_2'],
+  //       'city': paymentData['shipping_city'],
+  //       'state': paymentData['shipping_state'],
+  //       'postcode': paymentData['shipping_postcode'],
+  //       'country': paymentData['shipping_country'],
+  //       'email': paymentData['email'],
+  //       'phone': paymentData['shipping_phone'],
+  //     };
+
+  //     final enhancedPaymentData = {
+  //       ...paymentData,
+  //       'services_details': servicesData,
+  //       'shipping_address': addressData,
+  //       'delivery_type': paymentData['delivery_type'],
+  //     };
+
+  //     final response = await http.post(
+  //       Uri.parse('$baseUrl/handle_payment.php'),
+  //       body: json.encode(enhancedPaymentData),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     print('Response Status: ${response.statusCode}'); // Log status
+  //     print('Response Body: ${response.body}'); // Log response
+
+  //     final data = json.decode(response.body);
+  //     return {
+  //       'clientSecret': data['clientSecret'],
+  //       'orderId': data['order_id'].toString()
+  //     };
+  //   } catch (e) {
+  //     throw Exception('Error creating payment: $e');
+  //   }
+  // }
 
   static Future<bool> updateOrderStatus(
       String token, String orderId, String status) async {
@@ -861,4 +1355,285 @@ class ApiService {
   //     throw Exception('Error loading order history: $e');
   //   }
   // }
+
+  //---------------------------------------------------------
+  // Add these methods to the existing ApiService class
+
+// Billing Address Methods
+  static Future<int> saveBillingAddress(
+      String token, Map<String, dynamic> addressData) async {
+    final userProfile = await getUserProfile(token);
+    final userId = userProfile['ID'];
+
+    final requestData = {
+      'user_id': userId,
+      'first_name': addressData['first_name'],
+      'last_name': addressData['last_name'],
+      'address_1': addressData['address_1'],
+      'address_2': addressData['address_2'],
+      'city': addressData['city'],
+      'state': addressData['state'],
+      'postcode': addressData['postcode'],
+      'country': addressData['country'],
+      'phone': addressData['phone']
+    };
+
+    final response = await http
+        .post(
+          Uri.parse('$baseUrl/payment/save_billing_address.php'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: json.encode(requestData),
+        )
+        .timeout(timeoutDuration);
+
+    print('Billing Address Response: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['status'] == 'success') {
+        return data['address_id'];
+      }
+      throw Exception(data['message'] ?? 'Failed to save billing address');
+    }
+
+    throw Exception('Server error occurred');
+  }
+
+  // static Future<int> saveBillingAddress(
+  //     String token, Map<String, dynamic> addressData) async {
+  //   final response = await http
+  //       .post(
+  //         Uri.parse('$baseUrl/payment/save_billing_address.php'),
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': 'Bearer $token',
+  //         },
+  //         body: json.encode(addressData),
+  //       )
+  //       .timeout(timeoutDuration);
+
+  //   final data = json.decode(response.body);
+  //   if (data['status'] == 'success') {
+  //     return data['address_id'];
+  //   }
+  //   throw Exception(data['message']);
+  // }
+
+  static Future<List<Map<String, dynamic>>> getBillingAddresses(
+      String token) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/payment/get_billing_addresses.php'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    ).timeout(timeoutDuration);
+
+    final data = json.decode(response.body);
+    if (data['status'] == 'success') {
+      return List<Map<String, dynamic>>.from(data['addresses']);
+    }
+    throw Exception(data['message']);
+  }
+
+// Saved Cards Methods
+  // static Future<void> saveCard(
+  //     String token, Map<String, dynamic> cardData) async {
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse('$baseUrl/save_card.php'),
+  //       body: json.encode(cardData),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     if (response.statusCode != 200) {
+  //       throw Exception('Failed to save card');
+  //     }
+  //   } catch (e) {
+  //     throw Exception('Error saving card: $e');
+  //   }
+  // }
+  static Future<void> saveCard(
+      String token, Map<String, dynamic> cardData) async {
+    try {
+      print('Saving card with data: $cardData');
+
+      final response = await http
+          .post(
+            Uri.parse(
+                '${baseUrl}/payment/save_card.php'), // Updated endpoint path
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token',
+              'Cache-Control': 'no-cache',
+            },
+            body: json.encode(cardData),
+          )
+          .timeout(timeoutDuration);
+
+      print('Card save response: ${response.body}');
+      print('Response status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['status'] == 'success') {
+          return;
+        }
+        throw Exception(data['message'] ?? 'Failed to save card');
+      } else {
+        throw Exception('Server returned ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error saving card: $e');
+    }
+  }
+
+  // static Future<void> saveCard(
+  //     String token, Map<String, dynamic> cardData) async {
+  //   try {
+  //     final response = await http
+  //         .post(
+  //           Uri.parse('$baseUrl/payment/save_card.php'),
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //             'Authorization': 'Bearer $token',
+  //           },
+  //           body: json.encode(cardData),
+  //         )
+  //         .timeout(timeoutDuration);
+
+  //     print('Save Card Response: ${response.body}');
+
+  //     if (response.body.isEmpty) {
+  //       throw Exception('Server returned empty response');
+  //     }
+
+  //     final data = json.decode(response.body);
+  //     if (data['status'] != 'success') {
+  //       throw Exception(data['message']);
+  //     }
+  //   } catch (e) {
+  //     print('Save Card Error: $e');
+  //     rethrow;
+  //   }
+  // }
+
+  // static Future<void> saveCard(
+  //     String token, Map<String, dynamic> cardData) async {
+  //   final response = await http
+  //       .post(
+  //         Uri.parse('$baseUrl/payment/save_card.php'),
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': 'Bearer $token',
+  //         },
+  //         body: json.encode(cardData),
+  //       )
+  //       .timeout(timeoutDuration);
+
+  //   final data = json.decode(response.body);
+  //   if (data['status'] != 'success') {
+  //     throw Exception(data['message']);
+  //   }
+  // }
+
+  static Future<List<SavedCard>> getSavedCards(String token) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/payment/get_saved_cards.php'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ).timeout(timeoutDuration);
+
+      print('Cards API Response: ${response.body}');
+
+      final data = json.decode(response.body);
+      if (data['status'] == 'success') {
+        final cardsList = data['cards'] as List;
+        return cardsList.map((card) => SavedCard.fromJson(card)).toList();
+      }
+
+      return [];
+    } catch (e) {
+      print('Error details: $e');
+      return [];
+    }
+  }
+
+  // static Future<List<SavedCard>> getSavedCards(String token) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/get_saved_cards.php'),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $token',
+  //       },
+  //     ).timeout(timeoutDuration);
+
+  //     final data = json.decode(response.body);
+  //     return (data as List).map((card) => SavedCard.fromJson(card)).toList();
+  //   } catch (e) {
+  //     throw Exception('Error fetching saved cards: $e');
+  //   }
+  // }
+
+  // static Future<List<Map<String, dynamic>>> getSavedCards(String token) async {
+  //   final response = await http.get(
+  //     Uri.parse('$baseUrl/payment/get_saved_cards.php'),
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': 'Bearer $token',
+  //     },
+  //   ).timeout(timeoutDuration);
+
+  //   final data = json.decode(response.body);
+  //   if (data['status'] == 'success') {
+  //     return List<Map<String, dynamic>>.from(data['cards']);
+  //   }
+  //   throw Exception(data['message']);
+  // }
+
+  static Future<void> updateDefaultCard(String token, int cardId) async {
+    final response = await http
+        .post(
+          Uri.parse('$baseUrl/payment/update_default_card.php'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: json.encode({'card_id': cardId}),
+        )
+        .timeout(timeoutDuration);
+
+    final data = json.decode(response.body);
+    if (data['status'] != 'success') {
+      throw Exception(data['message']);
+    }
+  }
+
+  static Future<void> deleteCard(String token, int cardId) async {
+    final response = await http
+        .post(
+          Uri.parse('$baseUrl/payment/delete_card.php'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: json.encode({'card_id': cardId}),
+        )
+        .timeout(timeoutDuration);
+
+    final data = json.decode(response.body);
+    if (data['status'] != 'success') {
+      throw Exception(data['message']);
+    }
+  }
 }

@@ -355,8 +355,8 @@ class _AdminServicesScreenState extends State<AdminServicesScreen>
   Future<void> _showDeleteDialog(Service service) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xccf2f2f2),
+      builder: (context) => AlertDialog.adaptive(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         title: Text('Delete Service'),
         content: Text('Are you sure you want to delete ${service.name}?'),

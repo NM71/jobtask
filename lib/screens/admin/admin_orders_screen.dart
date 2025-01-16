@@ -546,6 +546,7 @@ class Order {
   final String? paymentMethodTitle;
   final String? transactionId;
   final OrderAddress? address;
+  final String? deliveryType;
   final List<OrderItem> items;
 
   Order({
@@ -561,6 +562,7 @@ class Order {
     this.paymentMethodTitle,
     this.transactionId,
     this.address,
+    this.deliveryType,
     this.items = const [],
   });
 
@@ -581,6 +583,7 @@ class Order {
       paymentMethodTitle: json['payment_method_title'],
       transactionId: json['transaction_id'],
       address: json['address_1'] != null ? OrderAddress.fromJson(json) : null,
+      deliveryType: json['delivery_type'] ?? 'Standard Delivery',
       items: (json['items'] as List?)
               ?.map((item) => OrderItem.fromJson(item))
               .toList() ??

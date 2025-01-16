@@ -34,180 +34,186 @@ class _EmailInputScreenState extends State<EmailInputScreen> {
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+        padding: const EdgeInsets.symmetric(horizontal: 36.0, vertical: 36),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 50),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.asset(
-                    'assets/images/header2-2-1.png',
-                    height: 37,
-                    width: 55,
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Enter your email to join us or sign in.',
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w400),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40),
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.only(left: 10, top: 20, bottom: 20),
-                  labelText: 'Email',
-                  labelStyle: TextStyle(color: Color(0xff767676)),
-                  border: customBorder(),
-                  enabledBorder: customBorder(),
-                  focusedBorder: customBorder(),
-                  // border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) => validateEmail(value ?? ''),
-              ),
-              const SizedBox(height: 40),
-              RichText(
-                text: TextSpan(
-                  children: <TextSpan>[
-                    const TextSpan(
-                      text: 'By continuing, I agree to RFK\'s \n',
-                      style: TextStyle(
-                          color: Color(0xff767676),
-                          fontFamily: 'Outfit',
-                          fontSize: 16),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 50),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Image.asset(
+                      'assets/images/header2-2-1.png',
+                      height: 37,
+                      width: 55,
                     ),
-                    TextSpan(
-                      text: 'Privacy Policy ',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Color(0xff767676),
-                        fontFamily: 'Outfit',
-                        fontSize: 16,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CustomWebViewScreen(
-                                url: 'https://rfkicks.com/privacy-policy/',
-                                title: 'Privacy Policy',
-                              ),
-                            ),
-                          );
-                        },
-                    ),
-                    const TextSpan(
-                      text: ' and ',
-                      style: TextStyle(
-                          color: Color(0xff767676),
-                          fontFamily: 'Outfit',
-                          fontSize: 16),
-                    ),
-                    TextSpan(
-                      text: 'Terms of Use. ',
-                      style: const TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: Color(0xff767676),
-                        fontFamily: 'Outfit',
-                        fontSize: 16,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CustomWebViewScreen(
-                                url: 'https://rfkicks.com/terms-conditions/',
-                                title: 'Terms of Use',
-                              ),
-                            ),
-                          );
-                        },
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Enter your email to join us or sign in.',
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.w400),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 40),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(16),
-                  minimumSize: const Size(double.infinity, 50),
-                  backgroundColor: const Color(0xff3c76ad),
-                  foregroundColor: const Color(0xffffffff),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
+                const SizedBox(height: 40),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.only(left: 10, top: 20, bottom: 20),
+                    labelText: 'Email',
+                    labelStyle: TextStyle(color: Color(0xff767676)),
+                    border: customBorder(),
+                    enabledBorder: customBorder(),
+                    focusedBorder: customBorder(),
+                    // border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) => validateEmail(value ?? ''),
+                ),
+                const SizedBox(height: 40),
+                RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      const TextSpan(
+                        text: 'By continuing, I agree to RFK\'s \n',
+                        style: TextStyle(
+                            color: Color(0xff767676),
+                            fontFamily: 'Outfit',
+                            fontSize: 16),
+                      ),
+                      TextSpan(
+                        text: 'Privacy Policy ',
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Color(0xff767676),
+                          fontFamily: 'Outfit',
+                          fontSize: 16,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CustomWebViewScreen(
+                                  url: 'https://rfkicks.com/privacy-policy/',
+                                  title: 'Privacy Policy',
+                                ),
+                              ),
+                            );
+                          },
+                      ),
+                      const TextSpan(
+                        text: ' and ',
+                        style: TextStyle(
+                            color: Color(0xff767676),
+                            fontFamily: 'Outfit',
+                            fontSize: 16),
+                      ),
+                      TextSpan(
+                        text: 'Terms of Use. ',
+                        style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Color(0xff767676),
+                          fontFamily: 'Outfit',
+                          fontSize: 16,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CustomWebViewScreen(
+                                  url: 'https://rfkicks.com/terms-conditions/',
+                                  title: 'Terms of Use',
+                                ),
+                              ),
+                            );
+                          },
+                      ),
+                    ],
                   ),
                 ),
-                onPressed: _isLoading
-                    ? null
-                    : () async {
-                        setState(() {
-                          _isLoading = true; // Start loading
-                        });
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(16),
+                    minimumSize: const Size(double.infinity, 50),
+                    backgroundColor: const Color(0xff3c76ad),
+                    foregroundColor: const Color(0xffffffff),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  onPressed: _isLoading
+                      ? null
+                      : () async {
+                          setState(() {
+                            _isLoading = true; // Start loading
+                          });
 
-                        if (_formKey.currentState!.validate()) {
-                          try {
-                            final success = await ApiService.submitEmail(
-                                _emailController.text);
-                            if (success) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RegistrationFormScreen(
-                                      email: _emailController.text),
-                                ),
-                              );
+                          if (_formKey.currentState!.validate()) {
+                            try {
+                              final success = await ApiService.submitEmail(
+                                  _emailController.text);
+                              if (success) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RegistrationFormScreen(
+                                            email: _emailController.text),
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              // ScaffoldMessenger.of(context).showSnackBar(
+                              //   SnackBar(content: Text('Error: ${e.toString()}')),
+                              // );
+                              CustomSnackbar.show(
+                                  context: context,
+                                  // message:
+                                  //     'Please check your email and try again');
+                                  message:
+                                      'Unable to send email, please check your internet and try again');
+
+                              // CustomSnackbar.show(
+                              //   context: context,
+                              //   message: 'Error: ${e.toString()}',
+                              // );
+                            } finally {
+                              setState(() {
+                                _isLoading = false; // Stop loading
+                              });
                             }
-                          } catch (e) {
-                            // ScaffoldMessenger.of(context).showSnackBar(
-                            //   SnackBar(content: Text('Error: ${e.toString()}')),
-                            // );
-                            CustomSnackbar.show(
-                                context: context,
-                                message:
-                                    'Please check your email and try again');
-
-                            // CustomSnackbar.show(
-                            //   context: context,
-                            //   message: 'Error: ${e.toString()}',
-                            // );
-                          } finally {
+                          } else {
                             setState(() {
-                              _isLoading = false; // Stop loading
+                              _isLoading =
+                                  false; // Stop loading if validation fails
                             });
                           }
-                        } else {
-                          setState(() {
-                            _isLoading =
-                                false; // Stop loading if validation fails
-                          });
-                        }
-                      },
-                child: _isLoading
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                          strokeWidth: 2.0,
+                        },
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                            strokeWidth: 2.0,
+                          ),
+                        )
+                      : const Text(
+                          'Next',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w400),
                         ),
-                      )
-                    : const Text(
-                        'Next',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w400),
-                      ),
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

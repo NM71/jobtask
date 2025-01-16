@@ -23,7 +23,7 @@ class StartupScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       opacity: 0.5,
-                      image: AssetImage('assets/images/rfkicks_bg.jpg'),
+                      image: AssetImage('assets/images/startup_screen.png'),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -31,7 +31,7 @@ class StartupScreen extends StatelessWidget {
               ),
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(15.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,31 +39,39 @@ class StartupScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              'assets/images/rfkicks_logo.png',
-                              height: 77,
-                              width: 77,
-                            ),
+                          Image.asset(
+                            'assets/images/rfkicks_logo.png',
+                            height: 77,
+                            width: 77,
                           ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AdminLoginScreen()),
-                              );
-                            },
-                            child: Text(
-                              'Admin Access',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
+                          MyButtonOutlined(
+                              text: 'Admin Access',
+                              textStyle:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => AdminLoginScreen()),
+                                );
+                              }),
+                          // TextButton(
+                          //   onPressed: () {
+                          //     Navigator.push(
+                          //       context,
+                          //       MaterialPageRoute(
+                          //           builder: (context) => AdminLoginScreen()),
+                          //     );
+                          //   },
+                          //   child: Text(
+                          //     'Admin Access',
+                          //     style: TextStyle(
+                          //       color: Colors.white,
+                          //       fontSize: 16,
+                          //       fontWeight: FontWeight.w500,
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                       Column(
@@ -71,14 +79,17 @@ class StartupScreen extends StatelessWidget {
                         children: [
                           Image.asset(
                             'assets/images/header2-2-1.png',
-                            height: 67,
-                            width: 67,
+                            height: 77,
+                            width: 77,
+                          ),
+                          SizedBox(
+                            height: 40,
                           ),
                           const Text(
-                            'Delivering top-notch shoe repair, cleaning, and inspiration for footwear lovers',
+                            'Delivering top-notch shoe repair, cleaning, and inspiration for footwear lovers.',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 28,
+                              fontSize: 24,
                             ),
                           ),
                           const SizedBox(height: 30),
@@ -86,6 +97,10 @@ class StartupScreen extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: MyButton(
+                                    height: 51,
+                                    width: 157,
+                                    textStyle: TextStyle(
+                                        fontSize: 16, color: Colors.white),
                                     text: "Join Us",
                                     onTap: () {
                                       showModalBottomSheet(
@@ -101,14 +116,17 @@ class StartupScreen extends StatelessWidget {
                               ),
                               Expanded(
                                 child: MyButtonOutlined(
+                                  height: 51,
+                                  width: 157,
+                                  textStyle: TextStyle(
+                                      fontSize: 16, color: Colors.white),
                                   text: "Sign In",
-                                  textStyle:
-                                      TextStyle(color: Color(0xffffffff)),
                                   onTap: () {
-                                    showDialog(
+                                    // showDialog(
+                                    showAdaptiveDialog(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return AlertDialog(
+                                        return AlertDialog.adaptive(
                                           backgroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
                                               borderRadius:

@@ -1,84 +1,3 @@
-// lib/main.dart
-// import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:flutter_stripe/flutter_stripe.dart';
-// import 'package:jobtask/screens/account%20setup/onboarding.dart';
-// import 'package:jobtask/screens/admin/admin_dashboard_screen.dart';
-// import 'package:jobtask/screens/admin/admin_login_screen.dart';
-// import 'package:jobtask/screens/auth/email_input_screen.dart';
-// import 'package:jobtask/screens/auth/sign_in_screen.dart';
-// import 'package:jobtask/screens/auth/signin_conformation_screen.dart';
-// import 'package:jobtask/screens/cart/cart_provider.dart';
-// import 'package:jobtask/screens/shop/shop_screen.dart';
-// import 'package:jobtask/screens/splash_screen.dart';
-// import 'package:provider/provider.dart';
-
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-
-//   // Initialize Stripe
-//   Stripe.publishableKey =
-//       'pk_test_51PhdXQRs4mT74uPoNeCCPidzaD0TPg5KYMYz3PIEhK1VJKSZv3VfoZlUuYqOAZOlCk5OwW8UQPRW1WeSeiHj0KO400xViMsXCS';
-//   await Stripe.instance.applySettings();
-
-//   CachedNetworkImage.logLevel = CacheManagerLogLevel.verbose;
-//   runApp(
-//     MultiProvider(
-//       providers: [
-//         ChangeNotifierProvider(create: (context) => CartProvider()),
-//         ChangeNotifierProvider(create: (context) => ServiceProvider()),
-//       ],
-//       child: MyApp(),
-//     ),
-//   );
-// }
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     SystemChrome.setSystemUIOverlayStyle(
-//       SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent),
-//     );
-
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       title: 'RFKicks',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//         fontFamily: 'Outfit',
-//         bottomSheetTheme: BottomSheetThemeData(
-//           dragHandleColor: Color(0xff3c76ad),
-//           // modalBarrierColor: Colors.white,
-//           // modalBackgroundColor: Colors.white,
-//         ),
-//       ),
-//       home: SplashScreen(),
-//       routes: {
-//         '/email': (context) => EmailInputScreen(),
-//         'sign in': (context) => SignInScreen(),
-//         'register': (context) => EmailInputScreen(),
-//         '/confirm': (context) => SigninConformationScreen(),
-//         '/onboarding': (context) => OnboardingScreen(
-//               userName: '',
-//             ),
-//         '/shop': (context) => ServicePage(),
-//         '/admin-login': (context) => AdminLoginScreen(),
-//         '/admin-dashboard': (context) => AdminDashboardScreen(),
-//       },
-//     );
-//   }
-// }
-
-// // void main() {
-// //   runApp(
-// //       DevicePreview(builder: (BuildContext context) => MyApp()));
-// // }
-
-// // void main() {
-// //   runApp(MyApp());
-// // }
-
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -86,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:jobtask/env.dart';
-import 'package:jobtask/screens/account%20setup/onboarding.dart';
 import 'package:jobtask/screens/admin/admin_analytics_screen.dart';
 import 'package:jobtask/screens/admin/admin_dashboard_screen.dart';
 import 'package:jobtask/screens/admin/admin_login_screen.dart';
@@ -105,7 +23,7 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load environment variables first
+  // Load environment variables
   await Environment.initialize();
 
   // Initialize Stripe
@@ -135,6 +53,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   // late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+
+  // Internet connectivity check
   late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
 
   final Connectivity _connectivity = Connectivity();
@@ -152,13 +72,13 @@ class _MyAppState extends State<MyApp> {
   Future<void> _checkInitialConnectivity() async {
     final List<ConnectivityResult> result =
         await _connectivity.checkConnectivity();
-    _updateConnectionStatus(result.first); // Use the first result
+    _updateConnectionStatus(result.first);
   }
 
   Future<void> _initConnectivity() async {
     _connectivitySubscription = _connectivity.onConnectivityChanged
         .listen((List<ConnectivityResult> results) {
-      _updateConnectionStatus(results.first); // Use the first result
+      _updateConnectionStatus(results.first);
     });
   }
 
@@ -277,20 +197,19 @@ class _MyAppState extends State<MyApp> {
       title: 'RFKicks',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        fontFamily: 'Outfit',
+        fontFamily: 'Outfit', // Default font
         bottomSheetTheme: BottomSheetThemeData(
           dragHandleColor: Color(0xff3c76ad),
         ),
       ),
       home: SplashScreen(),
+
+      // Named Routes
       routes: {
         '/email': (context) => EmailInputScreen(),
         'sign in': (context) => SignInScreen(),
         'register': (context) => EmailInputScreen(),
         '/confirm': (context) => SigninConformationScreen(),
-        '/onboarding': (context) => OnboardingScreen(
-              userName: '',
-            ),
         '/shop': (context) => ServicePage(),
         '/order-history': (context) => OrderHistoryScreen(),
         '/admin-login': (context) => AdminLoginScreen(),

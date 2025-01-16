@@ -478,6 +478,8 @@ class AdminApiService {
         },
       ).timeout(timeoutDuration);
 
+      print('Service Analytics Response: ${response.body}');
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final responseData = data['data'];
@@ -489,6 +491,7 @@ class AdminApiService {
           'totalCustomers':
               int.parse(responseData['totalCustomers'].toString()),
           'recentOrders': responseData['recentOrders'],
+          'topCustomers': responseData['topCustomers'] ?? [],
         };
       } else {
         throw Exception('Failed to load service analytics');

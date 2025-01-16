@@ -63,6 +63,8 @@ class ProductDescription extends StatelessWidget {
               ),
               SizedBox(height: 20),
               MyButton(
+                  width: 174,
+                  height: 54,
                   text: "Shop Now",
                   onTap: () {
                     Navigator.push(

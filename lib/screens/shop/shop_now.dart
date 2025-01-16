@@ -1,256 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:jobtask/screens/cart/cart_provider.dart';
-// import 'package:jobtask/screens/shop/reviews_screen.dart';
-// import 'package:jobtask/utils/custom_buttons/my_button.dart';
-// import 'package:jobtask/utils/custom_snackbar.dart';
-// import 'package:page_transition/page_transition.dart';
-// import 'package:provider/provider.dart';
-// import 'shop_screen.dart';
-
-// class ShopNow extends StatelessWidget {
-//   final double? shoeSize;
-//   final Service service;
-//   final List<Service> allServices;
-
-//   const ShopNow(
-//       {super.key,
-//       required this.shoeSize,
-//       required this.service,
-//       required this.allServices});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     // Get screen dimensions
-//     final screenHeight = MediaQuery.of(context).size.height;
-//     final screenWidth = MediaQuery.of(context).size.width;
-
-//     // Filter similar services (excluding current service)
-//     final similarServices = allServices
-//         .where(
-//             (s) => s.id != service.id && s.serviceType == service.serviceType)
-//         .take(4)
-//         .toList();
-
-//     return SafeArea(
-//       child: Scaffold(
-//         backgroundColor: Colors.white,
-//         appBar: AppBar(
-//           scrolledUnderElevation: 0,
-//           backgroundColor: Colors.white,
-//           title: Text(
-//             '${service.name} Shoes',
-//             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-//           ),
-//           centerTitle: true,
-//         ),
-//         body: SingleChildScrollView(
-//           child: Padding(
-//             padding: const EdgeInsets.symmetric(vertical: 15.0),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               children: [
-//                 // Responsive image
-//                 Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-//                   child: Image.network(
-//                     service.imagePath,
-//                     // height: screenHeight * 0.4,
-//                     // width: screenWidth * 0.9,
-//                     fit: BoxFit.cover,
-//                   ),
-//                 ),
-//                 SizedBox(height: 20),
-//                 // Responsive text size
-//                 Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                     children: [
-//                       Text(
-//                         service.name,
-//                         style: TextStyle(
-//                             fontSize: screenWidth * 0.085,
-//                             fontWeight: FontWeight.bold),
-//                       ),
-//                       Text(
-//                         '${service.price.toStringAsFixed(0)}\$',
-//                         style: TextStyle(
-//                             fontSize: screenWidth * 0.07,
-//                             fontWeight: FontWeight.bold,
-//                             color: Color(0xff3c76ad)),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 SizedBox(height: 20),
-//                 // Responsive description text
-//                 Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-//                   child: Text(
-//                     service.description,
-//                     style: TextStyle(fontSize: 16),
-//                     textAlign: TextAlign.start,
-//                   ),
-//                 ),
-//                 SizedBox(height: 20),
-
-//                 // Select size button with dropdown icon
-//                 Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 19.0),
-//                   child: OutlinedButton(
-//                       style: OutlinedButton.styleFrom(
-//                           foregroundColor: Color(0xff3c76ad),
-//                           shape: RoundedRectangleBorder(
-//                               borderRadius: BorderRadius.circular(6))),
-//                       onPressed: () {},
-//                       child: Row(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         children: [
-//                           Text(
-//                             'Select Size',
-//                             style: TextStyle(fontSize: 16),
-//                           ),
-//                           IconButton(
-//                             onPressed: () {
-//                               showModalBottomSheet(
-//                                   context: context,
-//                                   builder: (BuildContext context) {
-//                                     return Container(
-//                                       color: Colors.white,
-//                                       height: 24,
-//                                       width: 24,
-//                                       padding: const EdgeInsets.all(16.0),
-//                                       child: Column(
-//                                         crossAxisAlignment:
-//                                             CrossAxisAlignment.start,
-//                                         children: [
-//                                           Text(
-//                                             "Select your Shoe Size: \n\n",
-//                                             style: TextStyle(
-//                                                 fontSize: screenWidth * 0.08,
-//                                                 fontWeight: FontWeight.bold),
-//                                           ),
-//                                           SizedBox(height: 20),
-//                                         ],
-//                                       ),
-//                                     );
-//                                   });
-//                             },
-//                             icon: Image.asset(
-//                               'assets/icons/dropdown_icon.png',
-//                               height: 25,
-//                               width: 25,
-//                               color: Color(0xff3c76ad),
-//                             ),
-//                           ),
-//                         ],
-//                       )),
-//                 ),
-
-//                 SizedBox(height: 20),
-
-//                 Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 19.0),
-//                   child: MyButton(
-//                       text: "Add to Cart",
-//                       onTap: () {
-//                         Provider.of<CartProvider>(context, listen: false)
-//                             .addToCart(service);
-//                         CustomSnackbar.show(
-//                           context: context,
-//                           message: '${service.name} added to cart',
-//                         );
-//                       }),
-//                 ),
-
-//                 SizedBox(height: 20),
-//                 // Divider
-
-//                 Divider(
-//                   color: Color(0xffe4e4e4),
-//                   thickness: 1,
-//                   indent: 24,
-//                   endIndent: 24,
-//                 ),
-//                 SizedBox(height: 10),
-//                 // Reviews section
-//                 Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                   children: [
-//                     Text(
-//                       "Reviews (20)",
-//                       style: TextStyle(
-//                         fontSize: 20,
-//                       ),
-//                     ),
-//                     Row(
-//                       children: [
-//                         Text(
-//                           "★ ★ ★ ★ ★",
-//                           style: TextStyle(
-//                               fontSize: 18, fontWeight: FontWeight.bold),
-//                         ),
-//                         IconButton(
-//                           onPressed: () {
-//                             Navigator.push(
-//                                 context,
-//                                 PageTransition(
-//                                     child: ReviewsScreen(),
-//                                     type: PageTransitionType.rightToLeft));
-//                           },
-//                           icon: Image.asset(
-//                             'assets/icons/dropdown_icon.png',
-//                             height: 24,
-//                             width: 24,
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ],
-//                 ),
-//                 SizedBox(height: 40),
-//                 // You Might Also Like section title
-//                 Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.start,
-//                     children: [
-//                       Text(
-//                         "You Might Also Like",
-//                         style: TextStyle(
-//                             fontWeight: FontWeight.w600, fontSize: 20),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 SizedBox(height: 20),
-
-//                 Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-//                   child: GridView.builder(
-//                     shrinkWrap: true,
-//                     physics: NeverScrollableScrollPhysics(),
-//                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                       crossAxisCount: 2,
-//                       childAspectRatio: 0.8,
-//                       mainAxisSpacing: 10,
-//                       crossAxisSpacing: 10,
-//                     ),
-//                     itemCount: similarServices.length,
-//                     itemBuilder: (context, index) {
-//                       return ServiceCard(service: similarServices[index]);
-//                     },
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -280,6 +27,112 @@ class ShopNow extends StatefulWidget {
 }
 
 class _ShopNowState extends State<ShopNow> {
+  double? _selectedSize;
+
+  // Shoe Size Selector
+  void _showSizeSelector(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => Container(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10),
+              Text(
+                'Select Size',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                height: 300,
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 5,
+                    mainAxisSpacing: 15,
+                    crossAxisSpacing: 15,
+                    childAspectRatio: 1.2,
+                  ),
+                  itemCount: _shoeSizes.length,
+                  itemBuilder: (context, index) {
+                    final size = _shoeSizes[index];
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() => _selectedSize = size);
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: _selectedSize == size
+                              ? Color(0xff3c76ad)
+                              : Colors.grey[200],
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Center(
+                          child: Text(
+                            size.toString(),
+                            style: TextStyle(
+                              color: _selectedSize == size
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: 14,
+                              fontWeight: _selectedSize == size
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+// Add the shoe sizes list
+  static const _shoeSizes = [
+    4.0,
+    4.5,
+    5.0,
+    5.5,
+    6.0,
+    6.5,
+    7.0,
+    7.5,
+    8.0,
+    8.5,
+    9.0,
+    9.5,
+    10.0,
+    10.5,
+    11.0,
+    11.5,
+    12.0,
+    12.5,
+    13.0,
+    13.5,
+    14.0,
+    14.5,
+    15.0,
+    16.0,
+  ];
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -365,42 +218,18 @@ class _ShopNowState extends State<ShopNow> {
                         borderRadius: BorderRadius.circular(6),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () => _showSizeSelector(context),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Select Size',
+                          _selectedSize != null
+                              ? 'Size: ${_selectedSize!}'
+                              : 'Select Size',
                           style: TextStyle(fontSize: 16),
                         ),
                         IconButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Container(
-                                  color: Colors.white,
-                                  height: 24,
-                                  width: 24,
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Select your Shoe Size: \n\n",
-                                        style: TextStyle(
-                                          fontSize: screenWidth * 0.08,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(height: 20),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
+                          onPressed: () => _showSizeSelector(context),
                           icon: Image.asset(
                             'assets/icons/dropdown_icon.png',
                             height: 25,
@@ -416,13 +245,24 @@ class _ShopNowState extends State<ShopNow> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 19.0),
                   child: MyButton(
+                    height: 51,
                     text: "Add to Cart",
                     onTap: () {
                       Provider.of<CartProvider>(context, listen: false)
                           .addToCart(widget.service);
+
+                      final count = Provider.of<CartProvider>(context,
+                              listen: false)
+                          .cartItems
+                          .firstWhere(
+                              (item) => item.service.id == widget.service.id,
+                              orElse: () => CartItem(
+                                  service: widget.service, quantity: 0))
+                          .quantity;
                       CustomSnackbar.show(
                         context: context,
-                        message: '${widget.service.name} added to cart',
+                        message:
+                            '($count)  ${widget.service.name} added to cart',
                       );
                     },
                   ),
@@ -619,33 +459,6 @@ class _ShopNowState extends State<ShopNow> {
                   borderRadius: BorderRadius.circular(6),
                 ),
               ),
-              // onPressed: () async {
-              //   try {
-              //     final storage = FlutterSecureStorage();
-              //     final token = await storage.read(key: 'auth_token');
-
-              //     if (token == null) {
-              //       throw Exception('Please login to rate and review');
-              //     }
-
-              //     await ApiService.addServiceReview(token, {
-              //       'service_id': widget.service.id,
-              //       'rating': selectedRating,
-              //       'review_text': reviewController.text.trim(),
-              //     });
-
-              //     Navigator.pop(context);
-              //     CustomSnackbar.show(
-              //       context: context,
-              //       message: 'Rating and review added successfully!',
-              //     );
-              //   } catch (e) {
-              //     CustomSnackbar.show(
-              //       context: context,
-              //       message: e.toString(),
-              //     );
-              //   }
-              // },
               onPressed: isSubmittingReview
                   ? null
                   : () async {
@@ -688,7 +501,6 @@ class _ShopNowState extends State<ShopNow> {
                         setState(() => isSubmittingReview = false);
                       }
                     },
-
               child: isSubmittingReview
                   ? SizedBox(
                       height: 20,
@@ -708,83 +520,4 @@ class _ShopNowState extends State<ShopNow> {
       ),
     );
   }
-
-  // void _showReviewDialog() {
-  //   int rating = 5;
-  //   final reviewController = TextEditingController();
-
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       title: Text('Rate this service'),
-  //       content: Column(
-  //         mainAxisSize: MainAxisSize.min,
-  //         children: [
-  //           Row(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             children: List.generate(
-  //               5,
-  //               (index) => IconButton(
-  //                 icon: Icon(
-  //                   index < rating ? Icons.star : Icons.star_border,
-  //                   color: Color(0xff3c76ad),
-  //                 ),
-  //                 onPressed: () {
-  //                   setState(() => rating = index + 1);
-  //                 },
-  //               ),
-  //             ),
-  //           ),
-  //           TextField(
-  //             controller: reviewController,
-  //             decoration: InputDecoration(
-  //               hintText: 'Write your review...',
-  //               border: OutlineInputBorder(),
-  //             ),
-  //             maxLines: 3,
-  //           ),
-  //         ],
-  //       ),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Navigator.pop(context),
-  //           child: Text('Cancel'),
-  //         ),
-  //         ElevatedButton(
-  //           style: ElevatedButton.styleFrom(
-  //             backgroundColor: Color(0xff3c76ad),
-  //           ),
-  //           onPressed: () async {
-  //             try {
-  //               final storage = FlutterSecureStorage();
-  //               final token = await storage.read(key: 'auth_token');
-
-  //               if (token == null) {
-  //                 throw Exception('Please login to add a review');
-  //               }
-
-  //               await ApiService.addServiceReview(token, {
-  //                 'service_id': widget.service.id,
-  //                 'rating': rating,
-  //                 'review_text': reviewController.text.trim(),
-  //               });
-
-  //               Navigator.pop(context);
-  //               CustomSnackbar.show(
-  //                 context: context,
-  //                 message: 'Review added successfully!',
-  //               );
-  //             } catch (e) {
-  //               CustomSnackbar.show(
-  //                 context: context,
-  //                 message: e.toString(),
-  //               );
-  //             }
-  //           },
-  //           child: Text('Submit'),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }
