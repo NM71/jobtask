@@ -1,119 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// class PaymentSelectionSheet extends StatefulWidget {
-//   final String? initialPaymentMethod;
-
-//   const PaymentSelectionSheet({
-//     Key? key,
-//     this.initialPaymentMethod,
-//   }) : super(key: key);
-
-//   @override
-//   _PaymentSelectionSheetState createState() => _PaymentSelectionSheetState();
-// }
-
-// class _PaymentSelectionSheetState extends State<PaymentSelectionSheet> {
-//   String? selectedPaymentMethod;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     selectedPaymentMethod = widget.initialPaymentMethod;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: const EdgeInsets.all(20),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         // borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-//       ),
-//       child: SingleChildScrollView(
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             _buildHeader(),
-//             SizedBox(height: 24),
-//             // Divider(),
-//             _buildPaymentOptions(),
-//             SizedBox(height: 30),
-//             _buildContinueButton(),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildHeader() {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Text(
-//           'Payment',
-//           style: TextStyle(
-//             fontSize: 16,
-//             fontWeight: FontWeight.w400,
-//           ),
-//         ),
-//         IconButton(
-//           icon: Text('-', style: TextStyle(fontSize: 24)),
-//           onPressed: () => Navigator.pop(context),
-//         ),
-//       ],
-//     );
-//   }
-
-//   Widget _buildPaymentOptions() {
-//     return Container(
-//       decoration: BoxDecoration(
-//         color: Color(0xffffff),
-//         borderRadius: BorderRadius.circular(6),
-//         border: Border.all(color: Color(0xffe4e4e4)),
-//       ),
-//       child: ListTile(
-//         leading: Image.asset(
-//           'assets/icons/stripe.png',
-//           height: 25,
-//           width: 25,
-//         ),
-//         title: Center(child: Text('Stripe')),
-//         trailing: selectedPaymentMethod == 'Stripe'
-//             ? Icon(
-//                 Icons.check_circle_outline,
-//                 color: Color(0xff3c76ad),
-//                 size: 25,
-//               )
-//             : null,
-//         onTap: () {
-//           setState(() {
-//             selectedPaymentMethod = 'Stripe';
-//           });
-//         },
-//       ),
-//     );
-//   }
-
-//   Widget _buildContinueButton() {
-//     return ElevatedButton(
-//       style: ElevatedButton.styleFrom(
-//         backgroundColor: Color(0xff3c76ad),
-//         minimumSize: Size(double.infinity, 50),
-//         shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(10),
-//         ),
-//       ),
-//       onPressed: selectedPaymentMethod != null
-//           ? () => Navigator.pop(context, selectedPaymentMethod)
-//           : null,
-//       child: Text(
-//         'Continue',
-//         style: TextStyle(fontSize: 16, color: Colors.white),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jobtask/models/saved_card.dart';
@@ -123,8 +7,7 @@ import 'package:jobtask/services/api_service.dart';
 class PaymentSelectionSheet extends StatefulWidget {
   final String? initialPaymentMethod;
 
-  const PaymentSelectionSheet({Key? key, this.initialPaymentMethod})
-      : super(key: key);
+  const PaymentSelectionSheet({super.key, this.initialPaymentMethod});
 
   @override
   _PaymentSelectionSheetState createState() => _PaymentSelectionSheetState();
@@ -142,23 +25,6 @@ class _PaymentSelectionSheetState extends State<PaymentSelectionSheet> {
     _loadSavedCards();
   }
 
-  // Future<void> _loadSavedCards() async {
-  //   try {
-  //     final storage = FlutterSecureStorage();
-  //     final token = await storage.read(key: 'auth_token');
-
-  //     if (token != null) {
-  //       final cardsData = await ApiService.getSavedCards(token);
-  //       setState(() {
-  //         savedCards =
-  //             cardsData.map((card) => SavedCard.fromJson(card)).toList();
-  //         isLoading = false;
-  //       });
-  //     }
-  //   } catch (e) {
-  //     setState(() => isLoading = false);
-  //   }
-  // }
   Future<void> _loadSavedCards() async {
     try {
       final storage = FlutterSecureStorage();
@@ -167,7 +33,7 @@ class _PaymentSelectionSheetState extends State<PaymentSelectionSheet> {
       if (token != null) {
         final cardsData = await ApiService.getSavedCards(token);
         setState(() {
-          savedCards = cardsData; // Now correctly using List<SavedCard>
+          savedCards = cardsData; // Using List<SavedCard>
           isLoading = false;
         });
       }

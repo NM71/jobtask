@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:jobtask/services/admin_api_service.dart';
-import 'package:jobtask/utils/custom_buttons/my_button.dart';
 import 'package:jobtask/utils/custom_snackbar.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AdminUsersScreen extends StatefulWidget {
+  const AdminUsersScreen({super.key});
+
   @override
   _AdminUsersScreenState createState() => _AdminUsersScreenState();
 }
@@ -25,20 +26,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
     loadUsers();
   }
 
-  // Future<void> loadUsers() async {
-  //   try {
-  //     final fetchedUsers = await AdminApiService.getUsers();
-  //     setState(() {
-  //       users = fetchedUsers;
-  //       isLoading = false;
-  //     });
-  //   } catch (e) {
-  //     setState(() {
-  //       error = e.toString();
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
   Future<void> loadUsers() async {
     try {
       final fetchedUsers = await AdminApiService.getUsers();
@@ -110,10 +97,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                 ),
               ),
               child: Text('Delete')),
-          // TextButton(
-          //   onPressed: () => Navigator.pop(context, true),
-          //   child: Text('Delete', style: TextStyle(color: Colors.red)),
-          // ),
         ],
       ),
     );
@@ -125,7 +108,7 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
           context: context,
           message: 'User deleted successfully',
         );
-        loadUsers(); // Refresh the list
+        loadUsers();
       } catch (e) {
         CustomSnackbar.show(
           context: context,
@@ -259,55 +242,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
     );
   }
 
-  // Widget _buildHeader() {
-  //   return Container(
-  //     padding: EdgeInsets.all(20),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Row(
-  //           children: [
-  //             IconButton(
-  //               onPressed: () => Navigator.pop(context),
-  //               icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-  //             ),
-  //             SizedBox(width: 8),
-  //             Text(
-  //               'User Management',
-  //               style: TextStyle(
-  //                 color: Colors.white,
-  //                 fontSize: 24,
-  //                 fontWeight: FontWeight.bold,
-  //               ),
-  //             ),
-  //             Spacer(),
-  //             IconButton(
-  //               icon: Icon(Icons.refresh, color: Colors.white),
-  //               onPressed: () {
-  //                 setState(() {
-  //                   isLoading = true;
-  //                 });
-  //                 loadUsers();
-  //               },
-  //             ),
-  //           ],
-  //         ),
-  //         Padding(
-  //           padding: const EdgeInsets.only(left: 16, top: 16),
-  //           child: Text(
-  //             'Total Users: ${users.length}',
-  //             style: TextStyle(
-  //               color: Colors.white70,
-  //               fontSize: 16,
-  //               fontWeight: FontWeight.w500,
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   // Search and Filter
   Widget _buildFilters() {
     return Container(
@@ -404,12 +338,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
               ),
             ),
           ),
-          // if (isLoading)
-          //   Center(
-          //     child: CircularProgressIndicator(
-          //       color: Color(0xff3c76ad),
-          //     ),
-          //   )
           SafeArea(
               child: Column(
             children: [
@@ -444,20 +372,6 @@ class _AdminUsersScreenState extends State<AdminUsersScreen> {
                               );
                             },
                           ),
-
-                // : ListView.builder(
-                //     padding: EdgeInsets.all(16),
-                //     itemCount: users.length,
-                //     itemBuilder: (context, index) {
-                //       final user = users[index];
-                //       return UserCard(
-                //         user: user,
-                //         onDelete: () => _handleDeleteUser(user),
-                //         onUpdateStatus: (status) =>
-                //             _handleUpdateStatus(user, status),
-                //       );
-                //     },
-                //   ),
               )
             ],
           )),
@@ -473,11 +387,11 @@ class UserCard extends StatelessWidget {
   final Function(int) onUpdateStatus;
 
   const UserCard({
-    Key? key,
+    super.key,
     required this.user,
     required this.onDelete,
     required this.onUpdateStatus,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -661,7 +575,7 @@ class UserCard extends StatelessWidget {
           SizedBox(
             width: 120,
             child: Text(
-              label + ':',
+              '$label:',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Color(0xff3c76ad),
@@ -709,7 +623,7 @@ class UserData {
     this.shoeSize,
     this.bio,
     this.dateOfBirth,
-    required this.status, // Added to constructor
+    required this.status,
   });
 
   factory UserData.fromJson(Map<String, dynamic> json) {
@@ -720,7 +634,7 @@ class UserData {
       displayName: json['display_name'],
       registered: json['user_registered'],
       profilePicture: json['profile_picture'] != null
-          ? 'https://rfkicks.com/api/${json['profile_picture']}' // Add base URL
+          ? 'https://rfkicks.com/api/${json['profile_picture']}'
           : null,
       address: json['address'],
       shoeSize: json['shoe_size'],

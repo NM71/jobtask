@@ -1,36 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:jobtask/models/admin_services.dart';
-import 'package:jobtask/models/service_analytics.dart';
 import 'package:jobtask/screens/admin/admin_orders_screen.dart';
 import 'package:jobtask/screens/admin/admin_users_screen.dart';
 
 class AdminApiService {
   static const String baseUrl = 'https://rfkicks.com/api';
   static const Duration timeoutDuration = Duration(seconds: 10);
-
-  // static Future<String> adminLogin(String username, String password) async {
-  //   try {
-  //     final response = await http.post(
-  //       Uri.parse('$baseUrl/admin_login.php'),
-  //       body: json.encode({
-  //         'username': username,
-  //         'password': password,
-  //       }),
-  //       headers: {'Content-Type': 'application/json'},
-  //     ).timeout(timeoutDuration);
-
-  //     final data = json.decode(response.body);
-  //     if (response.statusCode == 200 && data['status'] == 'success') {
-  //       return data['token'];
-  //     } else {
-  //       throw Exception(data['message'] ?? 'Login failed');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Error during admin login: $e');
-  //   }
-  // }
 
   // Admin Authentication
   static Future<String> adminLogin(String username, String password) async {
@@ -86,8 +64,9 @@ class AdminApiService {
         },
       ).timeout(timeoutDuration);
 
-      print(
-          'Raw API Response: ${response.body}'); // This will show us the complete raw data
+      if (kDebugMode) {
+        print('Raw API Response: ${response.body}');
+      }
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -95,7 +74,9 @@ class AdminApiService {
 
         // Print each service ID and type
         services.forEach((service) {
-          print('Service ID: ${service.id}, Type: ${service.serviceType}');
+          if (kDebugMode) {
+            print('Service ID: ${service.id}, Type: ${service.serviceType}');
+          }
         });
 
         return services;
@@ -106,58 +87,6 @@ class AdminApiService {
       throw Exception('Error loading services: $e');
     }
   }
-
-  // static Future<List<Service>> getServices() async {
-  //   try {
-  //     final response = await http.get(
-  //       // Uri.parse('$baseUrl/admin/services.php'),
-  //       Uri.parse('$baseUrl/admin/services.php?all=true'),
-  //       headers: {'Content-Type': 'application/json'},
-  //     ).timeout(timeoutDuration);
-
-  //     if (response.statusCode == 200) {
-  //       final List<dynamic> data = json.decode(response.body);
-  //       return data.map((json) => Service.fromJson(json)).toList();
-  //     } else {
-  //       throw Exception('Failed to load services');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Error loading services: $e');
-  //   }
-  // }
-
-  // static Future<void> addService(Map<String, dynamic> serviceData) async {
-  //   try {
-  //     final response = await http.post(
-  //       Uri.parse('$baseUrl/admin/services.php'),
-  //       body: json.encode(serviceData),
-  //       headers: {'Content-Type': 'application/json'},
-  //     ).timeout(timeoutDuration);
-
-  //     if (response.statusCode != 201) {
-  //       throw Exception('Failed to add service');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Error adding service: $e');
-  //   }
-  // }
-
-  // static Future<void> updateService(
-  //     int id, Map<String, dynamic> serviceData) async {
-  //   try {
-  //     final response = await http.put(
-  //       Uri.parse('$baseUrl/admin/services.php?id=$id'),
-  //       body: json.encode(serviceData),
-  //       headers: {'Content-Type': 'application/json'},
-  //     ).timeout(timeoutDuration);
-
-  //     if (response.statusCode != 200) {
-  //       throw Exception('Failed to update service');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Error updating service: $e');
-  //   }
-  // }
 
   // Services Reviews
   static Future<List<Map<String, dynamic>>> getServiceReviews(
@@ -174,8 +103,10 @@ class AdminApiService {
         },
       ).timeout(timeoutDuration);
 
-      print('Response status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      if (kDebugMode) {
+        print('Response status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -272,8 +203,6 @@ class AdminApiService {
   // --------------------------------------------------------------------
   // Users Screen Functions
   //---------------------------------------------------------------------
-
-  // Add these functions in AdminApiService class
 
 // Get all users
   static Future<List<UserData>> getUsers() async {
@@ -420,54 +349,6 @@ class AdminApiService {
     }
   }
 
-  // static Future<List<ServiceAnalytics>> getServiceAnalytics() async {
-  //   try {
-  //     final response = await http.get(
-  //       Uri.parse('$baseUrl/admin/analytics/get_service_analytics.php'),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Cache-Control': 'no-cache',
-  //       },
-  //     ).timeout(timeoutDuration);
-
-  //     if (response.statusCode == 200) {
-  //       final data = json.decode(response.body);
-  //       return (data['data'] as List)
-  //           .map((json) => ServiceAnalytics.fromJson(json))
-  //           .toList();
-  //     } else {
-  //       throw Exception('Failed to load service analytics');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Error loading service analytics: $e');
-  //   }
-  // }
-  // static Future<Map<String, dynamic>> getServiceAnalytics() async {
-  //   try {
-  //     final response = await http.get(
-  //       Uri.parse('$baseUrl/admin/analytics/get_service_analytics.php'),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Cache-Control': 'no-cache',
-  //       },
-  //     ).timeout(timeoutDuration);
-
-  //     if (response.statusCode == 200) {
-  //       final data = json.decode(response.body);
-  //       return {
-  //         'services': (data['data']['services'] as List)
-  //             .map((json) => ServiceAnalytics.fromJson(json))
-  //             .toList(),
-  //         'totalRevenue': data['data']['totalRevenue'],
-  //         'totalOrders': data['data']['totalOrders'],
-  //       };
-  //     } else {
-  //       throw Exception('Failed to load service analytics');
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Error loading service analytics: $e');
-  //   }
-  // }
   static Future<Map<String, dynamic>> getServiceAnalytics() async {
     try {
       final response = await http.get(
@@ -478,7 +359,9 @@ class AdminApiService {
         },
       ).timeout(timeoutDuration);
 
-      print('Service Analytics Response: ${response.body}');
+      if (kDebugMode) {
+        print('Service Analytics Response: ${response.body}');
+      }
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);

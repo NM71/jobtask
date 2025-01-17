@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:jobtask/models/order_receipt.dart';
 import 'package:jobtask/models/saved_card.dart';
@@ -309,43 +310,95 @@ class ApiService {
     }
   }
 
+  // static Future<bool> updateUserProfile(
+  //     String token, Map<String, dynamic> profileData) async {
+  //   try {
+  //     var request = http.MultipartRequest(
+  //       'POST',
+  //       Uri.parse('$baseUrl/update_user_profile'),
+  //     );
+
+  //     // Add authorization header
+  //     request.headers['Authorization'] = 'Bearer $token';
+
+  //     // Add file if exists
+  //     if (profileData.containsKey('profile_picture')) {
+  //       File imageFile = File(profileData['profile_picture']);
+  //       var stream = http.ByteStream(imageFile.openRead());
+  //       var length = await imageFile.length();
+
+  //       var multipartFile = http.MultipartFile(
+  //           'profile_picture', stream, length,
+  //           filename: imageFile.path.split('/').last);
+
+  //       request.files.add(multipartFile);
+  //       profileData.remove('profile_picture'); // Remove from regular fields
+  //     }
+
+  //     // Add other fields
+  //     profileData.forEach((key, value) {
+  //       request.fields[key] = value.toString();
+  //     });
+
+  //     var response = await request.send();
+  //     var responseData = await response.stream.bytesToString();
+  //     var jsonResponse = json.decode(responseData);
+
+  //     return jsonResponse['success'] == true;
+  //   } catch (e) {
+  //     print('Error updating profile: $e');
+  //     return false;
+  //   }
+  // }
   static Future<bool> updateUserProfile(
       String token, Map<String, dynamic> profileData) async {
     try {
+      if (kDebugMode) {
+        print('Starting profile update with data: $profileData');
+      } // Debug data being sent
+
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('$baseUrl/update_user_profile'),
+        Uri.parse('$baseUrl/update_user_profile.php'),
       );
 
-      // Add authorization header
       request.headers['Authorization'] = 'Bearer $token';
+      if (kDebugMode) {
+        print('Request URL: ${request.url}');
+        print('Request headers: ${request.headers}');
+      } // Debug URL
+      // Debug headers
 
-      // Add file if exists
-      if (profileData.containsKey('profile_picture')) {
-        File imageFile = File(profileData['profile_picture']);
-        var stream = http.ByteStream(imageFile.openRead());
-        var length = await imageFile.length();
-
-        var multipartFile = http.MultipartFile(
-            'profile_picture', stream, length,
-            filename: imageFile.path.split('/').last);
-
-        request.files.add(multipartFile);
-        profileData.remove('profile_picture'); // Remove from regular fields
-      }
-
-      // Add other fields
       profileData.forEach((key, value) {
         request.fields[key] = value.toString();
       });
 
-      var response = await request.send();
-      var responseData = await response.stream.bytesToString();
-      var jsonResponse = json.decode(responseData);
+      if (kDebugMode) {
+        print('Request fields: ${request.fields}');
+      } // Debug fields being sent
 
-      return jsonResponse['success'] == true;
+      var response = await request.send();
+      if (kDebugMode) {
+        print('Response status: ${response.statusCode}');
+      } // Debug response status
+
+      var responseData = await response.stream.bytesToString();
+      if (kDebugMode) {
+        print('Response data: $responseData');
+      } // Debug response data
+
+      if (responseData.isNotEmpty) {
+        var jsonResponse = json.decode(responseData);
+        if (kDebugMode) {
+          print('Parsed response: $jsonResponse');
+        } // Debug parsed response
+        return jsonResponse['success'] == true;
+      }
+      return false;
     } catch (e) {
-      print('Error updating profile: $e');
+      if (kDebugMode) {
+        print('Update error: $e');
+      } // Debug any errors
       return false;
     }
   }

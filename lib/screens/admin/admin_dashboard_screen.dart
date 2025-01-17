@@ -1,9 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
+  const AdminDashboardScreen({super.key});
+
   @override
   State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
 }

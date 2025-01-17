@@ -13,115 +13,6 @@ class AdminReviewsScreen extends StatefulWidget {
 
 class _AdminReviewsScreenState extends State<AdminReviewsScreen> {
   int? selectedRating;
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     backgroundColor: Colors.black,
-  //     appBar: AppBar(
-  //       backgroundColor: Colors.transparent,
-  //       foregroundColor: Colors.white,
-  //       title: Text('Service Reviews'),
-  //       centerTitle: true,
-  //     ),
-  //     body: Stack(
-  //       children: [
-  //         const Positioned.fill(
-  //           child: DecoratedBox(
-  //             decoration: BoxDecoration(
-  //               image: DecorationImage(
-  //                 opacity: 0.3,
-  //                 image: AssetImage('assets/images/rfkicks_bg.jpg'),
-  //                 fit: BoxFit.cover,
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //         FutureBuilder<List<Map<String, dynamic>>>(
-  //           future: AdminApiService.getServiceReviews(widget.serviceId),
-  //           builder: (context, snapshot) {
-  //             if (snapshot.connectionState == ConnectionState.waiting) {
-  //               return Center(
-  //                   child: CircularProgressIndicator(
-  //                 color: Colors.white,
-  //               ));
-  //             }
-
-  //             if (snapshot.hasError) {
-  //               return Center(
-  //                 child: Text(
-  //                   'Failed to load reviews',
-  //                   style: TextStyle(color: Colors.white),
-  //                 ),
-  //               );
-  //             }
-
-  //             final reviews = snapshot.data ?? [];
-  //             final averageRating = reviews.isEmpty
-  //                 ? 0.0
-  //                 : reviews.fold<double>(
-  //                         0, (sum, review) => sum + review['rating']) /
-  //                     reviews.length;
-
-  //             return Padding(
-  //               padding: const EdgeInsets.all(20.0),
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   Text(
-  //                     "Customer Reviews",
-  //                     style: TextStyle(
-  //                       fontSize: 28,
-  //                       color: Colors.white,
-  //                       fontWeight: FontWeight.bold,
-  //                     ),
-  //                   ),
-  //                   SizedBox(height: 8),
-  //                   Row(
-  //                     children: [
-  //                       Text(
-  //                         "${reviews.length} Reviews",
-  //                         style: TextStyle(
-  //                           color: Colors.white,
-  //                           fontWeight: FontWeight.w500,
-  //                         ),
-  //                       ),
-  //                       SizedBox(width: 16),
-  //                       Text(
-  //                         "${averageRating.toStringAsFixed(1)} ★",
-  //                         style: TextStyle(
-  //                           color: Colors.white,
-  //                           fontWeight: FontWeight.bold,
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   SizedBox(height: 20),
-  //                   Expanded(
-  //                     child: reviews.isEmpty
-  //                         ? Center(
-  //                             child: Text(
-  //                               'No reviews yet',
-  //                               style: TextStyle(color: Colors.white),
-  //                             ),
-  //                           )
-  //                         : ListView.builder(
-  //                             itemCount: reviews.length,
-  //                             itemBuilder: (context, index) {
-  //                               final review = reviews[index];
-  //                               return _buildReviewItem(review);
-  //                             },
-  //                           ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             );
-  //           },
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,17 +25,6 @@ class _AdminReviewsScreenState extends State<AdminReviewsScreen> {
       ),
       body: Stack(
         children: [
-          // const Positioned.fill(
-          //   child: DecoratedBox(
-          //     decoration: BoxDecoration(
-          //       image: DecorationImage(
-          //         opacity: 0.3,
-          //         image: AssetImage('assets/images/rfkicks_bg.jpg'),
-          //         fit: BoxFit.cover,
-          //       ),
-          //     ),
-          //   ),
-          // ),
           FutureBuilder<List<Map<String, dynamic>>>(
             future: AdminApiService.getServiceReviews(widget.serviceId),
             builder: (context, snapshot) {

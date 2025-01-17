@@ -5,8 +5,7 @@ import 'package:jobtask/screens/admin/admin_orders_screen.dart';
 class AdminOrderDetailsScreen extends StatelessWidget {
   final Order order;
 
-  const AdminOrderDetailsScreen({Key? key, required this.order})
-      : super(key: key);
+  const AdminOrderDetailsScreen({super.key, required this.order});
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +117,7 @@ class AdminOrderDetailsScreen extends StatelessWidget {
       [
         _buildInfoRow('Name',
             '${order.address?.firstName ?? ''} ${order.address?.lastName ?? ''}'),
-        _buildInfoRow('Address', '${order.address?.address1 ?? ''}'),
+        _buildInfoRow('Address', order.address?.address1 ?? ''),
         if (order.address?.address2?.isNotEmpty ?? false)
           _buildInfoRow('Address 2', order.address?.address2 ?? ''),
         _buildInfoRow('City', order.address?.city ?? ''),

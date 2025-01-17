@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:jobtask/services/admin_api_service.dart';
 
 class AdminLoginScreen extends StatefulWidget {
+  const AdminLoginScreen({super.key});
+
   @override
   _AdminLoginScreenState createState() => _AdminLoginScreenState();
 }
@@ -20,17 +22,6 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            // const Positioned.fill(
-            //   child: DecoratedBox(
-            //     decoration: BoxDecoration(
-            //       image: DecorationImage(
-            //         opacity: 0.5,
-            //         image: AssetImage('assets/images/rfkicks_bg.jpg'),
-            //         fit: BoxFit.cover,
-            //       ),
-            //     ),
-            //   ),
-            // ),
             SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(24.0),

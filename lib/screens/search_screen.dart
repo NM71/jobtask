@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({super.key});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -16,7 +16,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<Service> _searchResults = [];
   List<String> _recentSearches = [];
-  static const String RECENT_SEARCHES_KEY = 'recent_searches';
+  static const String recentSearchesKey = 'recent_searches';
 
   @override
   void initState() {
@@ -27,7 +27,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void> _loadRecentSearches() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _recentSearches = prefs.getStringList(RECENT_SEARCHES_KEY) ?? [];
+      _recentSearches = prefs.getStringList(recentSearchesKey) ?? [];
     });
   }
 
@@ -38,13 +38,13 @@ class _SearchScreenState extends State<SearchScreen> {
     Set<String> searches = Set.from(_recentSearches);
     searches = {query, ...searches.take(9)};
     _recentSearches = searches.toList();
-    await prefs.setStringList(RECENT_SEARCHES_KEY, _recentSearches);
+    await prefs.setStringList(recentSearchesKey, _recentSearches);
     setState(() {});
   }
 
   Future<void> _clearRecentSearches() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(RECENT_SEARCHES_KEY);
+    await prefs.remove(recentSearchesKey);
     setState(() {
       _recentSearches = [];
     });

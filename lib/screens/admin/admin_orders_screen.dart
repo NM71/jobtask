@@ -6,6 +6,8 @@ import 'package:jobtask/screens/admin/admin_order_details_screen.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AdminOrdersScreen extends StatefulWidget {
+  const AdminOrdersScreen({super.key});
+
   @override
   _AdminOrdersScreenState createState() => _AdminOrdersScreenState();
 }
@@ -37,38 +39,15 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
     super.dispose();
   }
 
-  // void _loadOrders() {
-  //   _ordersFuture = AdminApiService.getOrders();
-  //   _ordersFuture.then((orders) {
-  //     setState(() {
-  //       _filteredOrders = orders;
-  //     });
-  //   });
-  // }
   void _loadOrders() {
     _ordersFuture = AdminApiService.getOrders();
     _ordersFuture.then((orders) {
       setState(() {
-        _filteredOrders = List.from(orders); // Create a copy of original orders
+        _filteredOrders = List.from(orders);
       });
     });
   }
 
-  // void _filterOrders(List<Order> orders) {
-  //   setState(() {
-  //     _filteredOrders = orders.where((order) {
-  //       bool matchesSearch = order.id.toString().contains(_searchQuery) ||
-  //           (order.billingEmail ?? '')
-  //               .toLowerCase()
-  //               .contains(_searchQuery.toLowerCase());
-
-  //       bool matchesStatus = _statusFilter == 'All' ||
-  //           order.status?.toLowerCase() == _statusFilter.toLowerCase();
-
-  //       return matchesSearch && matchesStatus;
-  //     }).toList();
-  //   });
-  // }
   void _filterOrders(List<Order> allOrders) {
     setState(() {
       _filteredOrders = allOrders.where((order) {
@@ -244,20 +223,6 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      // appBar: AppBar(
-      //   title: Text('Orders Management'),
-      //   backgroundColor: Color(0xff3c76ad),
-      //   actions: [
-      //     IconButton(
-      //       icon: Icon(Icons.refresh),
-      //       onPressed: () {
-      //         setState(() {
-      //           _loadOrders();
-      //         });
-      //       },
-      //     ),
-      //   ],
-      // ),
       body: Stack(
         children: [
           const Positioned.fill(
@@ -280,12 +245,6 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                   child: FutureBuilder<List<Order>>(
                     future: _ordersFuture,
                     builder: (context, snapshot) {
-                      // if (snapshot.connectionState == ConnectionState.waiting) {
-                      //   return Center(
-                      //       child: CircularProgressIndicator(
-                      //     color: Colors.white,
-                      //   ));
-                      // }
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return _buildShimmerEffect();
                       }
@@ -363,12 +322,6 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              // onChanged: (value) {
-              //   setState(() {
-              //     _searchQuery = value;
-              //     _filterOrders(_filteredOrders);
-              //   });
-              // },
               onChanged: (value) {
                 setState(() {
                   _searchQuery = value;
@@ -397,12 +350,6 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
                       child: Text(status),
                     );
                   }).toList(),
-                  // onChanged: (String? newValue) {
-                  //   setState(() {
-                  //     _statusFilter = newValue!;
-                  //     _filterOrders(_filteredOrders);
-                  //   });
-                  // },
                   onChanged: (String? newValue) {
                     setState(() {
                       _statusFilter = newValue!;
@@ -634,98 +581,4 @@ class OrderAddress {
       phone: json['phone'],
     );
   }
-// class Order {
-//   final int id;
-//   final String? status;
-//   final String? currency;
-//   final String? type;
-//   final double totalAmount;
-//   final int? customerId;
-//   final String? billingEmail;
-//   final DateTime dateCreated;
-//   final String? paymentMethod;
-//   final String? paymentMethodTitle;
-//   final String? transactionId;
-//   final OrderAddress? address;
-
-//   Order({
-//     required this.id,
-//     this.status,
-//     this.currency,
-//     this.type,
-//     required this.totalAmount,
-//     this.customerId,
-//     this.billingEmail,
-//     required this.dateCreated,
-//     this.paymentMethod,
-//     this.paymentMethodTitle,
-//     this.transactionId,
-//     this.address,
-//   });
-
-//   factory Order.fromJson(Map<String, dynamic> json) {
-//     return Order(
-//       id: int.parse(json['id'].toString()),
-//       status: json['status'],
-//       currency: json['currency'],
-//       type: json['type'],
-//       totalAmount: double.parse((json['total_amount'] ?? '0').toString()),
-//       customerId: json['customer_id'] != null
-//           ? int.parse(json['customer_id'].toString())
-//           : null,
-//       billingEmail: json['billing_email'],
-//       dateCreated: DateTime.parse(
-//           json['date_created_gmt'] ?? DateTime.now().toIso8601String()),
-//       paymentMethod: json['payment_method'],
-//       paymentMethodTitle: json['payment_method_title'],
-//       transactionId: json['transaction_id'],
-//       address: json['address'] != null
-//           ? OrderAddress.fromJson(json['address'])
-//           : null,
-//     );
-//   }
-// }
-
-// class OrderAddress {
-//   final String? firstName;
-//   final String? lastName;
-//   final String? company;
-//   final String? address1;
-//   final String? address2;
-//   final String? city;
-//   final String? state;
-//   final String? postcode;
-//   final String? country;
-//   final String? email;
-//   final String? phone;
-
-//   OrderAddress({
-//     this.firstName,
-//     this.lastName,
-//     this.company,
-//     this.address1,
-//     this.address2,
-//     this.city,
-//     this.state,
-//     this.postcode,
-//     this.country,
-//     this.email,
-//     this.phone,
-//   });
-
-//   factory OrderAddress.fromJson(Map<String, dynamic> json) {
-//     return OrderAddress(
-//       firstName: json['first_name'],
-//       lastName: json['last_name'],
-//       company: json['company'],
-//       address1: json['address_1'],
-//       address2: json['address_2'],
-//       city: json['city'],
-//       state: json['state'],
-//       postcode: json['postcode'],
-//       country: json['country'],
-//       email: json['email'],
-//       phone: json['phone'],
-//     );
-//   }
 }
