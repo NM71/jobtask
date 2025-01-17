@@ -44,12 +44,6 @@ android {
         implementation 'com.google.android.material:material:1.5.0'
     }
 
-//    dependencies {
-//        // ...
-//
-//        // Stripe Android SDK
-//        implementation 'com.stripe:stripe-android:21.2.0'
-//    }
 
 flutter {
     source = "../.."

@@ -587,7 +587,7 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
               ...savedCards
                   .map((card) => ListTile(
                         leading: Icon(Icons.credit_card),
-                        title: Text('•••• ${card.last4}'),
+                        title: Text('**** ${card.last4}'),
                         subtitle:
                             Text('Expires ${card.expMonth}/${card.expYear}'),
                         trailing: card.isDefault
@@ -1081,7 +1081,7 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
                   selectedDeliveryType ?? 'Select Delivery',
                   style: TextStyle(
                     color: selectedDeliveryType != null
-                        ? Colors.black
+                        ? Color(0xff767676)
                         : Color(0xffCA462A),
                   ),
                 ),
@@ -1143,15 +1143,15 @@ class _CheckoutBottomSheetState extends State<CheckoutBottomSheet> {
                 if (selectedCard != null)
                   Row(
                     children: [
-                      SvgPicture.asset(
-                        'assets/icons/${selectedCard!.brand.toLowerCase()}.svg',
-                        height: 24,
-                        width: 24,
+                      Text(
+                        '**** **** ${selectedCard!.last4}',
+                        style: TextStyle(color: Colors.black),
                       ),
                       SizedBox(width: 8),
-                      Text(
-                        '•••• ${selectedCard!.last4}',
-                        style: TextStyle(color: Colors.black),
+                      SvgPicture.asset(
+                        'assets/icons/${selectedCard!.brand.toLowerCase()}.svg',
+                        height: 28,
+                        width: 42,
                       ),
                     ],
                   )

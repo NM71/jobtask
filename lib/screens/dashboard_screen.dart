@@ -5,7 +5,9 @@ import 'package:jobtask/screens/about/about_screen.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
 import 'package:jobtask/screens/cart/cart_screen.dart';
 import 'package:jobtask/screens/profile/user_profile.dart';
+import 'package:jobtask/screens/search_screen.dart';
 import 'package:jobtask/screens/shop/shop_screen.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -114,6 +116,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
         backgroundColor: const Color(0xff000000),
         appBar: AppBar(
           scrolledUnderElevation: 0,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: IconButton(
+                // icon: Icon(Icons.search, color: Color(0xff3c76ad)),
+                icon: Image.asset(
+                  'assets/icons/MagnifyingGlass.png',
+                  height: 24,
+                  width: 24,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    PageTransition(
+                      type: PageTransitionType.bottomToTop,
+                      child: SearchScreen(),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
           leading: Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: GestureDetector(
