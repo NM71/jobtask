@@ -335,10 +335,9 @@ Widget _buildSocialIcon(BuildContext context,
     {required IconData icon, required Color color, required String url}) {
   return GestureDetector(
     onTap: () async {
-      if (await canLaunch(url)) {
-        await launch(url);
-      } else {
-        throw 'Could not launch $url';
+      final Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
       }
     },
     child: Icon(
@@ -348,15 +347,31 @@ Widget _buildSocialIcon(BuildContext context,
     ),
   );
 }
+// Widget _buildSocialIcon(BuildContext context,
+//     {required IconData icon, required Color color, required String url}) {
+//   return GestureDetector(
+//     onTap: () async {
+//       if (await canLaunch(url)) {
+//         await launch(url);
+//       } else {
+//         throw 'Could not launch $url';
+//       }
+//     },
+//     child: Icon(
+//       icon,
+//       color: color,
+//       size: MediaQuery.of(context).size.width * 0.08,
+//     ),
+//   );
+// }
 
 Widget _buildImageIcon(BuildContext context,
     {required String asset, required String url}) {
   return GestureDetector(
     onTap: () async {
-      if (await canLaunch(url)) {
-        await launch(url);
-      } else {
-        throw 'Could not launch $url';
+      final Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
       }
     },
     child: Image.asset(
@@ -366,3 +381,20 @@ Widget _buildImageIcon(BuildContext context,
     ),
   );
 }
+// Widget _buildImageIcon(BuildContext context,
+//     {required String asset, required String url}) {
+//   return GestureDetector(
+//     onTap: () async {
+//       if (await canLaunch(url)) {
+//         await launch(url);
+//       } else {
+//         throw 'Could not launch $url';
+//       }
+//     },
+//     child: Image.asset(
+//       asset,
+//       height: MediaQuery.of(context).size.width * 0.08,
+//       width: MediaQuery.of(context).size.width * 0.08,
+//     ),
+//   );
+// }
