@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jobtask/screens/cart/cart_provider.dart';
 import 'package:jobtask/screens/shop/shop_now.dart';
 import 'package:jobtask/screens/shop/shop_screen.dart';
 import 'package:page_transition/page_transition.dart';
