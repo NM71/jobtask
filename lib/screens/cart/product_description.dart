@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jobtask/screens/profile/country_provider.dart';
 import 'package:jobtask/screens/shop/shop_now.dart';
 import 'package:jobtask/utils/custom_buttons/my_button.dart';
 import 'package:page_transition/page_transition.dart';
@@ -11,8 +12,7 @@ class ProductDescription extends StatelessWidget {
   final List<Service> allServices;
 
   const ProductDescription(
-      {Key? key, required this.service, required this.allServices})
-      : super(key: key);
+      {super.key, required this.service, required this.allServices});
 
   @override
   Widget build(BuildContext context) {
@@ -46,14 +46,29 @@ class ProductDescription extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 15),
-                  Text(
-                    '\$${service.price}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xff3c76ad),
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Consumer<CountryProvider>(
+                    builder: (context, countryProvider, child) {
+                      double localPrice =
+                          countryProvider.convertPrice(service.price);
+                      return Text(
+                        countryProvider.formatPrice(localPrice),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xff3c76ad),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    },
                   ),
+
+                  // Text(
+                  //   '\$${service.price}',
+                  //   style: TextStyle(
+                  //     fontSize: 14,
+                  //     color: Color(0xff3c76ad),
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // ),
                 ],
               ),
               SizedBox(height: 20),

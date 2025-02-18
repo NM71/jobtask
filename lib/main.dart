@@ -5,16 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:jobtask/env.dart';
-import 'package:jobtask/screens/admin/admin_analytics_screen.dart';
-import 'package:jobtask/screens/admin/admin_dashboard_screen.dart';
-import 'package:jobtask/screens/admin/admin_login_screen.dart';
-import 'package:jobtask/screens/admin/admin_orders_screen.dart';
-import 'package:jobtask/screens/admin/admin_services_screen.dart';
-import 'package:jobtask/screens/admin/admin_users_screen.dart';
 import 'package:jobtask/screens/auth/email_input_screen.dart';
 import 'package:jobtask/screens/auth/sign_in_screen.dart';
 import 'package:jobtask/screens/auth/signin_conformation_screen.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
+import 'package:jobtask/screens/cart/navigation_provider.dart';
+import 'package:jobtask/screens/profile/country_provider.dart';
 import 'package:jobtask/screens/profile/order_history_screen.dart';
 import 'package:jobtask/screens/shop/shop_screen.dart';
 import 'package:jobtask/screens/splash_screen.dart';
@@ -30,16 +26,20 @@ Future<void> main() async {
   Stripe.publishableKey = Environment.stripeKey;
   await Stripe.instance.applySettings();
 
-  // Stripe.publishableKey =
-  //     'pk_test_51PhdXQRs4mT74uPoNeCCPidzaD0TPg5KYMYz3PIEhK1VJKSZv3VfoZlUuYqOAZOlCk5OwW8UQPRW1WeSeiHj0KO400xViMsXCS';
-  // await Stripe.instance.applySettings();
+  // Initialize providers
+  final countryProvider = CountryProvider();
+  await countryProvider.initialize();
 
   CachedNetworkImage.logLevel = CacheManagerLogLevel.verbose;
+
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => CartProvider()),
         ChangeNotifierProvider(create: (context) => ServiceProvider()),
+        // ChangeNotifierProvider(create: (context) => CountryProvider()),
+        ChangeNotifierProvider.value(value: countryProvider),
+        ChangeNotifierProvider(create: (context) => NavigationProvider()),
       ],
       child: MyApp(),
     ),
@@ -54,8 +54,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // late StreamSubscription<ConnectivityResult> _connectivitySubscription;
-
   // Internet connectivity check
   late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
 
@@ -214,12 +212,6 @@ class _MyAppState extends State<MyApp> {
         '/confirm': (context) => SigninConformationScreen(),
         '/shop': (context) => ServicePage(),
         '/order-history': (context) => OrderHistoryScreen(),
-        '/admin-login': (context) => AdminLoginScreen(),
-        '/admin-dashboard': (context) => AdminDashboardScreen(),
-        '/admin-services': (context) => AdminServicesScreen(),
-        '/admin-users': (context) => AdminUsersScreen(),
-        '/admin-orders': (context) => AdminOrdersScreen(),
-        '/admin-analytics': (context) => AdminAnalyticsScreen(),
       },
     );
   }

@@ -1,12 +1,17 @@
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:jobtask/animations/rfkicks_animation.dart';
 import 'package:jobtask/screens/dashboard_screen.dart';
+import 'package:jobtask/screens/profile/country_provider.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jobtask/services/currency_service.dart';
+import 'package:jobtask/utils/currency_mapping.dart';
+import 'package:provider/provider.dart';
 
 class OnboardingFlow extends StatefulWidget {
   final String userName;
-  const OnboardingFlow({required this.userName, Key? key}) : super(key: key);
+  const OnboardingFlow({required this.userName, super.key});
 
   @override
   State<OnboardingFlow> createState() => _OnboardingFlowState();
@@ -36,14 +41,17 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
     try {
       final token = await storage.read(key: 'auth_token');
       if (token != null && _selectedShoeSize != null) {
+        final countryProvider =
+            Provider.of<CountryProvider>(context, listen: false);
         final success = await ApiService.completeOnboarding(token, {
           'shoe_size': _selectedShoeSize.toString(),
           'category': _selectedCategory,
+          'country_code': countryProvider.countryCode,
+          'currency_code': countryProvider.currencyCode,
         });
 
         if (success) {
           await storage.write(key: 'onboarding_completed', value: 'true');
-
           if (mounted) {
             Navigator.pushReplacement(
               context,
@@ -54,8 +62,6 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
               ),
             );
           }
-        } else {
-          throw Exception('Failed to save onboarding data');
         }
       }
     } catch (e) {
@@ -68,33 +74,32 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
       setState(() => _isLoading = false);
     }
   }
-
   // Future<void> _completeOnboarding() async {
   //   setState(() => _isLoading = true);
   //   try {
   //     final token = await storage.read(key: 'auth_token');
   //     if (token != null && _selectedShoeSize != null) {
-  //       await ApiService.updateUserProfile(token, {
+  //       final success = await ApiService.completeOnboarding(token, {
   //         'shoe_size': _selectedShoeSize.toString(),
-  //         'preferences': {
-  //           'category': _selectedCategory,
-  //         }
+  //         'category': _selectedCategory,
   //       });
-  //     }
 
-  //     await storage.write(key: 'onboarding_completed', value: 'true');
+  //       if (success) {
+  //         await storage.write(key: 'onboarding_completed', value: 'true');
 
-  //     if (mounted) {
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => RfkicksAnimation(
-  //             targetScreen: DashboardScreen(
-  //               token: token!,
+  //         if (mounted) {
+  //           Navigator.pushReplacement(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => RfkicksAnimation(
+  //                 targetScreen: DashboardScreen(token: token),
+  //               ),
   //             ),
-  //           ),
-  //         ),
-  //       );
+  //           );
+  //         }
+  //       } else {
+  //         throw Exception('Failed to save onboarding data');
+  //       }
   //     }
   //   } catch (e) {
   //     if (mounted) {
@@ -124,6 +129,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
                 _buildIntroScreen(),
                 _buildCategoryScreen(),
                 _buildShoeSizeScreen(),
+                _buildCountryScreen(),
               ],
             ),
             if (_currentPage > 0)
@@ -132,7 +138,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
                   child: LinearProgressIndicator(
-                    value: (_currentPage + 1) / 4,
+                    value: (_currentPage + 1) / 5,
                     backgroundColor: const Color(0xff5c5c5c),
                     valueColor:
                         const AlwaysStoppedAnimation<Color>(Colors.white),
@@ -319,10 +325,22 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
               ),
             ),
             const SizedBox(height: 20),
+            // Center(
+            //   child: _buildActionButton(
+            //     _selectedShoeSize == null ? 'Skip' : 'Next',
+            //     _completeOnboarding,
+            //     color: _selectedShoeSize == null
+            //         ? const Color(0xFF1F1F1F)
+            //         : const Color(0xff3c76ad),
+            //   ),
+            // ),
             Center(
               child: _buildActionButton(
                 _selectedShoeSize == null ? 'Skip' : 'Next',
-                _completeOnboarding,
+                () => _pageController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                ),
                 color: _selectedShoeSize == null
                     ? const Color(0xFF1F1F1F)
                     : const Color(0xff3c76ad),
@@ -397,30 +415,91 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
     );
   }
 
-  // Widget _buildCategoryOption(String category) {
-  //   final isSelected = _selectedCategory == category;
-  //   return GestureDetector(
-  //     onTap: () => setState(() => _selectedCategory = category),
-  //     child: Container(
-  //       margin: const EdgeInsets.only(bottom: 10),
-  //       padding: const EdgeInsets.all(16),
-  //       decoration: BoxDecoration(
-  //         color: isSelected ? const Color(0xff3c76ad) : Colors.black54,
-  //         borderRadius: BorderRadius.circular(8),
-  //         border: Border.all(
-  //           color: isSelected ? Colors.white : Colors.white24,
-  //         ),
-  //       ),
-  //       child: Text(
-  //         category,
-  //         style: TextStyle(
-  //           color: isSelected ? Colors.white : Colors.white70,
-  //           fontSize: 16,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget _buildCountryScreen() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 40),
+            const Text(
+              'Choose your region',
+              style: TextStyle(
+                fontSize: 32,
+                color: Colors.white,
+                height: 1.2,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            const SizedBox(height: 30),
+            Consumer<CountryProvider>(
+              builder: (context, countryProvider, child) {
+                return Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF1F1F1F),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      countryProvider.countryName ?? 'Select Country',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                    subtitle: countryProvider.currencyCode != null
+                        ? Text(
+                            'Currency: ${countryProvider.currencyCode}',
+                            style: TextStyle(color: Colors.white70),
+                          )
+                        : null,
+                    trailing:
+                        Icon(Icons.arrow_forward_ios, color: Colors.white),
+                    onTap: () {
+                      showCountryPicker(
+                        context: context,
+                        showPhoneCode: false,
+                        countryListTheme: CountryListThemeData(
+                          backgroundColor: Colors.black,
+                          textStyle: TextStyle(color: Colors.white),
+                          searchTextStyle: TextStyle(color: Colors.white),
+                          bottomSheetHeight: 500,
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(12)),
+                        ),
+                        onSelect: (Country country) async {
+                          String currencyCode = CurrencyMapping.getCurrencyCode(
+                              country.countryCode);
+                          double rate = await CurrencyService.getExchangeRate(
+                              currencyCode);
+                          countryProvider.setCountry(
+                            country.countryCode,
+                            country.name,
+                            currencyCode,
+                            rate,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
+            Spacer(),
+            Center(
+              child: _buildActionButton(
+                'Complete Setup',
+                _completeOnboarding,
+                color: Color(0xff3c76ad),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildSizeButton(double size) {
     final isSelected = _selectedShoeSize == size;

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:jobtask/screens/about/beforevsafter.dart';
 
 class FloatingActionAnimation extends StatefulWidget {
+  const FloatingActionAnimation({super.key});
+
   @override
   _FloatingActionAnimationState createState() =>
       _FloatingActionAnimationState();
@@ -43,14 +45,9 @@ class _FloatingActionAnimationState extends State<FloatingActionAnimation>
           return FloatingActionButton(
             backgroundColor: Color(0xffffffff),
             shape: RoundedRectangleBorder(
-              // side: BorderSide(color: Color(0xff000000)),
               borderRadius: BorderRadius.circular(6),
             ),
             onPressed: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => BeforeAfterComparison()),
-              // );
               showModalBottomSheet(
                   useSafeArea: true,
                   sheetAnimationStyle:

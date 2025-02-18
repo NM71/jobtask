@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:jobtask/models/order_receipt.dart';
+import 'package:jobtask/screens/profile/country_provider.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:jobtask/utils/receipt_dialog.dart';
+import 'package:provider/provider.dart';
 
 class OrderHistoryScreen extends StatefulWidget {
+  const OrderHistoryScreen({super.key});
+
   @override
   _OrderHistoryScreenState createState() => _OrderHistoryScreenState();
 }
@@ -158,14 +162,28 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '${order.currency.toUpperCase()} ${order.totalAmount.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xff3c76ad),
-                    ),
+                  Consumer<CountryProvider>(
+                    builder: (context, countryProvider, child) {
+                      double localTotal =
+                          countryProvider.convertPrice(order.totalAmount);
+                      return Text(
+                        countryProvider.formatPrice(localTotal),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff3c76ad),
+                        ),
+                      );
+                    },
                   ),
+                  // Text(
+                  //   '${order.currency.toUpperCase()} ${order.totalAmount.toStringAsFixed(2)}',
+                  //   style: TextStyle(
+                  //     fontSize: 18,
+                  //     fontWeight: FontWeight.bold,
+                  //     color: Color(0xff3c76ad),
+                  //   ),
+                  // ),
                   Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
                 ],
               ),

@@ -1,7 +1,6 @@
 import 'dart:convert';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:jobtask/screens/auth/sign_in_screen.dart';
 import 'package:jobtask/screens/dashboard_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,6 +8,8 @@ import 'package:jobtask/startup_screen.dart';
 import 'package:jobtask/utils/transitions/custom_slide_transition.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -23,14 +24,18 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _checkToken() async {
     final storage = const FlutterSecureStorage();
     final token = await storage.read(key: 'auth_token');
-    print('Stored token: $token');
+    if (kDebugMode) {
+      print('Stored token: $token');
+    }
 
     await Future.delayed(const Duration(seconds: 3));
 
     if (token != null) {
       try {
         final isValidFromApi = await ApiService.validateToken(token);
-        print('API Validation result: $isValidFromApi');
+        if (kDebugMode) {
+          print('API Validation result: $isValidFromApi');
+        }
 
         if (isValidFromApi) {
           navigateWithSlideTransition(context, DashboardScreen(token: token));
@@ -51,44 +56,14 @@ class _SplashScreenState extends State<SplashScreen> {
           }
         }
       } catch (e) {
-        print('Token validation error: $e');
+        if (kDebugMode) {
+          print('Token validation error: $e');
+        }
       }
     }
 
     navigateWithSlideTransition(context, const StartupScreen());
   }
-
-  // Future<void> _checkToken() async {
-  //   final storage = const FlutterSecureStorage();
-  //   final token = await storage.read(key: 'auth_token');
-  //   print('Stored token: $token'); // Debug print
-
-  //   await Future.delayed(const Duration(seconds: 3));
-
-  //   if (token != null) {
-  //     try {
-  //       final isValid = await ApiService.validateToken(token);
-  //       print('Token validation result: $isValid'); // Debug print
-
-  //       if (isValid) {
-  //         navigateWithSlideTransition(context, DashboardScreen(token: token));
-
-  //         // Navigator.of(context).pushReplacement(
-  //         //   _createSlideTransition(DashboardScreen(token: token)),
-  //         // );
-  //         return;
-  //       }
-  //     } catch (e) {
-  //       print('Error validating token: $e');
-  //       print('Token validation error: $e'); // Debug print
-  //     }
-  //   }
-
-  //   navigateWithSlideTransition(context, const StartupScreen());
-  //   // Navigator.of(context).pushReplacement(
-  //   //   _createSlideTransition(StartupScreen()),
-  //   // );
-  // }
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ import 'package:jobtask/services/api_service.dart';
 class CodeVerificationScreen extends StatefulWidget {
   final String email;
 
-  CodeVerificationScreen({required this.email});
+  const CodeVerificationScreen({super.key, required this.email});
 
   @override
   _CodeVerificationScreenState createState() => _CodeVerificationScreenState();
@@ -54,7 +54,6 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                 },
               ),
               const SizedBox(height: 20),
-
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(26),
@@ -67,16 +66,20 @@ class _CodeVerificationScreenState extends State<CodeVerificationScreen> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     try {
-                      final verifiedEmail = await ApiService.verifyCode(_codeController.text);
+                      final verifiedEmail =
+                          await ApiService.verifyCode(_codeController.text);
                       if (verifiedEmail == widget.email) {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => RegistrationFormScreen(email: widget.email),
+                            builder: (context) =>
+                                RegistrationFormScreen(email: widget.email),
                           ),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Verification failed: Email mismatch')),
+                          SnackBar(
+                              content:
+                                  Text('Verification failed: Email mismatch')),
                         );
                       }
                     } catch (e) {

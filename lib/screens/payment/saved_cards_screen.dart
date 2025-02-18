@@ -6,6 +6,8 @@ import 'package:jobtask/services/api_service.dart';
 import 'package:jobtask/utils/custom_snackbar.dart';
 
 class SavedCardsScreen extends StatefulWidget {
+  const SavedCardsScreen({super.key});
+
   @override
   _SavedCardsScreenState createState() => _SavedCardsScreenState();
 }
@@ -20,29 +22,7 @@ class _SavedCardsScreenState extends State<SavedCardsScreen> {
     _loadCards();
   }
 
-  // Future<void> _loadCards() async {
-  //   try {
-  //     final storage = FlutterSecureStorage();
-  //     final token = await storage.read(key: 'auth_token');
-
-  //     if (token != null) {
-  //       final cardsData = await ApiService.getSavedCards(token);
-  //       setState(() {
-  //         _cards = cardsData
-  //             .map((card) => SavedCard.fromJson(card as Map<String, dynamic>))
-  //             .toList();
-  //         _isLoading = false;
-  //       });
-  //     }
-  //   } catch (e) {
-  //     setState(() => _isLoading = false);
-  //     CustomSnackbar.show(
-  //       context: context,
-  //       message: 'Failed to load saved cards',
-  //     );
-  //   }
-  // }
-  // Update the _loadCards method
+  // Load Cards method
   Future<void> _loadCards() async {
     try {
       final storage = FlutterSecureStorage();
@@ -51,7 +31,7 @@ class _SavedCardsScreenState extends State<SavedCardsScreen> {
       if (token != null) {
         final cardsData = await ApiService.getSavedCards(token);
         setState(() {
-          _cards = cardsData; // Now directly using the List<SavedCard>
+          _cards = cardsData; // Using the List<SavedCard>
           _isLoading = false;
         });
       }
@@ -79,8 +59,8 @@ class _SavedCardsScreenState extends State<SavedCardsScreen> {
       floatingActionButton: _cards.length < 5
           ? FloatingActionButton(
               onPressed: () => _navigateToAddCard(),
-              child: Icon(Icons.add),
               backgroundColor: Color(0xff3c76ad),
+              child: Icon(Icons.add),
             )
           : null,
     );

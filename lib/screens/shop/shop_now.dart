@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
+import 'package:jobtask/screens/profile/country_provider.dart';
 import 'package:jobtask/screens/shop/reviews_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:jobtask/utils/custom_buttons/my_button.dart';
@@ -135,7 +137,6 @@ class _ShopNowState extends State<ShopNow> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     final similarServices = widget.allServices
@@ -184,15 +185,32 @@ class _ShopNowState extends State<ShopNow> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        '${widget.service.price.toStringAsFixed(0)}\$',
-                        style: TextStyle(
-                          fontSize: screenWidth * 0.07,
-                          fontFamily: 'Outfit-Bold',
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff3c76ad),
-                        ),
+                      // Replace this section in shop_now.dart:
+                      Consumer<CountryProvider>(
+                        builder: (context, countryProvider, child) {
+                          double localPrice = countryProvider
+                              .convertPrice(widget.service.price);
+                          return Text(
+                            countryProvider.formatPrice(localPrice),
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.07,
+                              fontFamily: 'Outfit-Bold',
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xff3c76ad),
+                            ),
+                          );
+                        },
                       ),
+
+                      // Text(
+                      //   '${widget.service.price.toStringAsFixed(0)}\$',
+                      //   style: TextStyle(
+                      //     fontSize: screenWidth * 0.07,
+                      //     fontFamily: 'Outfit-Bold',
+                      //     fontWeight: FontWeight.bold,
+                      //     color: Color(0xff3c76ad),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -467,7 +485,9 @@ class _ShopNowState extends State<ShopNow> {
                         final storage = FlutterSecureStorage();
                         final token = await storage.read(key: 'auth_token');
 
-                        print('Token: $token'); // Debug token
+                        if (kDebugMode) {
+                          print('Token: $token');
+                        } // Debug token
 
                         if (token == null) {
                           throw Exception('Please login to rate and review');
@@ -479,12 +499,15 @@ class _ShopNowState extends State<ShopNow> {
                           'review_text': reviewController.text.trim(),
                         };
 
-                        print(
-                            'Sending review data: $reviewData'); // Debug request data
+                        if (kDebugMode) {
+                          print('Sending review data: $reviewData');
+                        } // Debug request data
 
                         final response = await ApiService.addServiceReview(
                             token, reviewData);
-                        print('API Response: $response'); // Debug response
+                        if (kDebugMode) {
+                          print('API Response: $response');
+                        } // Debug response
 
                         Navigator.pop(context);
                         CustomSnackbar.show(
@@ -492,7 +515,9 @@ class _ShopNowState extends State<ShopNow> {
                           message: 'Rating and review added successfully!',
                         );
                       } catch (e) {
-                        print('Error adding review: $e'); // Debug errors
+                        if (kDebugMode) {
+                          print('Error adding review: $e');
+                        } // Debug errors
                         CustomSnackbar.show(
                           context: context,
                           message: e.toString(),

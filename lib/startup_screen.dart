@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jobtask/screens/admin/admin_login_screen.dart';
 import 'package:jobtask/utils/custom_buttons/my_button.dart';
 import 'package:jobtask/utils/custom_buttons/my_button_outlined.dart';
 import 'package:jobtask/screens/auth/email_input_screen.dart';
@@ -44,34 +43,18 @@ class StartupScreen extends StatelessWidget {
                             height: 77,
                             width: 77,
                           ),
-                          MyButtonOutlined(
-                              text: 'Admin Access',
-                              textStyle:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AdminLoginScreen()),
-                                );
-                              }),
-                          // TextButton(
-                          //   onPressed: () {
-                          //     Navigator.push(
-                          //       context,
-                          //       MaterialPageRoute(
-                          //           builder: (context) => AdminLoginScreen()),
-                          //     );
-                          //   },
-                          //   child: Text(
-                          //     'Admin Access',
-                          //     style: TextStyle(
-                          //       color: Colors.white,
-                          //       fontSize: 16,
-                          //       fontWeight: FontWeight.w500,
-                          //     ),
-                          //   ),
-                          // ),
+                          // MyButtonOutlined(
+                          //     text: 'Admin Access',
+                          //     textStyle:
+                          //         TextStyle(color: Colors.white, fontSize: 16),
+                          //     onTap: () {
+                          //       Navigator.push(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //             builder: (context) => AdminLoginScreen()),
+                          //       );
+                          //     }),
+                          // -------------------------------------------
                         ],
                       ),
                       Column(

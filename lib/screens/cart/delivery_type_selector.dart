@@ -58,12 +58,12 @@ class DeliveryTypeSelector extends StatelessWidget {
   }
 
   Widget _buildDeliveryOption(
-      BuildContext context,
-      String title,
-      String subtitle,
-      IconData icon,
-      String value,
-      ) {
+    BuildContext context,
+    String title,
+    String subtitle,
+    IconData icon,
+    String value,
+  ) {
     return InkWell(
       onTap: () => Navigator.pop(context, value),
       child: Padding(

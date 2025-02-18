@@ -5,6 +5,8 @@ import 'package:jobtask/utils/custom_snackbar.dart';
 import 'package:jobtask/screens/auth/reset_password_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({super.key});
+
   @override
   _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
 }

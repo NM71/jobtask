@@ -1,5 +1,3 @@
-// Notifications and Terms and Conditions remaining
-
 import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 class RegistrationFormScreen extends StatefulWidget {
   final String email;
 
-  RegistrationFormScreen({required this.email});
+  const RegistrationFormScreen({super.key, required this.email});
 
   @override
   _RegistrationFormScreenState createState() => _RegistrationFormScreenState();
@@ -608,59 +606,6 @@ class _RegistrationFormScreenState extends State<RegistrationFormScreen> {
                 ),
               ),
 
-              // InkWell(
-              //   onTap: () async {
-              //     final DateTime? picked = await showDatePicker(
-              //       context: context,
-              //       // initialDate: _dateOfBirth ?? DateTime.now(),
-              //       // firstDate: DateTime(1900),
-              //       // lastDate: DateTime.now(),
-              //       initialDate:
-              //           DateTime.now().subtract(Duration(days: 365 * 13)),
-              //       firstDate:
-              //           DateTime.now().subtract(Duration(days: 365 * 120)),
-              //       lastDate: DateTime.now(),
-              //     );
-              //     // if (picked != null && picked != _dateOfBirth) {
-              //     //   setState(() {
-              //     //     _dateOfBirth = picked;
-              //     //   });
-              //     // }
-              //     if (picked != null) {
-              //       if (_isValidDOB(picked)) {
-              //         setState(() => _dateOfBirth = picked);
-              //       } else {
-              //         CustomSnackbar.show(
-              //           context: context,
-              //           message:
-              //               'Please enter a valid date of birth (age 13-120)',
-              //         );
-              //       }
-              //     }
-              //   },
-              //   child: InputDecorator(
-              //     decoration: InputDecoration(
-              //       labelText: 'Date of Birth',
-              //       labelStyle: TextStyle(color: Color(0xff767676)),
-              //       border: customBorder(),
-              //       enabledBorder: customBorder(),
-              //       focusedBorder: customBorder(),
-              //       // border: OutlineInputBorder(
-              //       //     borderRadius: BorderRadius.circular(8),
-              //       //     gapPadding: 5
-              //       // ),
-              //     ),
-              //     child: Row(
-              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //       children: [
-              //         Text(_dateOfBirth == null
-              //             ? 'Date of Birth'
-              //             : '${_dateOfBirth!.day} ${_getMonthName(_dateOfBirth!.month)} ${_dateOfBirth!.year}'),
-              //         Image.asset('assets/icons/CalendarBlank.png'),
-              //       ],
-              //     ),
-              //   ),
-              // ),
               const SizedBox(height: 10),
               const Text('Get a RFK Member Reward on your birthday.',
                   style: TextStyle(

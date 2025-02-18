@@ -8,13 +8,13 @@ class IconTextButton extends StatelessWidget {
   final TextStyle? textStyle;
 
   const IconTextButton({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.text,
     required this.onPressed,
     required this.iconColor,
     this.textStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

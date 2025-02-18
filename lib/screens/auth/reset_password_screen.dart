@@ -7,7 +7,7 @@ import 'package:jobtask/utils/custom_snackbar.dart';
 class ResetPasswordScreen extends StatefulWidget {
   final String email;
 
-  ResetPasswordScreen({required this.email});
+  const ResetPasswordScreen({super.key, required this.email});
 
   @override
   _ResetPasswordScreenState createState() => _ResetPasswordScreenState();

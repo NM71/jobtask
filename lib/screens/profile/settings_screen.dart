@@ -4,7 +4,8 @@ import 'package:jobtask/screens/about/FAQS.dart';
 import 'package:jobtask/screens/about/order_refund_policy.dart';
 import 'package:jobtask/screens/about/privacy_policy_screen.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
-import 'package:jobtask/screens/payment/saved_cards_screen.dart';
+import 'package:jobtask/screens/profile/country_region_screen.dart';
+import 'package:jobtask/screens/profile/delivery_information_screen.dart';
 import 'package:jobtask/screens/profile/payment_information_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:jobtask/startup_screen.dart';
@@ -52,11 +53,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   child: Text('Logout'),
                 ),
-                // TextButton(
-                //   onPressed: () => Navigator.of(context).pop(true),
-                //   child: const Text('Logout',
-                //       style: TextStyle(color: Color(0xff3c76ad), fontSize: 17)),
-                // ),
               ],
             );
           },
@@ -106,11 +102,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   child: Text('Delete'),
                 ),
-                // TextButton(
-                //   onPressed: () => Navigator.of(context).pop(true),
-                //   child: const Text('Delete',
-                //       style: TextStyle(color: Colors.red, fontSize: 17)),
-                // ),
               ],
             );
           },
@@ -119,7 +110,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     if (confirmDelete) {
       try {
-        // Get the auth token from secure storage
+        // Auth token from secure storage
         final storage = const FlutterSecureStorage();
         final token = await storage.read(key: 'auth_token');
 
@@ -256,21 +247,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
             // indent: 16,
             // endIndent: 16,
           ),
-          // _buildSettingsItem(
-          //   isDetails: true,
-          //   title: 'Date of Birth',
-          //   subtitle: widget.userData?['email'] ?? 'Lorem@mail.com',
-          // ),
-          // _buildSettingsItem(
-          //     isDetails: true,
-          //     title: 'Date of Birth',
-          //     // subtitle: widget.userData?['date_of_birth'] ?? '12/2/95',
-          //     subtitle:
-          //         '${widget.userData?['date_of_birth']?.split(' ')[0] ?? 'N/A'}'),
           _buildSettingsItem(
             title: 'Delivery Information',
             onTap: () {
-              // Navigate to delivery information
+              Navigator.push(
+                  context,
+                  PageTransition(
+                      child: DeliveryInformationScreen(),
+                      type: PageTransitionType.rightToLeft));
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => DeliveryInformationScreen()),
+              // );
             },
           ),
           _buildSettingsItem(
@@ -278,16 +267,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onTap: () {
               // Navigate to payment information
               Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PaymentInformationScreen()),
-              );
+                  context,
+                  PageTransition(
+                      child: PaymentInformationScreen(),
+                      type: PageTransitionType.rightToLeft));
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //       builder: (context) => PaymentInformationScreen()),
+              // );
             },
           ),
           _buildSettingsItem(
             title: 'Country / Region',
             onTap: () {
               // Navigate to country selection
+              Navigator.push(
+                  context,
+                  PageTransition(
+                      child: CountryRegionScreen(),
+                      type: PageTransitionType.rightToLeft));
             },
           ),
           _buildSettingsItem(

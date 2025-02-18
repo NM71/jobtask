@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -5,7 +7,9 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
 import 'package:jobtask/screens/cart/delivery_type_selector.dart';
 import 'package:jobtask/screens/cart/delivery_address_form.dart';
+import 'package:jobtask/screens/cart/navigation_provider.dart';
 import 'package:jobtask/screens/checkout/checkout_bottom_sheet.dart';
+import 'package:jobtask/screens/profile/country_provider.dart';
 import 'package:jobtask/screens/shop/shop_screen.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:jobtask/utils/custom_buttons/my_button.dart';
@@ -141,6 +145,8 @@ class CartScreen extends StatefulWidget {
 //   }
 
 class _CartScreenState extends State<CartScreen> {
+  Timer? _serviceCheckTimer;
+
   @override
   void initState() {
     super.initState();
@@ -148,7 +154,105 @@ class _CartScreenState extends State<CartScreen> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    _startServiceCheck();
   }
+
+  bool _hasServiceChanged(Service oldService, Service newService) {
+    return oldService.name != newService.name ||
+        oldService.price != newService.price ||
+        oldService.imagePath != newService.imagePath ||
+        oldService.description != newService.description ||
+        oldService.serviceType != newService.serviceType;
+  }
+
+  void _startServiceCheck() {
+    // Initial check
+    _verifyCartServices();
+
+    // Set up periodic check every 10 seconds
+    _serviceCheckTimer = Timer.periodic(Duration(seconds: 5), (timer) {
+      _verifyCartServices();
+    });
+  }
+
+  Future<void> _verifyCartServices() async {
+    try {
+      final services = await ApiService.getServices();
+      final allServices = [
+        ...services['main'] ?? [],
+        ...services['individual'] ?? []
+      ];
+
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+      final cartItems = List.from(cartProvider.cartItems);
+
+      for (var cartItem in cartItems) {
+        // Find matching service from current database
+        final updatedService = allServices.firstWhere(
+          (service) => service.id == cartItem.service.id,
+          orElse: () => Service(
+            id: -1,
+            name: '',
+            price: 0,
+            imagePath: '',
+            description: '',
+            serviceType: '',
+          ),
+        );
+
+        if (updatedService.id == -1) {
+          // Service no longer exists
+          cartProvider.removeFromCart(cartItem.service);
+          if (mounted) {
+            CustomSnackbar.show(
+              context: context,
+              message: '${cartItem.service.name} is no longer available',
+            );
+          }
+        } else if (_hasServiceChanged(cartItem.service, updatedService)) {
+          // Update service details in cart
+          cartProvider.updateServiceDetails(cartItem.service, updatedService);
+          if (mounted) {
+            CustomSnackbar.show(
+              context: context,
+              message: '${updatedService.name} details have been updated',
+            );
+          }
+        }
+      }
+    } catch (e) {
+      print('Error verifying services: $e');
+    }
+  }
+
+  // Future<void> _verifyCartServices() async {
+  //   try {
+  //     final services = await ApiService.getServices();
+  //     final allServices = [
+  //       ...services['main'] ?? [],
+  //       ...services['individual'] ?? []
+  //     ];
+
+  //     final cartProvider = Provider.of<CartProvider>(context, listen: false);
+  //     final cartItems = cartProvider.cartItems;
+
+  //     for (var cartItem in cartItems) {
+  //       bool serviceExists =
+  //           allServices.any((service) => service.id == cartItem.service.id);
+  //       if (!serviceExists) {
+  //         cartProvider.removeFromCart(cartItem.service);
+  //         if (mounted) {
+  //           CustomSnackbar.show(
+  //             context: context,
+  //             message: '${cartItem.service.name} is no longer available',
+  //           );
+  //         }
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print('Error verifying services: $e');
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -158,6 +262,8 @@ class _CartScreenState extends State<CartScreen> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+    _serviceCheckTimer?.cancel();
+
     super.dispose();
   }
 
@@ -207,13 +313,16 @@ class _CartScreenState extends State<CartScreen> {
                         height: 51,
                         text: "Shop Now",
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.leftToRight,
-                              child: ServicePage(),
-                            ),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   PageTransition(
+                          //     type: PageTransitionType.leftToRight,
+                          //     child: ServicePage(),
+                          //   ),
+                          // );
+                          Provider.of<NavigationProvider>(context,
+                                  listen: false)
+                              .jumpToPage(1);
                         },
                       ),
                     ),
@@ -281,6 +390,133 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
+  // Future<void> _handleCheckout(
+  //     BuildContext context, CartProvider cartProvider) async {
+  //   try {
+  //     final storage = const FlutterSecureStorage();
+  //     final token = await storage.read(key: 'auth_token');
+
+  //     if (token == null) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text('Please login to continue')),
+  //       );
+  //       return;
+  //     }
+
+  //     final userProfile = await ApiService.getUserProfile(token);
+
+  //     // Print for debugging
+  //     // print('User Profile Data: $userProfile');
+
+  //     // Access ID directly without parsing
+  //     final userId = userProfile['ID'];
+
+  //     // print('This is my User ID: ${userId}');
+
+  //     final deliveryType = await showModalBottomSheet<String>(
+  //       context: context,
+  //       isScrollControlled: true,
+  //       backgroundColor: Colors.transparent,
+  //       builder: (context) => DeliveryTypeSelector(),
+  //     );
+
+  //     if (deliveryType == null) return;
+
+  //     final addressResult = await showModalBottomSheet<bool>(
+  //       context: context,
+  //       isScrollControlled: true,
+  //       backgroundColor: Colors.transparent,
+  //       builder: (context) => DeliveryAddressForm(
+  //         token: token,
+  //         userId: userId,
+  //       ),
+  //     );
+
+  //     if (addressResult != true) return;
+
+  //     // final paymentData = {
+  //     //   'amount': (cartProvider.getTotalPrice() * 100).toInt(),
+  //     //   'currency': 'usd',
+  //     //   'user_id': userId,
+  //     //   // 'email': userProfile['user_email'],
+  //     //   'email': userProfile['user_email'] ??
+  //     //       userProfile['email'] ??
+  //     //       '', // Handle both possible email field names
+  //     //   'delivery_type': deliveryType,
+  //     // };
+
+  //     final paymentData = {
+  //       'amount': (cartProvider.getTotalPrice() * 100).toInt(),
+  //       'currency': 'usd',
+  //       'user_id': userId,
+  //       'email': userProfile['email'],
+  //       'delivery_type': deliveryType,
+  //       'cart_items': cartProvider.cartItems
+  //           .map((item) => {
+  //                 'product_id': item.service.id,
+  //                 'quantity': item.quantity,
+  //                 'price': item.service.price
+  //               })
+  //           .toList()
+  //     };
+
+  //     // In _handleCheckout method in cart_screen.dart, add these print statements:
+  //     print('Payment Data: $paymentData');
+  //     print('User Profile: $userProfile'); // Add this to see full user data
+
+  //     final paymentDetails =
+  //         await ApiService.createPaymentIntent(token, paymentData);
+  //     print('Payment Response: $paymentDetails');
+
+  //     // final paymentDetails =
+  //     //     await ApiService.createPaymentIntent(token, paymentData);
+
+  //     if (paymentDetails['clientSecret'] == null) {
+  //       throw Exception('Failed to create payment intent');
+  //     }
+
+  //     await Stripe.instance.initPaymentSheet(
+  //       paymentSheetParameters: SetupPaymentSheetParameters(
+  //         paymentIntentClientSecret: paymentDetails['clientSecret']!,
+  //         merchantDisplayName: 'RFKicks',
+  //         style: ThemeMode.light,
+  //         appearance: PaymentSheetAppearance(
+  //           colors: PaymentSheetAppearanceColors(
+  //             primary: Color(0xff3c76ad),
+  //           ),
+  //           shapes: PaymentSheetShape(
+  //             borderRadius: 12,
+  //           ),
+  //         ),
+  //       ),
+  //     );
+
+  //     await Stripe.instance.presentPaymentSheet();
+
+  //     await ApiService.updateOrderStatus(
+  //         token, paymentDetails['orderId']!, 'completed');
+
+  //     cartProvider.clearCart();
+
+  //     if (mounted) {
+  //       CustomSnackbar.show(
+  //           context: context, message: 'Order placed successfully!');
+  //       // ScaffoldMessenger.of(context).showSnackBar(
+  //       //   const SnackBar(content: Text('Order placed successfully!')),
+  //       // );
+  //     }
+  //   } catch (e) {
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text(
+  //               'Checkout failed: ${e.toString().replaceAll('Exception: ', '')}'),
+  //           backgroundColor: Colors.red,
+  //         ),
+  //       );
+  //     }
+  //   }
+  // }
   Future<void> _handleCheckout(
       BuildContext context, CartProvider cartProvider) async {
     try {
@@ -295,14 +531,7 @@ class _CartScreenState extends State<CartScreen> {
       }
 
       final userProfile = await ApiService.getUserProfile(token);
-
-      // Print for debugging
-      // print('User Profile Data: $userProfile');
-
-      // Access ID directly without parsing
       final userId = userProfile['ID'];
-
-      // print('This is my User ID: ${userId}');
 
       final deliveryType = await showModalBottomSheet<String>(
         context: context,
@@ -325,19 +554,10 @@ class _CartScreenState extends State<CartScreen> {
 
       if (addressResult != true) return;
 
-      // final paymentData = {
-      //   'amount': (cartProvider.getTotalPrice() * 100).toInt(),
-      //   'currency': 'usd',
-      //   'user_id': userId,
-      //   // 'email': userProfile['user_email'],
-      //   'email': userProfile['user_email'] ??
-      //       userProfile['email'] ??
-      //       '', // Handle both possible email field names
-      //   'delivery_type': deliveryType,
-      // };
-
+      // Get original USD prices for payment
       final paymentData = {
-        'amount': (cartProvider.getTotalPrice() * 100).toInt(),
+        'amount':
+            (cartProvider.getTotalPrice() * 100).toInt(), // Original USD price
         'currency': 'usd',
         'user_id': userId,
         'email': userProfile['email'],
@@ -346,55 +566,35 @@ class _CartScreenState extends State<CartScreen> {
             .map((item) => {
                   'product_id': item.service.id,
                   'quantity': item.quantity,
-                  'price': item.service.price
+                  'price': item.service.price // Original USD price
                 })
             .toList()
       };
 
-      // In _handleCheckout method in cart_screen.dart, add these print statements:
-      print('Payment Data: $paymentData');
-      print('User Profile: $userProfile'); // Add this to see full user data
-
       final paymentDetails =
           await ApiService.createPaymentIntent(token, paymentData);
-      print('Payment Response: $paymentDetails');
-
-      // final paymentDetails =
-      //     await ApiService.createPaymentIntent(token, paymentData);
 
       if (paymentDetails['clientSecret'] == null) {
         throw Exception('Failed to create payment intent');
       }
 
+      // Continue with Stripe payment using USD amounts
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: paymentDetails['clientSecret']!,
           merchantDisplayName: 'RFKicks',
           style: ThemeMode.light,
-          appearance: PaymentSheetAppearance(
-            colors: PaymentSheetAppearanceColors(
-              primary: Color(0xff3c76ad),
-            ),
-            shapes: PaymentSheetShape(
-              borderRadius: 12,
-            ),
-          ),
         ),
       );
 
       await Stripe.instance.presentPaymentSheet();
-
       await ApiService.updateOrderStatus(
           token, paymentDetails['orderId']!, 'completed');
-
       cartProvider.clearCart();
 
       if (mounted) {
         CustomSnackbar.show(
             context: context, message: 'Order placed successfully!');
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   const SnackBar(content: Text('Order placed successfully!')),
-        // );
       }
     } catch (e) {
       if (mounted) {
@@ -409,6 +609,21 @@ class _CartScreenState extends State<CartScreen> {
     }
   }
 
+  // Widget _buildSubtotalRow(double screenWidth, CartProvider cartProvider) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       Text(
+  //         "Subtotal",
+  //         style: TextStyle(color: Colors.grey, fontSize: screenWidth * 0.04),
+  //       ),
+  //       Text(
+  //         "US\$${cartProvider.getTotalPrice().toStringAsFixed(2)}",
+  //         style: TextStyle(color: Colors.grey, fontSize: screenWidth * 0.04),
+  //       ),
+  //     ],
+  //   );
+  // }
   Widget _buildSubtotalRow(double screenWidth, CartProvider cartProvider) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -417,9 +632,16 @@ class _CartScreenState extends State<CartScreen> {
           "Subtotal",
           style: TextStyle(color: Colors.grey, fontSize: screenWidth * 0.04),
         ),
-        Text(
-          "US\$${cartProvider.getTotalPrice().toStringAsFixed(2)}",
-          style: TextStyle(color: Colors.grey, fontSize: screenWidth * 0.04),
+        Consumer<CountryProvider>(
+          builder: (context, countryProvider, child) {
+            double localTotal =
+                countryProvider.convertPrice(cartProvider.getTotalPrice());
+            return Text(
+              countryProvider.formatPrice(localTotal),
+              style:
+                  TextStyle(color: Colors.grey, fontSize: screenWidth * 0.04),
+            );
+          },
         ),
       ],
     );
@@ -441,6 +663,22 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
+  // Widget _buildEstimatedTotalRow(
+  //     double screenWidth, CartProvider cartProvider) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       Text(
+  //         "Estimated Total",
+  //         style: TextStyle(fontSize: screenWidth * 0.045),
+  //       ),
+  //       Text(
+  //         "US\$${cartProvider.getTotalPrice().toStringAsFixed(2)} + Tax",
+  //         style: TextStyle(fontSize: screenWidth * 0.045),
+  //       ),
+  //     ],
+  //   );
+  // }
   Widget _buildEstimatedTotalRow(
       double screenWidth, CartProvider cartProvider) {
     return Row(
@@ -450,9 +688,15 @@ class _CartScreenState extends State<CartScreen> {
           "Estimated Total",
           style: TextStyle(fontSize: screenWidth * 0.045),
         ),
-        Text(
-          "US\$${cartProvider.getTotalPrice().toStringAsFixed(2)} + Tax",
-          style: TextStyle(fontSize: screenWidth * 0.045),
+        Consumer<CountryProvider>(
+          builder: (context, countryProvider, child) {
+            double localTotal =
+                countryProvider.convertPrice(cartProvider.getTotalPrice());
+            return Text(
+              "${countryProvider.formatPrice(localTotal)} + Tax",
+              style: TextStyle(fontSize: screenWidth * 0.045),
+            );
+          },
         ),
       ],
     );
@@ -550,10 +794,22 @@ class CartItemWidget extends StatelessWidget {
                   onPressed: () => onQuantityChanged(cartItem.quantity + 1),
                 ),
                 Spacer(),
-                Text(
-                  "\$${cartItem.service.price.toStringAsFixed(2)}",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                // Text(
+                //   "\$${cartItem.service.price.toStringAsFixed(2)}",
+                //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                // ),
+                Consumer<CountryProvider>(
+                  builder: (context, countryProvider, child) {
+                    double localPrice =
+                        countryProvider.convertPrice(cartItem.service.price);
+                    return Text(
+                      countryProvider.formatPrice(localPrice),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                    );
+                  },
                 ),
+
                 IconButton(
                   icon: Icon(Icons.delete_outline,
                       size: 24, color: Color(0xff3c76ad)),

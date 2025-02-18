@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,7 +9,7 @@ class ImageCarousel extends StatefulWidget {
   final List<String>?
       assetImagePaths; // Optional list of local asset image paths
 
-  ImageCarousel({this.imageUrls, this.assetImagePaths});
+  const ImageCarousel({this.imageUrls, this.assetImagePaths});
 
   @override
   _ImageCarouselState createState() => _ImageCarouselState();
@@ -18,7 +17,7 @@ class ImageCarousel extends StatefulWidget {
 
 class _ImageCarouselState extends State<ImageCarousel> {
   List<File> _localImages = [];
-  List<Widget> _carouselItems = [];
+  final List<Widget> _carouselItems = [];
 
   @override
   void initState() {

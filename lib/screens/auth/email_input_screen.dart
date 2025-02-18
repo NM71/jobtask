@@ -8,6 +8,8 @@ import 'package:jobtask/utils/custom_snackbar.dart';
 import '../../utils/custom_border.dart';
 
 class EmailInputScreen extends StatefulWidget {
+  const EmailInputScreen({super.key});
+
   @override
   _EmailInputScreenState createState() => _EmailInputScreenState();
 }

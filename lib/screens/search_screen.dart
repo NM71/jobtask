@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jobtask/screens/shop/shop_now.dart';
 import 'package:jobtask/screens/shop/shop_screen.dart';
+import 'package:jobtask/services/api_service.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +23,13 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     _loadRecentSearches();
+    _loadServices();
+  }
+
+  Future<void> _loadServices() async {
+    final services = await ApiService.getServices();
+    if (!mounted) return;
+    Provider.of<ServiceProvider>(context, listen: false).setServices(services);
   }
 
   Future<void> _loadRecentSearches() async {
@@ -90,7 +98,7 @@ class _SearchScreenState extends State<SearchScreen> {
               TextButton(
                 onPressed: _clearRecentSearches,
                 child: Text(
-                  'Clear',
+                  'Clear All',
                   style: TextStyle(
                     color: Colors.black,
                   ),
@@ -107,6 +115,16 @@ class _SearchScreenState extends State<SearchScreen> {
             return ListTile(
               leading: Icon(Icons.history),
               title: Text(_recentSearches[index]),
+              trailing: IconButton(
+                icon: Icon(Icons.close, size: 20),
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  setState(() {
+                    _recentSearches.removeAt(index);
+                  });
+                  await prefs.setStringList(recentSearchesKey, _recentSearches);
+                },
+              ),
               onTap: () {
                 _searchController.text = _recentSearches[index];
                 _filterServices(_recentSearches[index]);
@@ -117,6 +135,57 @@ class _SearchScreenState extends State<SearchScreen> {
       ],
     );
   }
+
+  // Widget _buildRecentSearches() {
+  //   if (_recentSearches.isEmpty || _searchController.text.isNotEmpty) {
+  //     return SizedBox.shrink();
+  //   }
+
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Padding(
+  //         padding: const EdgeInsets.all(16.0),
+  //         child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Text(
+  //               'Recent Searches',
+  //               style: TextStyle(
+  //                 fontSize: 16,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //             TextButton(
+  //               onPressed: _clearRecentSearches,
+  //               child: Text(
+  //                 'Clear',
+  //                 style: TextStyle(
+  //                   color: Colors.black,
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //       ListView.builder(
+  //         shrinkWrap: true,
+  //         physics: NeverScrollableScrollPhysics(),
+  //         itemCount: _recentSearches.length,
+  //         itemBuilder: (context, index) {
+  //           return ListTile(
+  //             leading: Icon(Icons.history),
+  //             title: Text(_recentSearches[index]),
+  //             onTap: () {
+  //               _searchController.text = _recentSearches[index];
+  //               _filterServices(_recentSearches[index]);
+  //             },
+  //           );
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -79,22 +79,57 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
                         "★ " * averageRating.round(),
                         style: TextStyle(
                           fontSize: 22,
+                          color: Color(0xff3c76ad),
                         ),
                       ),
                     ],
                   ),
                   SizedBox(height: 16),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _buildFilterChip(null, 'All'),
-                        ...List.generate(
-                            5,
-                            (index) =>
-                                _buildFilterChip(5 - index, '${5 - index} ★')),
-                      ],
+                  DropdownButtonFormField<int?>(
+                    value: selectedRating,
+                    dropdownColor: Colors.white,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Color(0xff3c76ad)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Color(0xff3c76ad)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Color(0xff3c76ad)),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
                     ),
+                    hint: Text('Filter by rating'),
+                    items: [
+                      DropdownMenuItem<int?>(
+                        value: null,
+                        child: Text('All ratings'),
+                      ),
+                      ...List.generate(
+                        5,
+                        (index) => DropdownMenuItem<int?>(
+                          value: 5 - index,
+                          child: Row(
+                            children: [
+                              Text('${5 - index}'),
+                              SizedBox(width: 4),
+                              Text(
+                                '★' * (5 - index),
+                                style: TextStyle(color: Color(0xff3c76ad)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                    onChanged: (value) =>
+                        setState(() => selectedRating = value),
                   ),
                   SizedBox(height: 20),
                   Expanded(
@@ -119,27 +154,6 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
     );
   }
 
-  Widget _buildFilterChip(int? rating, String label) {
-    return Padding(
-      padding: EdgeInsets.only(right: 8),
-      child: FilterChip(
-        label: Text(label),
-        selected: selectedRating == rating,
-        onSelected: (_) => setState(() => selectedRating = rating),
-        backgroundColor: Colors.white,
-        selectedColor: Colors.white,
-        side: BorderSide(
-          color: selectedRating == rating ? Color(0xff3c76ad) : Colors.grey,
-        ),
-        labelStyle: TextStyle(
-          fontSize: 14,
-          color: selectedRating == rating ? Color(0xff3c76ad) : Colors.black,
-        ),
-        checkmarkColor: Color(0xff3c76ad),
-      ),
-    );
-  }
-
   Widget _buildReviewItem(Map<String, dynamic> review) {
     final date =
         DateFormat('MMM dd, yyyy').format(DateTime.parse(review['created_at']));
@@ -149,8 +163,6 @@ class _ReviewsScreenState extends State<ReviewsScreen> {
       padding: EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        // borderRadius: BorderRadius.circular(12),
-        // border: Border.all(color: Colors.grey[200]!),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

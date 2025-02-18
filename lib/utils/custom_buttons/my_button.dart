@@ -10,6 +10,7 @@ class MyButton extends StatelessWidget {
   final double? height;
 
   const MyButton({
+    super.key,
     required this.text,
     required this.onTap,
     this.backgroundColor = const Color(0xff3c76ad),

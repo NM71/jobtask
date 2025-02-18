@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jobtask/screens/profile/country_provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:jobtask/screens/cart/cart_provider.dart';
 import 'package:jobtask/screens/cart/product_description.dart';
@@ -192,17 +193,9 @@ class _ServicePageState extends State<ServicePage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
-              // Text(error!, textAlign: TextAlign.center),
-
               SizedBox(
                 height: 40,
               ),
-
-              // MyButton(text: 'Retry', onTap: _loadServices),
-              // ElevatedButton(
-              //   onPressed: _loadServices,
-              //   child: Text('Retry'),
-              // ),
             ],
           ),
         ),
@@ -320,7 +313,7 @@ class ServiceGrid extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: crossAxisCount,
-        childAspectRatio: 0.8, // Aspect ratio adjusted for responsiveness
+        childAspectRatio: 0.8,
       ),
       itemCount: services.length,
       itemBuilder: (context, index) {
@@ -342,14 +335,6 @@ class ServiceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   PageTransition(
-        //     type: PageTransitionType.rightToLeft,
-        //     child: ProductDescription(service: service),
-        //   ),
-        // );
-
         Navigator.push(
           context,
           PageTransition(
@@ -412,14 +397,29 @@ class ServiceCard extends StatelessWidget {
                         style: TextStyle(fontSize: 12),
                       ),
                     ),
-                    Text(
-                      '\$${service.price}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xff3c76ad),
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Consumer<CountryProvider>(
+                      builder: (context, countryProvider, child) {
+                        double localPrice =
+                            countryProvider.convertPrice(service.price);
+                        return Text(
+                          countryProvider.formatPrice(localPrice),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Color(0xff3c76ad),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
                     ),
+
+                    // Text(
+                    //   '\$${service.price}',
+                    //   style: TextStyle(
+                    //     fontSize: 12,
+                    //     color: Color(0xff3c76ad),
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
                   ],
                 ),
               ],

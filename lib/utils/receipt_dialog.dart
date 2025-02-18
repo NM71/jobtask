@@ -5,13 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:jobtask/models/order_receipt.dart';
+import 'package:jobtask/screens/profile/country_provider.dart';
 import 'package:jobtask/services/api_service.dart';
 import 'package:jobtask/utils/custom_buttons/my_button.dart';
 import 'package:jobtask/utils/custom_buttons/my_button_outlined.dart';
 import 'package:jobtask/utils/custom_snackbar.dart';
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
@@ -20,7 +21,7 @@ class ReceiptDialog extends StatelessWidget {
   final OrderReceipt receipt;
   final ScreenshotController screenshotController = ScreenshotController();
 
-  ReceiptDialog({Key? key, required this.receipt}) : super(key: key);
+  ReceiptDialog({super.key, required this.receipt});
 
   Future<void> _saveReceipt(BuildContext context) async {
     // First check if we have permission
@@ -310,289 +311,6 @@ class ReceiptDialog extends StatelessWidget {
     }
   }
 
-  // Future<void> _saveReceipt(BuildContext context) async {
-  //   var status = await Permission.storage.status;
-  //   if (!status.isGranted) {
-  //     status = await Permission.storage.request();
-  //     if (!status.isGranted) {
-  //       CustomSnackbar.show(
-  //         context: context,
-  //         message: 'Storage access needed to save receipt',
-  //       );
-  //       return;
-  //     }
-  //   }
-
-  //   showDialog(
-  //     context: context,
-  //     barrierDismissible: false,
-  //     builder: (BuildContext context) => Center(
-  //       child: Container(
-  //         padding: EdgeInsets.all(32),
-  //         decoration: BoxDecoration(
-  //           color: Colors.white,
-  //           borderRadius: BorderRadius.circular(6),
-  //         ),
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             CircularProgressIndicator(
-  //               valueColor: AlwaysStoppedAnimation<Color>(Color(0xff3c76ad)),
-  //             ),
-  //             SizedBox(height: 16),
-  //             Text(
-  //               'Saving receipt...',
-  //               style: TextStyle(
-  //                 color: Colors.black,
-  //                 fontSize: 16,
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-
-  //   try {
-  //     final pdf = pw.Document();
-
-  //     // Load RFK logo
-  //     final logoImage = await rootBundle.load('assets/images/rfkicks_logo.png');
-  //     final logoBytes = logoImage.buffer.asUint8List();
-
-  //     // Fetch service images
-  //     List<Uint8List> serviceImages = await Future.wait(receipt.services.map(
-  //         (service) => NetworkAssetBundle(Uri.parse(service.imageUrl))
-  //             .load(service.imageUrl)
-  //             .then((byteData) => byteData.buffer.asUint8List())));
-  //     // // Create a list to store image fetching futures
-  //     // List<Future<Uint8List>> imageFutures = [];
-
-  //     // // Fetch all images first
-  //     // for (var service in receipt.services) {
-  //     //   imageFutures.add(NetworkAssetBundle(Uri.parse(service.imageUrl))
-  //     //       .load(service.imageUrl)
-  //     //       .then((byteData) => byteData.buffer.asUint8List()));
-  //     // }
-
-  //     // // Wait for all images to be fetched
-  //     // final serviceImages = await Future.wait(imageFutures);
-
-  //     pdf.addPage(
-  //       pw.Page(
-  //         margin: pw.EdgeInsets.all(24),
-  //         build: (context) {
-  //           return pw.Column(
-  //             children: [
-  //               // Header with Logo
-  //               pw.Row(
-  //                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-  //                 children: [
-  //                   pw.Image(pw.MemoryImage(logoBytes), width: 120),
-  //                   pw.Column(
-  //                     crossAxisAlignment: pw.CrossAxisAlignment.end,
-  //                     children: [
-  //                       pw.Text('RECEIPT',
-  //                           style: pw.TextStyle(
-  //                               fontSize: 24, fontWeight: pw.FontWeight.bold)),
-  //                       pw.Text('Order #${receipt.orderId}'),
-  //                       pw.Text(DateFormat('MMM dd, yyyy')
-  //                           .format(receipt.dateCreated)),
-  //                     ],
-  //                   ),
-  //                 ],
-  //               ),
-  //               pw.Divider(thickness: 2),
-  //               pw.SizedBox(height: 20),
-
-  //               // Customer Info
-  //               pw.Container(
-  //                 padding: pw.EdgeInsets.all(12),
-  //                 decoration: pw.BoxDecoration(
-  //                   color: PdfColors.grey100,
-  //                   borderRadius: pw.BorderRadius.circular(8),
-  //                 ),
-  //                 child: pw.Row(
-  //                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-  //                   children: [
-  //                     pw.Column(
-  //                       crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //                       children: [
-  //                         pw.Text('Customer Details',
-  //                             style:
-  //                                 pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-  //                         pw.Text(receipt.customerEmail),
-  //                       ],
-  //                     ),
-  //                     pw.Column(
-  //                       crossAxisAlignment: pw.CrossAxisAlignment.end,
-  //                       children: [
-  //                         pw.Text('Payment Method',
-  //                             style:
-  //                                 pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-  //                         pw.Text(receipt.paymentMethodTitle),
-  //                       ],
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //               pw.SizedBox(height: 20),
-
-  //               // Services
-  //               pw.Text('Services',
-  //                   style: pw.TextStyle(
-  //                       fontSize: 18, fontWeight: pw.FontWeight.bold)),
-  //               pw.SizedBox(height: 10),
-  //               ...List.generate(receipt.services.length, (index) {
-  //                 final service = receipt.services[index];
-  //                 return pw.Container(
-  //                   margin: pw.EdgeInsets.symmetric(vertical: 8),
-  //                   padding: pw.EdgeInsets.all(12),
-  //                   decoration: pw.BoxDecoration(
-  //                     border: pw.Border.all(color: PdfColors.grey300),
-  //                     borderRadius: pw.BorderRadius.circular(8),
-  //                   ),
-  //                   child: pw.Row(
-  //                     children: [
-  //                       pw.Image(pw.MemoryImage(serviceImages[index]),
-  //                           width: 60, height: 60),
-  //                       pw.SizedBox(width: 12),
-  //                       pw.Expanded(
-  //                         child: pw.Column(
-  //                           crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //                           children: [
-  //                             pw.Text(service.name,
-  //                                 style: pw.TextStyle(
-  //                                     fontWeight: pw.FontWeight.bold)),
-  //                             if (service.description != null)
-  //                               pw.Text(service.description!,
-  //                                   style:
-  //                                       pw.TextStyle(color: PdfColors.grey700)),
-  //                             pw.Text('Quantity: ${service.quantity}'),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                       pw.Text(
-  //                         '${receipt.currency} ${(service.price * service.quantity).toStringAsFixed(2)}',
-  //                         style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 );
-  //               }),
-  //               pw.SizedBox(height: 20),
-
-  //               // Totals
-  //               pw.Container(
-  //                 padding: pw.EdgeInsets.all(12),
-  //                 decoration: pw.BoxDecoration(
-  //                   color: PdfColors.grey100,
-  //                   borderRadius: pw.BorderRadius.circular(8),
-  //                 ),
-  //                 child: pw.Column(
-  //                   children: [
-  //                     _buildPdfTotalRow(
-  //                         'Subtotal', receipt.totalAmount - (receipt.tax ?? 0)),
-  //                     if (receipt.tax != null)
-  //                       _buildPdfTotalRow('Tax', receipt.tax!),
-  //                     pw.Divider(),
-  //                     _buildPdfTotalRow('Total', receipt.totalAmount,
-  //                         isTotal: true),
-  //                   ],
-  //                 ),
-  //               ),
-
-  //               // Footer
-  //               pw.Spacer(),
-  //               pw.Text(
-  //                 'Thank you for choosing ReFresh Kicks!',
-  //                 style: pw.TextStyle(
-  //                     color: PdfColors.blue800, fontWeight: pw.FontWeight.bold),
-  //                 textAlign: pw.TextAlign.center,
-  //               ),
-  //             ],
-  //           );
-  //         },
-  //       ),
-  //     );
-
-  //     final directory = Directory('/storage/emulated/0/Download');
-  //     if (!await directory.exists()) {
-  //       await directory.create(recursive: true);
-  //     }
-
-  //     final String fileName =
-  //         'RFKicks_Receipt_${receipt.orderId}_${DateTime.now().millisecondsSinceEpoch}.pdf';
-  //     final file = File('${directory.path}/$fileName');
-  //     await file.writeAsBytes(await pdf.save());
-
-  //     Navigator.pop(context);
-
-  //     await showModalBottomSheet(
-  //       context: context,
-  //       backgroundColor: Colors.transparent,
-  //       builder: (context) => Container(
-  //         padding: EdgeInsets.all(20),
-  //         decoration: BoxDecoration(
-  //           color: Colors.white,
-  //           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-  //         ),
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Center(
-  //               child: Container(
-  //                 width: 40,
-  //                 height: 4,
-  //                 margin: EdgeInsets.only(bottom: 20),
-  //                 decoration: BoxDecoration(
-  //                   color: Colors.grey[300],
-  //                   borderRadius: BorderRadius.circular(2),
-  //                 ),
-  //               ),
-  //             ),
-  //             Text(
-  //               'Receipt Saved',
-  //               style: TextStyle(
-  //                 fontSize: 24,
-  //                 fontWeight: FontWeight.bold,
-  //               ),
-  //             ),
-  //             SizedBox(height: 20),
-  //             Text(
-  //               'Your receipt has been saved to your Downloads folder.',
-  //               style: TextStyle(
-  //                 fontSize: 16,
-  //                 color: Color(0xff767676),
-  //               ),
-  //             ),
-  //             SizedBox(height: 30),
-  //             MyButton(
-  //               height: 51,
-  //               text: 'Got It',
-  //               onTap: () {
-  //                 Navigator.pop(context);
-  //                 CustomSnackbar.show(
-  //                   context: context,
-  //                   message: 'Receipt saved successfully',
-  //                 );
-  //               },
-  //             ),
-  //             SizedBox(height: 20),
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   } catch (e) {
-  //     Navigator.pop(context);
-  //     CustomSnackbar.show(
-  //       context: context,
-  //       message: 'Unable to save receipt. Please try again',
-  //     );
-  //   }
-  // }
-
   pw.Widget _buildPdfTotalRow(String label, double amount,
       {bool isTotal = false}) {
     return pw.Padding(
@@ -748,27 +466,6 @@ class ReceiptDialog extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Service Image
-                      // Container(
-                      //   width: 60,
-                      //   height: 60,
-                      //   decoration: BoxDecoration(
-                      //     borderRadius: BorderRadius.circular(8),
-                      //     border: Border.all(color: Colors.grey[200]!),
-                      //   ),
-                      //   child: ClipRRect(
-                      //     borderRadius: BorderRadius.circular(8),
-                      //     child: Image.network(
-                      //       service.imageUrl,
-                      //       fit: BoxFit.cover,
-                      //       errorBuilder: (context, error, stackTrace) =>
-                      //           Container(
-                      //         color: Colors.grey[100],
-                      //         child: Icon(Icons.image_not_supported,
-                      //             color: Colors.grey),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
                       CachedNetworkImage(
                         imageUrl: service.imageUrl,
                         width: 60,
@@ -827,10 +524,20 @@ class ReceiptDialog extends StatelessWidget {
                         ),
                       ),
                       // Price
-                      Text(
-                        '${receipt.currency} ${(service.price * service.quantity).toStringAsFixed(2)}',
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                      Consumer<CountryProvider>(
+                        builder: (context, countryProvider, child) {
+                          double localPrice = countryProvider
+                              .convertPrice(service.price * service.quantity);
+                          return Text(
+                            countryProvider.formatPrice(localPrice),
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          );
+                        },
                       ),
+                      // Text(
+                      //   '${receipt.currency} ${(service.price * service.quantity).toStringAsFixed(2)}',
+                      //   style: TextStyle(fontWeight: FontWeight.w500),
+                      // ),
                     ],
                   ),
                 ))
@@ -863,14 +570,28 @@ class ReceiptDialog extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text(
-              '${receipt.currency.toUpperCase()} ${receipt.totalAmount.toStringAsFixed(2)}',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Color(0xff3c76ad),
-              ),
+            Consumer<CountryProvider>(
+              builder: (context, countryProvider, child) {
+                double localTotal =
+                    countryProvider.convertPrice(receipt.totalAmount);
+                return Text(
+                  countryProvider.formatPrice(localTotal),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff3c76ad),
+                  ),
+                );
+              },
             ),
+            // Text(
+            //   '${receipt.currency.toUpperCase()} ${receipt.totalAmount.toStringAsFixed(2)}',
+            //   style: TextStyle(
+            //     fontSize: 16,
+            //     fontWeight: FontWeight.bold,
+            //     color: Color(0xff3c76ad),
+            //   ),
+            // ),
           ],
         ),
       ],
@@ -1077,208 +798,4 @@ class ReceiptDialog extends StatelessWidget {
       ],
     );
   }
-  // Widget _buildButtons(BuildContext context) {
-  //   return Column(
-  //     children: [
-  //       SizedBox(
-  //         width: double.infinity,
-  //         child: MyButtonOutlined(
-  //           text: 'Save Receipt',
-  //           textStyle: TextStyle(color: Colors.black),
-  //           onTap: () => _saveReceipt(context),
-  //         ),
-  //       ),
-  //       SizedBox(height: 12),
-  //       if (receipt.status.toLowerCase() != 'cancelled')
-  //         TextButton(
-  //           style: TextButton.styleFrom(
-  //             foregroundColor: Colors.red,
-  //             minimumSize: Size(double.infinity, 50),
-  //           ),
-  //           onPressed: () async {
-  //             final confirmed = await showModalBottomSheet<bool>(
-  //               context: context,
-  //               backgroundColor: Colors.transparent,
-  //               builder: (context) => Container(
-  //                 padding: EdgeInsets.all(20),
-  //                 decoration: BoxDecoration(
-  //                   color: Colors.white,
-  //                   borderRadius:
-  //                       BorderRadius.vertical(top: Radius.circular(20)),
-  //                 ),
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     Center(
-  //                       child: Container(
-  //                         width: 40,
-  //                         height: 4,
-  //                         margin: EdgeInsets.only(bottom: 20),
-  //                         decoration: BoxDecoration(
-  //                           color: Colors.grey[300],
-  //                           borderRadius: BorderRadius.circular(2),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     Text(
-  //                       'Want to cancel your order?',
-  //                       style: TextStyle(
-  //                         fontSize: 24,
-  //                         fontWeight: FontWeight.bold,
-  //                         // color: Color(0xff3c76ad),
-  //                       ),
-  //                     ),
-  //                     SizedBox(height: 20),
-  //                     Text(
-  //                       'You can cancel orders for a short time after they are placed - free of charge',
-  //                       style: TextStyle(
-  //                         fontSize: 14,
-  //                         color: Color(0xff767676),
-  //                       ),
-  //                     ),
-  //                     SizedBox(height: 30),
-  //                     MyButton(
-  //                       text: 'Yes, Cancel Order',
-  //                       height: 51,
-  //                       onTap: () => Navigator.pop(context, true),
-  //                     ),
-  //                     SizedBox(height: 12),
-  //                     SizedBox(
-  //                       width: double.infinity,
-  //                       child: MyButtonOutlined(
-  //                         text: 'Go Back',
-  //                         textStyle: TextStyle(color: Colors.black),
-  //                         onTap: () => Navigator.pop(context, false),
-  //                       ),
-  //                     ),
-  //                     SizedBox(height: 20),
-  //                   ],
-  //                 ),
-  //               ),
-  //             );
-
-  //             if (confirmed == true) {
-  //               // Show loading indicator
-  //               showDialog(
-  //                 context: context,
-  //                 barrierDismissible: false,
-  //                 builder: (BuildContext context) {
-  //                   return Center(
-  //                     child: Container(
-  //                       padding: EdgeInsets.all(32),
-  //                       decoration: BoxDecoration(
-  //                         color: Colors.white,
-  //                         borderRadius: BorderRadius.circular(6),
-  //                       ),
-  //                       child: Column(
-  //                         mainAxisSize: MainAxisSize.min,
-  //                         children: [
-  //                           CircularProgressIndicator(
-  //                             strokeWidth: 4,
-  //                             valueColor: AlwaysStoppedAnimation<Color>(
-  //                                 Color(0xff3c76ad)),
-  //                           ),
-  //                           SizedBox(height: 16),
-  //                           Text(
-  //                             'Cancelling order...',
-  //                             style: TextStyle(
-  //                               color: Colors.black,
-  //                               fontSize: 16,
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                     ),
-  //                   );
-  //                 },
-  //               );
-
-  //               try {
-  //                 final storage = const FlutterSecureStorage();
-  //                 final token = await storage.read(key: 'auth_token');
-
-  //                 if (token != null) {
-  //                   await ApiService.updateOrderStatus(
-  //                       token, receipt.orderId.toString(), 'cancelled');
-
-  //                   // Close loading indicator
-  //                   Navigator.pop(context);
-
-  //                   // Show success bottom sheet
-  //                   await showModalBottomSheet(
-  //                     context: context,
-  //                     backgroundColor: Colors.transparent,
-  //                     builder: (context) => Container(
-  //                       padding: EdgeInsets.all(20),
-  //                       decoration: BoxDecoration(
-  //                         color: Colors.white,
-  //                         borderRadius:
-  //                             BorderRadius.vertical(top: Radius.circular(20)),
-  //                       ),
-  //                       child: Column(
-  //                         mainAxisSize: MainAxisSize.min,
-  //                         crossAxisAlignment: CrossAxisAlignment.start,
-  //                         children: [
-  //                           Center(
-  //                             child: Container(
-  //                               width: 40,
-  //                               height: 4,
-  //                               margin: EdgeInsets.only(bottom: 20),
-  //                               decoration: BoxDecoration(
-  //                                 color: Colors.grey[300],
-  //                                 borderRadius: BorderRadius.circular(2),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                           Text(
-  //                             'Your order has been cancelled',
-  //                             style: TextStyle(
-  //                               fontSize: 24,
-  //                               fontWeight: FontWeight.bold,
-  //                             ),
-  //                           ),
-  //                           SizedBox(height: 20),
-  //                           Text(
-  //                             'Good news! Your cancellation has been processed and you won\'t be charged. It can take a few minutes for this page to show your order\'s status updated.',
-  //                             style: TextStyle(
-  //                               fontSize: 16,
-  //                               color: Color(0xff767676),
-  //                             ),
-  //                           ),
-  //                           SizedBox(height: 30),
-  //                           MyButton(
-  //                             height: 51,
-  //                             text: 'Got It',
-  //                             onTap: () {
-  //                               Navigator.pop(context);
-  //                               Navigator.pushReplacementNamed(
-  //                                   context, '/order-history');
-  //                               CustomSnackbar.show(
-  //                                 context: context,
-  //                                 message: 'Order cancelled successfully',
-  //                               );
-  //                             },
-  //                           ),
-  //                           SizedBox(height: 20),
-  //                         ],
-  //                       ),
-  //                     ),
-  //                   );
-  //                 }
-  //               } catch (e) {
-  //                 // Close loading indicator if error occurs
-  //                 Navigator.pop(context);
-  //                 CustomSnackbar.show(
-  //                   context: context,
-  //                   message: 'Failed to cancel order',
-  //                 );
-  //               }
-  //             }
-  //           },
-  //           child: Text('Cancel Order'),
-  //         )
-  //     ],
-  //   );
-  // }
 }
