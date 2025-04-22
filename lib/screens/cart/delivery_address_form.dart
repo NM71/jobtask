@@ -134,85 +134,88 @@ class _DeliveryAddressFormState extends State<DeliveryAddressForm> {
       );
     }
 
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.9,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        // borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: Column(
-        children: [
-          // Drag Handle
-          SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: _buildHeader(),
-          ),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: Container(
+        height: MediaQuery.of(context).size.height * 0.9,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          // borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          children: [
+            // Drag Handle
+            SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: _buildHeader(),
+            ),
 
-          Divider(
-            color: Color(0xffe4e4e4),
-          ),
-          SizedBox(height: 10),
+            Divider(
+              color: Color(0xffe4e4e4),
+            ),
+            SizedBox(height: 10),
 
-          // Form
-          Expanded(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    _buildTextField(
-                      controller: _firstNameController,
-                      label: 'First Name',
-                      prefixIcon: Icons.person_outline,
-                    ),
-                    _buildTextField(
-                      controller: _lastNameController,
-                      label: 'Last Name',
-                      prefixIcon: Icons.person_outline,
-                    ),
-                    _buildTextField(
-                      controller: _address1Controller,
-                      label: 'Address Line 1',
-                      prefixIcon: Icons.home_outlined,
-                    ),
-                    _buildTextField(
-                      controller: _address2Controller,
-                      label: 'Address Line 2 (Optional)',
-                      prefixIcon: Icons.home_outlined,
-                      isOptional: true,
-                    ),
-                    _buildTextField(
-                      controller: _postalCodeController,
-                      label: 'Postal Code',
-                      prefixIcon: Icons.location_on_outlined,
-                      keyboardType: TextInputType.number,
-                    ),
-                    _buildTextField(
-                      controller: _cityController,
-                      label: 'City',
-                      prefixIcon: Icons.location_city_outlined,
-                    ),
-                    _buildCountrySelector(),
-                    _buildTextField(
-                      controller: _phoneController,
-                      label: 'Phone Number',
-                      prefixIcon: Icons.phone_outlined,
-                      keyboardType: TextInputType.phone,
-                    ),
-                    SizedBox(height: 30),
-                    _buildSaveButton(),
-                    SizedBox(height: 20),
-                  ],
+            // Form
+            Expanded(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      _buildTextField(
+                        controller: _firstNameController,
+                        label: 'First Name',
+                        prefixIcon: Icons.person_outline,
+                      ),
+                      _buildTextField(
+                        controller: _lastNameController,
+                        label: 'Last Name',
+                        prefixIcon: Icons.person_outline,
+                      ),
+                      _buildTextField(
+                        controller: _address1Controller,
+                        label: 'Address Line 1',
+                        prefixIcon: Icons.home_outlined,
+                      ),
+                      _buildTextField(
+                        controller: _address2Controller,
+                        label: 'Address Line 2 (Optional)',
+                        prefixIcon: Icons.home_outlined,
+                        isOptional: true,
+                      ),
+                      _buildTextField(
+                        controller: _postalCodeController,
+                        label: 'Postal Code',
+                        prefixIcon: Icons.location_on_outlined,
+                        keyboardType: TextInputType.number,
+                      ),
+                      _buildTextField(
+                        controller: _cityController,
+                        label: 'City',
+                        prefixIcon: Icons.location_city_outlined,
+                      ),
+                      _buildCountrySelector(),
+                      _buildTextField(
+                        controller: _phoneController,
+                        label: 'Phone Number',
+                        prefixIcon: Icons.phone_outlined,
+                        keyboardType: TextInputType.phone,
+                      ),
+                      SizedBox(height: 30),
+                      _buildSaveButton(),
+                      SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -322,7 +325,7 @@ class _DeliveryAddressFormState extends State<DeliveryAddressForm> {
           // elevation: 0,
         ),
         child: Text(
-          'Add Delivery Address',
+          'Save Delivery Address',
           style: TextStyle(
               fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white),
         ),
