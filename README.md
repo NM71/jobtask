@@ -57,13 +57,39 @@ It includes:
   <tr>
     <td>Cart</td>
     <td>Checkout</td>
-    <td>Select Payment Method</td>
+    <td>User Profile</td>
      
 
   </tr>
   <tr>
     <td><img src="screenshots/9.jpg" width=270 height=480></td>
     <td><img src="screenshots/12.jpg" width=270 height=480></td>
-    <td><img src="screenshots/11.jpg" width=270 height=480></td>
+    <td><img src="screenshots/14.jpg" width=270 height=480></td>
+  </tr>
+
+  <tr>
+    <td>Order History</td>
+    <td>Settings</td>
+    <td>Payment Methods</td>
+     
+
+  </tr>
+  <tr>
+    <td><img src="screenshots/15.jpg" width=270 height=480></td>
+    <td><img src="screenshots/16.jpg" width=270 height=480></td>
+    <td><img src="screenshots/18.jpg" width=270 height=480></td>
+  </tr>
+
+  <tr>
+    <td>FAQS</td>
+    <td>Before vs After</td>
+    <td>About</td>
+     
+
+  </tr>
+  <tr>
+    <td><img src="screenshots/17.jpg" width=270 height=480></td>
+    <td><img src="screenshots/BvsA.jpg" width=270 height=480></td>
+    <td><img src="screenshots/06.jpg" width=270 height=480></td>
   </tr>
  </table>
